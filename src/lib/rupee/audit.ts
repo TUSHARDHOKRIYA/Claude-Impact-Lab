@@ -149,7 +149,18 @@ function phantomCompletionFlag(
 }
 
 /** Flag over-billing, same-road repeat bills, surface repairs paid under DLP, and post-closure complaint spikes. */
-export function auditWorkOrders(ds: Dataset): AuditFlag[] {
+export type AuditOptions = {
+  /**
+   * Include the phantom-completion check. Off by default: on this dataset it
+   * flags 1,689 of 2,499 jobs (73%) with no cluster to separate real cases from
+   * complaints that simply bunch around roads, which buries the real flags.
+   * Set RUPEE_PHANTOM_FLAG=1 to turn it on.
+   */
+  phantomCompletion?: boolean;
+};
+
+export function auditWorkOrders(ds: Dataset, options: AuditOptions = {}): AuditFlag[] {
+  const phantom = options.phantomCompletion ?? process.env.RUPEE_PHANTOM_FLAG === "1";
   const roadById = new Map(ds.roads.map((r) => [r.id, r]));
   const complaintsByWard = new Map<string, Complaint[]>();
   for (const c of ds.complaints) {
@@ -165,7 +176,7 @@ export function auditWorkOrders(ds: Dataset): AuditFlag[] {
       overRateFlag(ds, roadById, order),
       doubleBilledFlag(ds, roadById, order),
       dlpFlag(roadById, order),
-      phantomCompletionFlag(roadById, complaintsByWard, order),
+      phantom ? phantomCompletionFlag(roadById, complaintsByWard, order) : null,
     ];
     for (const flag of checks) {
       if (flag) flags.push(flag);

@@ -91,10 +91,18 @@ describe("auditWorkOrders", () => {
       { id: "C1", ward: "F/S", lat: 19.003, lng: 72.842, receivedAt: "2025-07-04 09:00" } as Dataset["complaints"][number],
       { id: "C2", ward: "F/S", lat: 19.0031, lng: 72.8421, receivedAt: "2025-07-08 14:00" } as Dataset["complaints"][number],
     ];
-    const flags = auditWorkOrders(ds).filter((f) => f.kind === "phantom_completion");
+    const flags = auditWorkOrders(ds, { phantomCompletion: true }).filter((f) => f.kind === "phantom_completion");
     expect(flags).toHaveLength(1);
     expect(flags[0].workOrderId).toBe("WO_SPIKE");
     expect(flags[0].evidence).toEqual(["C1", "C2"]);
+  });
+
+  it("leaves the phantom-completion check off by default so it cannot swamp the real flags", () => {
+    const real = loadDataset();
+    const flags = auditWorkOrders(real);
+    expect(flags.filter((f) => f.kind === "phantom_completion")).toHaveLength(0);
+    const flaggedJobs = new Set(flags.map((f) => f.workOrderId)).size;
+    expect(flaggedJobs / real.workOrders.length).toBeLessThan(0.3);
   });
 
   it("stays factual on the real dataset", () => {

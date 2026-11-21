@@ -15,7 +15,15 @@ export const FLAG_EXPLAINERS: Record<AuditFlagKind, string> = {
 };
 
 /** Flags grouped by kind in a UX4G bordered accordion, each row pointing at its work order. */
-export function FlagList({ flags, limit = 6 }: { flags: AuditFlag[]; limit?: number }) {
+export function FlagList({
+  flags,
+  limit = 6,
+  emptyText = "No audit flags in this ward.",
+}: {
+  flags: AuditFlag[];
+  limit?: number;
+  emptyText?: string;
+}) {
   const groups = (Object.keys(FLAG_LABELS) as AuditFlagKind[])
     .map((kind) => {
       const rows = flags.filter((flag) => flag.kind === kind).sort((a, b) => b.amountAtRiskInr - a.amountAtRiskInr);
@@ -24,7 +32,7 @@ export function FlagList({ flags, limit = 6 }: { flags: AuditFlag[]; limit?: num
     .filter((group) => group.rows.length > 0);
 
   if (groups.length === 0) {
-    return <p className="ux4g-body-m-default ux4g-text-neutral-secondary">No audit flags in this ward.</p>;
+    return <p className="ux4g-body-m-default ux4g-text-neutral-secondary">{emptyText}</p>;
   }
   return (
     <div className="ux4g-accordion ux4g-accordion-arrow-right ux4g-accordion-bordered rb-accordion">

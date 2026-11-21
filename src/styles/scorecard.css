@@ -1,0 +1,215 @@
+/* Contractor scorecards. UX4G draws the cards, tables, tags and accordion;
+ * this file adds the 0 to 100 meter and the scorecard layout. */
+
+/* ---- Score meter: three band zones, a line at 50 ("as expected"), the score as a dot. ---- */
+.rb-meter-track {
+  position: relative;
+  display: flex;
+  height: 0.75rem;
+  border-radius: var(--ux4g-radius-xs);
+  background: var(--ux4g-bg-neutral-subtle);
+  overflow: visible;
+}
+
+.rb-meter-large .rb-meter-track {
+  height: 1.125rem;
+}
+
+.rb-meter-zone {
+  height: 100%;
+}
+
+.rb-meter-zone:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.rb-meter-zone:nth-child(3) {
+  border-radius: 0 4px 4px 0;
+}
+
+.rb-meter-low {
+  background: color-mix(in srgb, var(--failed) 22%, transparent);
+}
+
+.rb-meter-mid {
+  background: color-mix(in srgb, var(--flagged) 24%, transparent);
+}
+
+.rb-meter-high {
+  background: color-mix(in srgb, var(--held) 24%, transparent);
+}
+
+.rb-meter-plain {
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+  background: var(--ux4g-border-color-neutral-default);
+}
+
+.rb-meter-expected {
+  position: absolute;
+  top: -0.25rem;
+  bottom: -0.25rem;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ux4g-text-neutral-primary);
+}
+
+.rb-meter-dot {
+  position: absolute;
+  top: 50%;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: -0.5625rem 0 0 -0.5625rem;
+  border-radius: 50%;
+  border: 3px solid var(--ux4g-bg-neutral-elevated);
+  background: var(--ux4g-bg-primary-strong);
+  box-shadow: 0 0 0 1px var(--ux4g-text-neutral-primary);
+}
+
+.rb-meter-scale {
+  position: relative;
+  height: 1.25rem;
+  margin-top: var(--ux4g-margin-xs);
+}
+
+.rb-meter-scale > span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.rb-meter-scale > span:first-child {
+  left: 0;
+  transform: none;
+}
+
+.rb-meter-scale > span:last-child {
+  right: 0;
+  transform: none;
+}
+
+.rb-meter-scale > span:nth-child(3) {
+  top: 1rem;
+}
+
+/* ---- Leaderboard. ---- */
+.ux4g-card-header.rb-score-head {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ux4g-gap-column-s);
+}
+
+.rb-score-badge {
+  display: grid;
+  flex-shrink: 0;
+  justify-items: end;
+  gap: var(--ux4g-gap-row-2xs);
+}
+
+.rb-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rb-card-link:hover,
+.rb-card-link:focus-visible {
+  text-decoration: underline;
+}
+
+.rb-score-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ux4g-gap-column-s);
+}
+
+.rb-score-foot > p {
+  flex: 1 1 14rem;
+}
+
+/* ---- Contractor page. ---- */
+.rb-hero {
+  display: grid;
+  gap: var(--ux4g-gap-row-m);
+}
+
+@media (min-width: 40rem) {
+  .rb-hero {
+    grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr);
+    align-items: center;
+    column-gap: 2.5rem;
+  }
+}
+
+.rb-hero-score {
+  display: grid;
+  justify-items: start;
+  gap: var(--ux4g-gap-row-2xs);
+}
+
+.rb-hero-number {
+  margin: 0;
+  font-size: 4rem;
+  font-weight: var(--ux4g-fw-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-plain {
+  display: grid;
+  gap: var(--ux4g-gap-row-xs);
+  padding-left: var(--ux4g-padding-l);
+  list-style: disc;
+}
+
+.rb-parts {
+  display: grid;
+  gap: var(--ux4g-gap-row-m);
+}
+
+@media (min-width: 48rem) {
+  .rb-parts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.rb-num-left {
+  margin: 0 0 var(--ux4g-margin-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-part-facts {
+  display: grid;
+  gap: var(--ux4g-gap-row-2xs);
+}
+
+.rb-facts-row {
+  display: grid;
+  gap: var(--ux4g-gap-row-s);
+}
+
+@media (min-width: 40rem) {
+  .rb-facts-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.rb-fact {
+  padding: var(--ux4g-padding-s) var(--ux4g-padding-m);
+  border: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: var(--ux4g-radius-s);
+}
+
+.rb-sort-wrap {
+  flex-wrap: wrap;
+}
+
+.rb-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ux4g-gap-column-2xs);
+  white-space: normal;
+}

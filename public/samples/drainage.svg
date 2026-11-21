@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Clogged curb drain overflowing on K Dubash Marg">
+  <defs>
+    <linearGradient id="skyd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6a706c"/>
+      <stop offset="1" stop-color="#8a8680"/>
+    </linearGradient>
+    <linearGradient id="roadd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d3934"/>
+      <stop offset="1" stop-color="#1c1916"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="42%" cy="62%" r="34%">
+      <stop offset="0" stop-color="#243040"/>
+      <stop offset="1" stop-color="#1c1916"/>
+    </radialGradient>
+    <filter id="gd">
+      <feTurbulence type="fractalNoise" baseFrequency=".82" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 .16  0 0 0 0 .16  0 0 0 0 .15  0 0 0 .13 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="#c5bfb3"/>
+  <rect width="800" height="168" fill="url(#skyd)"/>
+  <path fill="#7a7468" d="M0 80h360v100H0z"/>
+  <path fill="#5c564e" d="M40 104h70v76H40zM140 96h80v84h-80zM250 108h64v72h-64z"/>
+  <path fill="#8d8678" d="M400 60h400v120H400z"/>
+  <path fill="#6a655c" d="M430 88h90v92h-90zM560 80h100v100h-100zM700 96h70v84h-70z"/>
+  <path fill="#4a453e" d="M0 180h800v20H0z"/>
+  <path fill="#e3b505" d="M0 200h800v16H0z"/>
+  <path fill="url(#roadd)" d="M0 216h800v384H0z"/>
+  <g stroke="#6f695f" stroke-width="2">
+    <path fill="#b7b09f" d="M0 200 220 196l-20 70H0z"/>
+    <path fill="#c5bfb3" d="M224 195 430 190l-22 74H202z"/>
+    <path fill="#a8a090" d="M434 189 640 184l-24 76H410z"/>
+    <path fill="#cdc6b6" d="M644 183 820 178l-20 78H620z"/>
+  </g>
+  <path fill="#2a2420" d="M120 268h220l-16 48H108z"/>
+  <g fill="#1c1916">
+    <rect x="136" y="278" width="188" height="6"/>
+    <rect x="136" y="290" width="188" height="6"/>
+    <rect x="136" y="302" width="188" height="6"/>
+  </g>
+  <path fill="#a33b2b" d="M300 262 360 250l18 70-62 16z"/>
+  <path fill="#6f695f" stroke="#3d3934" stroke-width="2" d="M300 262 360 250l8 16-54 14z"/>
+  <ellipse cx="280" cy="390" rx="210" ry="80" fill="url(#pool)"/>
+  <path fill="none" stroke="#8a8680" stroke-width="1.6" opacity=".4" d="M140 370c60-24 130-20 190 6 40 18 90 14 140-8"/>
+  <path fill="#215c45" opacity=".7" d="M168 356 150 400l36 4 8-40z"/>
+  <path fill="#4a453e" d="M210 372 196 418l28 2 6-42z"/>
+  <path fill="#6a655c" d="M320 348 308 400l40 6 6-48z"/>
+  <path fill="#8a8680" d="M380 366 370 414l32 4 4-44z"/>
+  <path fill="#7a7468" d="M250 388 236 430l24 2z"/>
+  <path fill="#123a73" opacity=".25" d="M80 420c80 20 160 10 240-8 90-20 190-8 280 16v80c-90-18-190-8-280 10-90 20-180 8-260-12z"/>
+  <g fill="#e3b505" opacity=".45">
+    <rect x="480" y="460" width="80" height="9" transform="skewX(-20)"/>
+    <rect x="620" y="488" width="80" height="9" transform="skewX(-20)"/>
+  </g>
+  <rect x="28" y="148" width="128" height="24" rx="2" fill="#123a73"/>
+  <text x="92" y="165" text-anchor="middle" fill="#ddd6c8" font-family="Georgia, serif" font-size="11" letter-spacing="1.4">K DUBASH</text>
+  <rect width="800" height="600" filter="url(#gd)" style="mix-blend-mode:multiply"/>
+</svg>

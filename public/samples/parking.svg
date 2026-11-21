@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Car occupying the limestone footpath on M G Road">
+  <defs>
+    <linearGradient id="skyp" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#868a83"/>
+      <stop offset="1" stop-color="#a8a298"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ddd6c8"/>
+      <stop offset="1" stop-color="#8a8680"/>
+    </linearGradient>
+    <filter id="gp">
+      <feTurbulence type="fractalNoise" baseFrequency=".86" numOctaves="2" seed="3"/>
+      <feColorMatrix values="0 0 0 0 .2  0 0 0 0 .18  0 0 0 0 .16  0 0 0 .11 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="#c5bfb3"/>
+  <rect width="800" height="220" fill="url(#skyp)"/>
+  <path fill="#7a7468" d="M60 36h680v184H60z"/>
+  <path fill="#5c564e" d="M60 36h680v18H60z"/>
+  <g fill="#2a2420" opacity=".5">
+    <rect x="100" y="78" width="70" height="100"/>
+    <rect x="200" y="70" width="80" height="108"/>
+    <rect x="310" y="82" width="64" height="96"/>
+    <rect x="404" y="68" width="88" height="110"/>
+    <rect x="522" y="80" width="72" height="98"/>
+    <rect x="620" y="74" width="76" height="104"/>
+  </g>
+  <path fill="#4a453e" d="M0 220h800v16H0z"/>
+  <path fill="#3d3934" d="M0 236h800v150H0z"/>
+  <path fill="#e3b505" d="M0 236h800v10H0z"/>
+  <g fill="#e3b505" opacity=".75">
+    <rect x="40" y="300" width="16" height="70"/>
+    <rect x="40" y="390" width="16" height="40"/>
+  </g>
+  <g stroke="#6f695f" stroke-width="2">
+    <path fill="#b7b09f" d="M0 386h200l-16 80H0z"/>
+    <path fill="#c5bfb3" d="M204 384h210l-16 82H186z"/>
+    <path fill="#a8a090" d="M418 382h200l-16 84H400z"/>
+    <path fill="#cdc6b6" d="M622 380h200l-16 86H604z"/>
+  </g>
+  <g stroke="#5e584f" stroke-width="2">
+    <path fill="#cdc6b6" d="M0 470h240l-20 140H0z"/>
+    <path fill="#b0a898" d="M244 468h260l-22 142H220z"/>
+    <path fill="#c5bfb3" d="M508 466h310l-24 144H482z"/>
+  </g>
+  <g transform="translate(90,268)">
+    <ellipse cx="168" cy="196" rx="210" ry="22" fill="#1c1916" opacity=".28"/>
+    <path fill="url(#body)" d="M40 86h420l-18 86H70z"/>
+    <path fill="#c5bfb3" d="M96 28h250l86 58H70z"/>
+    <path fill="#2a3340" d="M118 36h90l-12 44H108zM230 34h96l20 46H218z"/>
+    <path fill="#123a73" d="M70 118h372l-8 22H80z"/>
+    <path fill="#1c1916" d="M48 86h28v86H48z"/>
+    <circle cx="132" cy="178" r="38" fill="#1c1916"/>
+    <circle cx="132" cy="178" r="22" fill="#4a453e"/>
+    <circle cx="132" cy="178" r="8" fill="#8a8680"/>
+    <circle cx="368" cy="176" r="40" fill="#1c1916"/>
+    <circle cx="368" cy="176" r="23" fill="#4a453e"/>
+    <circle cx="368" cy="176" r="8" fill="#8a8680"/>
+    <path fill="#2a2420" d="M430 96h36l-10 70h-40z"/>
+    <path fill="#e3b505" d="M452 108h10v12h-10z"/>
+    <path fill="#a33b2b" d="M40 108h12v12H40z"/>
+  </g>
+  <rect x="640" y="188" width="118" height="24" rx="2" fill="#123a73"/>
+  <text x="699" y="205" text-anchor="middle" fill="#ddd6c8" font-family="Georgia, serif" font-size="12" letter-spacing="1.5">M G ROAD</text>
+  <rect width="800" height="600" filter="url(#gp)" style="mix-blend-mode:multiply"/>
+</svg>

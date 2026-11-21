@@ -1,0 +1,212 @@
+/* Report flow, phone first. UX4G supplies the type, cards, stepper and form
+ * controls; this file only lays them out for one-handed use. */
+.rh-report {
+  margin-top: var(--ux4g-margin-l);
+}
+
+.rh-step {
+  margin-top: var(--ux4g-margin-xl);
+}
+
+.rh-step-heading:focus {
+  outline: none;
+}
+
+.rh-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ux4g-gap-column-xs);
+  margin-bottom: var(--ux4g-margin-xs);
+  color: var(--ux4g-text-neutral-primary);
+}
+
+.rh-choice-group > .ux4g-body-s-default {
+  margin-bottom: var(--ux4g-margin-s);
+}
+
+.rh-options {
+  display: grid;
+  gap: var(--ux4g-gap-row-xs);
+}
+
+@media (min-width: 30rem) {
+  .rh-options-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* UX4G option cards: let long labels wrap, keep a 56 px target, show focus,
+ * and give checkbox cards the same selected state as radio cards. */
+.rh-options .ux4g-aadhaar-option-card {
+  align-items: center;
+  min-height: 3.5rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rh-options .ux4g-aadhaar-option-card .ux4g-radio-label,
+.rh-options .ux4g-aadhaar-option-card .ux4g-radio-description {
+  white-space: normal;
+}
+
+.rh-options .ux4g-aadhaar-option-card .ux4g-radio-content,
+.rh-options .ux4g-aadhaar-option-card .ux4g-checkbox-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ux4g-gap-row-2xs);
+  min-width: 0;
+}
+
+.rh-options .ux4g-aadhaar-option-card:has(.ux4g-checkbox-input:checked) {
+  background-color: var(--ux4g-bg-primary);
+  border-color: var(--ux4g-border-color-primary-default);
+  box-shadow: 0 0 0 1px var(--ux4g-bg-primary-strong);
+}
+
+.rh-options .ux4g-aadhaar-option-card:has(input:focus-visible) {
+  outline: 3px solid var(--ux4g-bg-primary-strong);
+  outline-offset: 2px;
+}
+
+.rh-options .ux4g-aadhaar-option-card.ux4g-radio-error,
+.rh-options .ux4g-aadhaar-option-card.ux4g-checkbox-error {
+  border-color: var(--ux4g-border-color-error-strong);
+}
+
+/* Camera target: a viewfinder with the lane marking as its frame. */
+.rh-viewfinder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ux4g-gap-row-xs);
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 60vh;
+  margin-top: var(--ux4g-margin-m);
+  border: 0;
+  border-radius: var(--ux4g-radius-lg);
+  background: var(--asphalt);
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button.rh-viewfinder {
+  border: 4px dashed var(--lane);
+  background: var(--asphalt);
+}
+
+button.rh-viewfinder:active {
+  background: var(--asphalt-lane);
+}
+
+button.rh-viewfinder:focus-visible {
+  outline: 3px solid var(--ux4g-bg-primary-strong);
+  outline-offset: 3px;
+}
+
+.rh-viewfinder svg {
+  color: var(--lane);
+}
+
+.rh-viewfinder-sub {
+  color: var(--ux4g-color-neutral-300);
+}
+
+.rh-viewfinder-filled {
+  border: 0;
+  background: var(--asphalt);
+}
+
+.rh-viewfinder-filled img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rh-photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.rh-tips {
+  margin-top: var(--ux4g-margin-l);
+  padding-left: var(--ux4g-padding-l);
+  list-style: disc;
+}
+
+.rh-tips li + li {
+  margin-top: 0.25rem;
+}
+
+/* Thumb-reach actions that stay above the keyboard and the home indicator. */
+.rh-actionbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  gap: var(--ux4g-gap-column-xs);
+  margin-top: var(--ux4g-margin-2xl);
+  margin-inline: calc(var(--gutter) * -1);
+  padding: var(--ux4g-padding-s) var(--gutter) calc(var(--ux4g-padding-s) + env(safe-area-inset-bottom));
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: var(--ux4g-shadow-l2);
+}
+
+.rh-actionbar-split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+}
+
+.rh-actionbar .ux4g-btn-primary,
+.rh-actionbar .ux4g-btn-outline-primary {
+  justify-content: center;
+}
+
+/* Place step. */
+.rh-pinmap {
+  border: 1px solid var(--ux4g-border-color-neutral-default);
+  border-radius: var(--ux4g-radius-md);
+  overflow: hidden;
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rh-suggest {
+  margin-top: var(--ux4g-margin-xs);
+}
+
+.rh-suggest .ux4g-list-item-row {
+  width: 100%;
+  justify-content: space-between;
+  text-align: start;
+}
+
+.rh-quickpicks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.rh-pin-readout {
+  margin-top: var(--ux4g-margin-s);
+}
+
+.rh-details {
+  margin-top: var(--ux4g-margin-m);
+}
+
+.rh-review-list {
+  display: grid;
+  gap: var(--ux4g-gap-row-s);
+}
+
+/* After the photo, the intro gives way so the question sits near the top. */
+.rh-home:has(.rh-report:not([data-step="1"])) .rh-intro {
+  display: none;
+}

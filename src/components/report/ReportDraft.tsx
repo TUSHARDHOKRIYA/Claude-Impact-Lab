@@ -1,0 +1,319 @@
+"use client";
+
+import { useLayoutEffect, useRef, useState, useTransition, type FormEvent } from "react";
+
+import { GovProgress } from "@/components/gov/GovProgress";
+import { AnswerModeToggle, type AnswerMode } from "@/components/report/AnswerModeToggle";
+import type { DetailsErrors } from "@/components/report/ReportDetailsFields";
+import { ReportPhotoField } from "@/components/report/ReportPhotoField";
+import { ReportReview } from "@/components/report/ReportReview";
+import { SubmittedPanel } from "@/components/report/SubmittedPanel";
+import { TapAnswerSteps } from "@/components/report/TapAnswerSteps";
+import { VoiceChat } from "@/components/report/VoiceChat";
+import { ReportFormFooter } from "@/components/report/ReportFormFooter";
+import {
+  FORM_ALERT_ID,
+  REPORT_MSG,
+  answersProblem,
+  detailsHasError,
+  focusDetailsError,
+  focusId,
+  focusSelector,
+  validateHistory,
+  validateImpact,
+} from "@/components/report/report-form-helpers";
+import { useReportPhoto } from "@/components/report/use-report-photo";
+import { useReportVoice, type VoiceField } from "@/components/report/use-report-voice";
+import { useVoiceConversation } from "@/components/report/use-voice-conversation";
+import { createReportAction } from "@/lib/actions";
+import { isInsideCity } from "@/lib/city";
+import { type AccidentSeen, type Affects, type IssueType, type NoticedWindow } from "@/lib/types";
+import { VOICE_UI_ENABLED } from "@/lib/voice/ui-flag";
+
+/**
+ * Photo first: the evidence is already in their hand. Then the answers, by
+ * voice or by tapping (steps 2-4; the voice chat lives on step 2), then Check.
+ */
+const STEP = { photo: 1, issue: 2, history: 3, impact: 4, place: 5, review: 6 } as const;
+const TAP_LABELS = ["Photo", "Problem", "History", "Risk", "Place", "Check"];
+
+export function ReportDraft({
+  initialIssueType,
+  voiceEnabled = VOICE_UI_ENABLED,
+  onAgain,
+}: {
+  initialIssueType?: IssueType;
+  voiceEnabled?: boolean;
+  onAgain: () => void;
+}) {
+  const [step, setStep] = useState(1);
+  const [issueType, setIssueType] = useState<IssueType | "">(initialIssueType ?? "");
+  const [issueInvalid, setIssueInvalid] = useState(false);
+  const [pin, setPin] = useState<{ lat: number; lng: number } | null>(null);
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const photoState = useReportPhoto(() => setFormError(null));
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [locationConfirmed, setLocationConfirmed] = useState(false);
+  const confirmedRef = useRef(false);
+  confirmedRef.current = locationConfirmed;
+  const [noticedWindow, setNoticedWindow] = useState<NoticedWindow | "">("");
+  const [recurs, setRecurs] = useState<"" | "true" | "false">("");
+  const [accident, setAccident] = useState<AccidentSeen | "">("");
+  const [affects, setAffects] = useState<Affects[]>([]);
+  const [description, setDescription] = useState("");
+  const [descriptionDone, setDescriptionDone] = useState(false);
+  const [mode, setMode] = useState<AnswerMode>(voiceEnabled ? "voice" : "tap");
+  const [detailsError, setDetailsError] = useState<DetailsErrors>({});
+  const [pending, startTransition] = useTransition();
+  const skipHeadingFocus = useRef(true);
+  const focusAlert = useRef(false);
+  const write = {
+    issueType: (value: IssueType) => { setIssueType(value); setIssueInvalid(false); },
+    noticedWindow: (value: NoticedWindow) => {
+      setNoticedWindow(value);
+      setDetailsError((current) => ({ ...current, noticedWindow: undefined }));
+    },
+    recurs: (value: "true" | "false") => { setRecurs(value); setDetailsError((c) => ({ ...c, recurs: undefined })); },
+    affects: (value: Affects[]) => { setAffects(value); setDetailsError((c) => ({ ...c, affects: undefined })); },
+    description: setDescription,
+    // Voice never moves a confirmed pin, even one confirmed while its turn was in flight.
+    pin: (next: { lat: number; lng: number }) => { if (!confirmedRef.current) changePin(next); },
+  };
+  const values = { issueType, noticedWindow, recurs, affects, description };
+  const voice = useReportVoice(values, write);
+  const convo = useVoiceConversation({
+    values: { ...values, placeConfirmed: locationConfirmed, descriptionDone },
+    hasPin: pin !== null,
+    onResult: voice.applyResult,
+    onAnswer: voice.answer,
+    onPlace: changePin,
+    onConfirmPlace: confirmPin,
+    onDescriptionDone: () => setDescriptionDone(true),
+  });
+  const chatMode = voiceEnabled && mode === "voice";
+  const chatting = chatMode && step > STEP.photo && step < STEP.review;
+  /** A person's own edit: the value is theirs now, so the voice badge goes. */
+  function edited<T>(field: VoiceField, apply: (value: T) => void) {
+    return (value: T) => { apply(value); voice.userEdited(field); };
+  }
+
+  useLayoutEffect(() => {
+    if (skipHeadingFocus.current) {
+      skipHeadingFocus.current = false;
+      return;
+    }
+    document.getElementById("report-step-heading")?.focus();
+  }, [step]);
+  useLayoutEffect(() => {
+    if (!focusAlert.current || !formError) return;
+    focusAlert.current = false;
+    focusId(FORM_ALERT_ID);
+  }, [formError]);
+  function changePin(next: { lat: number; lng: number }) {
+    setPin(next);
+    setLocationConfirmed(false);
+    setLocationError(null);
+  }
+  function confirmPin() {
+    setLocationConfirmed(true);
+    setLocationError(null);
+    setFormError(null);
+  }
+  function switchMode(next: AnswerMode) {
+    if (next === mode) return;
+    setMode(next);
+    goTo(STEP.issue);
+  }
+  function finishChat() {
+    const problem = answersProblem({ issueType, noticedWindow, recurs, affects, pin, locationConfirmed });
+    if (problem) setFormError(problem);
+    else goTo(STEP.review);
+  }
+  function goTo(next: number) {
+    if (pending) return;
+    skipHeadingFocus.current = false;
+    setFormError(null);
+    setStep(next);
+  }
+  /** Each field shows its own error; the form alert is only for errors with no field to sit under. */
+  function onContinue() {
+    if (pending) return;
+    if (step === STEP.issue && !issueType) {
+      setIssueInvalid(true);
+      focusSelector('input[name="issueType"][type="radio"]');
+      return;
+    }
+    if (step === STEP.history || step === STEP.impact) {
+      const next = step === STEP.history ? validateHistory(noticedWindow, recurs) : validateImpact(accident, affects);
+      if (detailsHasError(next)) {
+        setDetailsError(next);
+        focusDetailsError(next);
+        return;
+      }
+    }
+    if (step === STEP.photo && !photoState.photo) {
+      photoState.setError(REPORT_MSG.photo);
+      focusId("photo-take");
+      return;
+    }
+    if (step === STEP.place && (!pin || !isInsideCity(pin.lat, pin.lng))) {
+      setLocationError(REPORT_MSG.location);
+      focusId("use-location");
+      return;
+    }
+    if (step === STEP.place && !locationConfirmed) {
+      setLocationError(REPORT_MSG.pin);
+      setFormError(REPORT_MSG.pin); // The location step has no spot of its own for this one.
+      focusId("confirm-report-pin");
+      return;
+    }
+    // This tap is the gesture that lets the chat's first question play aloud.
+    if (step === STEP.photo && chatMode) convo.audio.prime();
+    goTo(step + 1);
+  }
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    if (step !== STEP.review) {
+      onContinue();
+      return;
+    }
+    setFormError(null);
+    if (!accident) {
+      setDetailsError((current) => ({ ...current, accident: REPORT_MSG.accident }));
+      focusDetailsError({ accident: REPORT_MSG.accident });
+      return;
+    }
+    const data = new FormData(event.currentTarget);
+    startTransition(async () => {
+      try {
+        const result = await createReportAction(data);
+        if (result?.ok) {
+          setSubmittedId(result.reportId);
+          return;
+        }
+        if (result) {
+          focusAlert.current = true;
+          setFormError(result.error);
+        }
+      } catch {
+        focusAlert.current = true;
+        setFormError("Could not send your report. Your answers are still here, so try again.");
+      }
+    });
+  }
+  const busy = pending || photoState.busy;
+  if (submittedId) {
+    return <SubmittedPanel reportId={submittedId} lang={convo.lang} onAgain={onAgain} />;
+  }
+  return (
+    <form className="rh-report" data-step={submittedId ? "done" : step} noValidate onSubmit={onSubmit}>
+      {voiceEnabled ? (
+        <GovProgress current={step === STEP.photo ? 1 : step === STEP.review ? 3 : 2} labels={["Photo", "Answer", "Check"]} />
+      ) : (
+        <GovProgress current={step} labels={TAP_LABELS} />
+      )}
+      {step === STEP.photo ? (
+        <div className="rh-step">
+          <ReportPhotoField
+            preview={photoState.preview}
+            status={photoState.status}
+            error={photoState.error}
+            busy={photoState.busy}
+            onPhoto={(file) => void photoState.onPhoto(file)}
+          />
+        </div>
+      ) : null}
+      {/* In voice mode the switch is the dock's Form button; here it is the way back to voice. */}
+      {voiceEnabled && !chatMode && step > STEP.photo && step < STEP.review ? (
+        <AnswerModeToggle mode={mode} onChange={switchMode} />
+      ) : null}
+      {chatting ? (
+        <VoiceChat
+          convo={convo}
+          affects={affects}
+          conflicts={voice.conflicts}
+          pin={pin}
+          placeConfirmed={locationConfirmed}
+          onResolve={voice.resolve}
+          onFinish={finishChat}
+          onForm={() => switchMode("tap")}
+        />
+      ) : (
+        <TapAnswerSteps
+          step={step}
+          issueType={issueType}
+          issueInvalid={issueInvalid}
+          noticedWindow={noticedWindow}
+          recurs={recurs}
+          accident={accident}
+          affects={affects}
+          description={description}
+          detailsError={detailsError}
+          voiceFilled={voice.voiceFilled}
+          pin={pin}
+          locationError={locationError}
+          locationConfirmed={locationConfirmed}
+          onIssueType={edited("issueType", write.issueType)}
+          onNoticedWindow={edited("noticedWindow", write.noticedWindow)}
+          onRecurs={edited("recurs", write.recurs)}
+          onAccident={(value: AccidentSeen) => {
+            setAccident(value);
+            setDetailsError((current) => ({ ...current, accident: undefined }));
+          }}
+          onToggleAffect={edited("affects", (value: Affects) => {
+            setAffects((current) =>
+              current.includes(value) ? current.filter((item) => item !== value) : [...current, value],
+            );
+            setDetailsError((current) => ({ ...current, affects: undefined }));
+          })}
+          onDescription={edited("description", setDescription)}
+          onPin={changePin}
+          onConfirmPin={confirmPin}
+        />
+      )}
+      {step === STEP.review && issueType && pin && noticedWindow && (recurs === "true" || recurs === "false") ? (
+        <ReportReview
+          issueType={issueType}
+          preview={photoState.preview}
+          lat={pin.lat}
+          lng={pin.lng}
+          noticedWindow={noticedWindow}
+          recurs={recurs}
+          accident={accident}
+          accidentError={detailsError.accident}
+          onAccident={(value: AccidentSeen) => {
+            setAccident(value);
+            setDetailsError((current) => ({ ...current, accident: undefined }));
+          }}
+          affects={affects}
+          description={description}
+          voiceLanguageCode={convo.lang}
+          locationConfirmed={locationConfirmed}
+        />
+      ) : null}
+      <ReportFormFooter
+        issueType={issueType}
+        photo={photoState.photo}
+        lat={pin?.lat ?? ""}
+        lng={pin?.lng ?? ""}
+        noticedWindow={noticedWindow}
+        recurs={recurs}
+        accident={accident}
+        affects={JSON.stringify(affects)}
+        description={description}
+        locationConfirmed={locationConfirmed ? "true" : "false"}
+        voiceTranscript={voice.transcript}
+        formError={formError}
+        showBack={step > 1}
+        pending={pending}
+        busy={busy}
+        chatting={chatting}
+        showRecord={step >= STEP.review}
+        onBack={() => goTo(step === STEP.review && chatMode ? STEP.issue : step - 1)}
+        onContinue={onContinue}
+      />
+    </form>
+  );
+}

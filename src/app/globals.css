@@ -1,0 +1,11 @@
+/* UX4G 3.3.3 sits above Tailwind preflight and below app components and utilities. */
+@layer theme, base, ux4g, components, utilities;
+@import "ux4g-web-components/styles.css" layer(ux4g);
+@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/base.css";
+@import "../styles/chrome.css";
+@import "../styles/layout.css";
+@import "../styles/report.css";
+@import "../styles/rupee.css";
+@import "../styles/map.css";

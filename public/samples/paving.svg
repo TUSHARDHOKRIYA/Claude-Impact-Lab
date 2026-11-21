@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Broken wet limestone pavers on Rampart Row">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6d716c"/>
+      <stop offset="1" stop-color="#8a8680"/>
+    </linearGradient>
+    <linearGradient id="wet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a3632" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#1f1c19" stop-opacity=".85"/>
+    </linearGradient>
+    <radialGradient id="puddle" cx="46%" cy="58%" r="28%">
+      <stop offset="0" stop-color="#2a3340"/>
+      <stop offset=".7" stop-color="#1c1916"/>
+      <stop offset="1" stop-color="#2a2420"/>
+    </radialGradient>
+    <filter id="grain" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/>
+      <feColorMatrix values="0 0 0 0 .2  0 0 0 0 .19  0 0 0 0 .17  0 0 0 .14 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="#c5bfb3"/>
+  <rect width="800" height="118" fill="url(#sky)"/>
+  <path fill="#7a7468" d="M0 96h800v40H0z"/>
+  <path fill="#5c564e" d="M0 118h800v22H0z"/>
+  <rect x="48" y="22" width="196" height="46" rx="3" fill="#123a73"/>
+  <rect x="54" y="28" width="184" height="34" rx="2" fill="none" stroke="#e3b505" stroke-width="1.4"/>
+  <text x="146" y="51" text-anchor="middle" fill="#ddd6c8" font-family="Georgia, serif" font-size="15" letter-spacing="2.2">RAMPART ROW</text>
+  <path fill="#4a453e" d="M0 140 800 118v38L0 178z"/>
+  <g stroke="#6f695f" stroke-width="2">
+    <path fill="#b7b09f" d="M18 176h92l-8 48H8z"/>
+    <path fill="#c5bfb3" d="M114 174h88l-7 50h-90z"/>
+    <path fill="#a8a090" d="M206 172h96l-8 52h-97z"/>
+    <path fill="#cdc6b6" d="M306 170h90l-7 54H297z"/>
+    <path fill="#b0a898" d="M400 168h94l-8 56h-95z"/>
+    <path fill="#c5bfb3" d="M498 166h92l-7 58h-94z"/>
+    <path fill="#9e9788" d="M594 164h100l-8 60H584z"/>
+    <path fill="#b7b09f" d="M698 162h92l-6 62h-95z"/>
+  </g>
+  <g stroke="#5e584f" stroke-width="2">
+    <path fill="#cdc6b6" d="M6 228h102l-10 58H-6z"/>
+    <path fill="#a39b8c" d="M112 226h96l-10 60H100z"/>
+    <path fill="#8a8376" d="M212 224h98l-12 62H198z"/>
+    <path fill="#7a7468" d="M314 222 400 220l-12 66H300z"/>
+    <path fill="#b7b09f" d="M404 218h100l-11 68H390z"/>
+    <path fill="#c5bfb3" d="M508 216h96l-10 70H495z"/>
+    <path fill="#a8a090" d="M608 214h108l-12 72H593z"/>
+    <path fill="#b0a898" d="M720 212h90l-8 74H708z"/>
+  </g>
+  <ellipse cx="368" cy="368" rx="168" ry="92" fill="url(#puddle)"/>
+  <path fill="#0e141c" opacity=".45" d="M292 332h28v36c0 10-6 16-14 16s-14-6-14-16zm40 4h32v40c0 12-8 18-16 18s-16-6-16-18zm44 2h26v34c0 10-6 15-13 15s-13-5-13-15z"/>
+  <path fill="none" stroke="#8a8680" stroke-width="1.5" opacity=".45" d="M250 360c40-18 90-20 140-6 36 10 70 8 110-8"/>
+  <path fill="#6a3a2e" d="M292 402 248 448l86 18 28-52z" opacity=".85"/>
+  <path fill="#8a6a48" d="M248 448 210 502h92l32-36z"/>
+  <g stroke="#4a453e" stroke-width="2.2">
+    <path fill="#9a9384" d="M-10 290h118l-14 72H-28z"/>
+    <path fill="#c5bfb3" d="M112 288h70l-8 40 18 34H96z"/>
+    <path fill="#b7b09f" d="M490 286h120l-16 78H470z"/>
+    <path fill="#cdc6b6" d="M614 284h130l-18 82H590z"/>
+    <path fill="#a8a090" d="M748 282h80l-10 84H730z"/>
+  </g>
+  <g stroke="#3d3934" stroke-width="2">
+    <path fill="#8d8678" d="M-20 368h130l-20 90H-44z"/>
+    <path fill="#b7b09f" d="M114 366h80l-6 36-40 58H90z"/>
+    <path fill="#7a7468" transform="rotate(-8 220 430)" d="M188 392h96l-8 54H176z"/>
+    <path fill="#c5bfb3" d="M500 360h140l-22 100H472z"/>
+    <path fill="#a39b8c" d="M644 358h170l-24 104H616z"/>
+  </g>
+  <g stroke="#2a2420" stroke-width="2">
+    <path fill="#9e9788" d="M-30 464h150l-26 150H-60z"/>
+    <path fill="#b0a898" d="M124 462h90l-8 50-28 100H96z"/>
+    <path fill="#cdc6b6" d="M520 454h160l-30 160H484z"/>
+    <path fill="#c5bfb3" d="M684 452h160l-28 164H650z"/>
+  </g>
+  <path fill="url(#wet)" d="M0 520h800v80H0z"/>
+  <path fill="none" stroke="#ddd6c8" stroke-width="2" opacity=".25" d="M40 540c80-20 160-8 240 10M420 548c90-16 180-10 280 16"/>
+  <rect width="800" height="600" filter="url(#grain)" style="mix-blend-mode:multiply"/>
+</svg>

@@ -1,0 +1,107 @@
+import type { LabelLanguage } from "@/lib/chip-labels";
+import { VOICE_COPY } from "@/lib/voice/voice-copy";
+
+/**
+ * The Check step speaks one language: the one the answers are shown in. Field
+ * names come from the voice panel's copy so the two never disagree.
+ */
+export type ReviewCopy = {
+  heading: string;
+  badge: string;
+  anonymous: string;
+  publicNote: string;
+  pinConfirmed: string;
+  pinNotConfirmed: string;
+  photo: string;
+  photoAlt: string;
+  place: string;
+  recursYes: string;
+  recursNo: string;
+  fields: (typeof VOICE_COPY)[LabelLanguage]["fields"];
+};
+
+export type SubmittedCopy = {
+  heading: string;
+  body: string;
+  map: string;
+  report: string;
+  again: string;
+};
+
+export const SUBMITTED_BANNER: Record<LabelLanguage, string> = {
+  en: "Submitted. Your report is highlighted on the map.",
+  hi: "दर्ज हो गई। आपकी रिपोर्ट नक्शे पर चिन्हित है।",
+  mr: "नोंद झाली. तुमची रिपोर्ट नकाशावर ठळक आहे.",
+};
+
+export const SUBMITTED_COPY: Record<LabelLanguage, SubmittedCopy> = {
+  en: {
+    heading: "Submitted",
+    body: "Your report is on the map and on the ward record now.",
+    map: "See it on the map",
+    report: "Open the report page",
+    again: "Report another problem",
+  },
+  hi: {
+    heading: "दर्ज हो गई",
+    body: "आपकी रिपोर्ट अब नक्शे पर है।",
+    map: "नक्शे पर देखें",
+    report: "रिपोर्ट का पेज खोलें",
+    again: "एक और दर्ज करें",
+  },
+  mr: {
+    heading: "नोंद झाली",
+    body: "तुमची रिपोर्ट आता नकाशावर आहे.",
+    map: "नकाशावर पहा",
+    report: "रिपोर्टचे पान उघडा",
+    again: "आणखी एक नोंदवा",
+  },
+};
+
+export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
+  en: {
+    heading: "Check your report",
+    badge: "Citizen report",
+    anonymous: "Anonymous by default",
+    publicNote:
+      "Everything on this card becomes public, including the description. Your voice recording does not.",
+    pinConfirmed: "Pin confirmed at",
+    pinNotConfirmed: "Pin not confirmed at",
+    photo: "Photo",
+    photoAlt: "Preview of the street photo",
+    place: "Place",
+    recursYes: "Yes, it was fixed and came back",
+    recursNo: "No, or not known",
+    fields: VOICE_COPY.en.fields,
+  },
+  hi: {
+    heading: "यह रिकॉर्ड जाँच लीजिए",
+    badge: "नागरिक रिपोर्ट",
+    anonymous: "आपका नाम नहीं दिखेगा",
+    publicNote:
+      "इस कार्ड पर लिखी हर बात, विवरण समेत, सबको दिखेगी। आपकी आवाज़ की रिकॉर्डिंग नहीं दिखेगी।",
+    pinConfirmed: "पिन पक्की की गई:",
+    pinNotConfirmed: "पिन अभी पक्की नहीं:",
+    photo: "फ़ोटो",
+    photoAlt: "सड़क की फ़ोटो",
+    place: "जगह",
+    recursYes: VOICE_COPY.hi.recursYes,
+    recursNo: VOICE_COPY.hi.recursNo,
+    fields: VOICE_COPY.hi.fields,
+  },
+  mr: {
+    heading: "हा रेकॉर्ड तपासा",
+    badge: "नागरिक रिपोर्ट",
+    anonymous: "तुमचं नाव दिसणार नाही",
+    publicNote:
+      "या कार्डवरची प्रत्येक गोष्ट, वर्णनासह, सगळ्यांना दिसेल. तुमच्या आवाजाचं रेकॉर्डिंग दिसणार नाही.",
+    pinConfirmed: "पिन निश्चित केली:",
+    pinNotConfirmed: "पिन अजून निश्चित नाही:",
+    photo: "फोटो",
+    photoAlt: "रस्त्याचा फोटो",
+    place: "ठिकाण",
+    recursYes: VOICE_COPY.mr.recursYes,
+    recursNo: VOICE_COPY.mr.recursNo,
+    fields: VOICE_COPY.mr.fields,
+  },
+};

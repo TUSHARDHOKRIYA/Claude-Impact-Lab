@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Overflowing metal bin on wet limestone, Forbes Street">
+  <defs>
+    <linearGradient id="skyw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a7e77"/>
+      <stop offset="1" stop-color="#9a968e"/>
+    </linearGradient>
+    <linearGradient id="bin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6f695f"/>
+      <stop offset=".5" stop-color="#4a453e"/>
+      <stop offset="1" stop-color="#3d3934"/>
+    </linearGradient>
+    <filter id="gw">
+      <feTurbulence type="fractalNoise" baseFrequency=".88" numOctaves="2" seed="6"/>
+      <feColorMatrix values="0 0 0 0 .18  0 0 0 0 .17  0 0 0 0 .15  0 0 0 .12 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="#c5bfb3"/>
+  <rect width="800" height="230" fill="url(#skyw)"/>
+  <path fill="#8d8678" d="M0 40h520v200H0z"/>
+  <path fill="#6a655c" d="M0 40h520v20H0z"/>
+  <path fill="#cdc6b6" d="M48 92h160v148H48z"/>
+  <path fill="none" stroke="#5c564e" stroke-width="10" d="M78 240v-88a50 50 0 0 1 100 0v88"/>
+  <path fill="#2a2420" opacity=".45" d="M250 110h90v80H250zM370 118h80v72h-80z"/>
+  <path fill="#7a7468" d="M520 70h280v170H520z"/>
+  <path fill="#5c564e" d="M548 108h70v96h-70zM648 100h80v104h-80z"/>
+  <path fill="#3d3934" d="M0 240h800v16H0z"/>
+  <g stroke="#6f695f" stroke-width="2">
+    <path fill="#b7b09f" d="M0 256h160l-10 70H0z"/>
+    <path fill="#c5bfb3" d="M164 254h150l-10 72H152z"/>
+    <path fill="#a8a090" d="M318 252h160l-12 74H304z"/>
+    <path fill="#cdc6b6" d="M482 250h170l-12 76H466z"/>
+    <path fill="#b0a898" d="M656 248h160l-12 78H640z"/>
+  </g>
+  <g stroke="#5e584f" stroke-width="2">
+    <path fill="#cdc6b6" d="M0 330h180l-14 90H0z"/>
+    <path fill="#b7b09f" d="M184 328h200l-16 92H166z"/>
+    <path fill="#a39b8c" d="M388 326h220l-16 94H368z"/>
+    <path fill="#c5bfb3" d="M612 324h200l-16 96H592z"/>
+  </g>
+  <ellipse cx="430" cy="528" rx="150" ry="28" fill="#2a2420" opacity=".28"/>
+  <path fill="url(#bin)" d="M338 286h186l-18 246H356z"/>
+  <path fill="#123a73" d="M344 348h174l-4 28H348z"/>
+  <path fill="#2a2420" d="M352 286h158l-6 22H358z"/>
+  <ellipse cx="432" cy="286" rx="94" ry="16" fill="#1c1916"/>
+  <path fill="#3d3934" d="M330 272h204v16H330z"/>
+  <path fill="#8a8376" d="M360 220 410 276h-36z"/>
+  <path fill="#6a655c" d="M400 208 456 278h-40z"/>
+  <path fill="#5c564e" d="M448 228 500 280h-38z"/>
+  <path fill="#4a453e" d="M388 248 430 278 372 276z"/>
+  <path fill="#215c45" opacity=".75" d="M418 198 468 274h-34z"/>
+  <path fill="#a33b2b" opacity=".7" d="M456 246 508 282 470 284z"/>
+  <path fill="#7a7468" d="M348 430 300 520h70l22-88z"/>
+  <path fill="#8a8680" d="M470 448 520 528h-64l-10-78z"/>
+  <path fill="#6a5340" d="M410 470 390 540h48l8-68z"/>
+  <ellipse cx="250" cy="500" rx="70" ry="18" fill="#243040" opacity=".45"/>
+  <path fill="none" stroke="#8a8680" stroke-width="1.4" opacity=".4" d="M200 496c28-8 56-6 80 6"/>
+  <rect x="620" y="196" width="120" height="24" rx="2" fill="#123a73"/>
+  <text x="680" y="213" text-anchor="middle" fill="#ddd6c8" font-family="Georgia, serif" font-size="11" letter-spacing="1.5">FORBES ST</text>
+  <rect width="800" height="600" filter="url(#gw)" style="mix-blend-mode:multiply"/>
+</svg>

@@ -1,0 +1,71 @@
+@layer components {
+  html {
+    background-color: var(--paper);
+    -webkit-text-size-adjust: 100%;
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+    /*
+     * The site header is sticky. Without this, everything the browser scrolls
+     * to lands underneath it: the focused step heading on every form step, the
+     * form's own error alert, and the #records anchor the nav now uses.
+     */
+    scroll-padding-top: 7.5rem;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--marking);
+    color: var(--horse);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--enamel);
+    outline-offset: 2px;
+  }
+
+  .bg-horse :focus-visible {
+    outline-color: var(--marking);
+  }
+
+}
+
+@layer base {
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    accent-color: var(--enamel);
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

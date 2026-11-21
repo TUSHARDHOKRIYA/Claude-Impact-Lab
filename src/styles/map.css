@@ -1,0 +1,80 @@
+@layer components {
+  .kg-map {
+    color: var(--ink);
+  }
+
+  .kg-map .maplibregl-ctrl-attrib {
+    background: var(--card);
+    color: var(--mist);
+    font-size: 0.6875rem;
+  }
+
+  .kg-map .maplibregl-ctrl-attrib a {
+    color: var(--enamel);
+  }
+
+  .kg-map .maplibregl-ctrl-group {
+    border: 1px solid var(--rule-firm);
+    background: var(--card);
+  }
+
+  .kg-map .maplibregl-ctrl-group button {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .kg-map .maplibregl-ctrl-group button + button {
+    border-top: 1px solid var(--rule);
+  }
+
+  .kg-map .maplibregl-ctrl-group button:hover {
+    background: var(--sheet);
+  }
+
+  .kg-map .maplibregl-ctrl-group button:focus-visible {
+    outline: 2px solid var(--enamel);
+    outline-offset: 2px;
+  }
+
+  /*
+   * The map is always rendered, at every width. It used to sit inside a
+   * closed `<details>` below the whole place list, which on a phone put it
+   * several screens down behind a "Show the map" summary.
+   *
+   * The map comes first in the DOM so a phone meets it before the list. On a
+   * desktop the pair sits side by side with the list on the left, which the
+   * `order` swap below restores without moving it back in the source.
+   */
+  .kg-map-split {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .kg-map-panel {
+    min-width: 0;
+  }
+
+  /* Holds the map's footprint while `next/dynamic` fetches MapLibre. */
+  .kg-map-placeholder {
+    width: 100%;
+    height: min(70dvh, 36rem);
+    min-height: 22rem;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  @media (min-width: 64rem) {
+    .kg-map-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .kg-map-panel {
+      order: 2;
+    }
+  }
+}

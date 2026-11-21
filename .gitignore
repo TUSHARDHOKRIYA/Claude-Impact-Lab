@@ -1,0 +1,21 @@
+node_modules
+.next
+out
+.turbo
+.superpowers/
+.worktrees/
+*.tsbuildinfo
+.env
+.env*.local
+.env.production
+data/*.sqlite*
+.DS_Store
+
+# Voice model bake-off run logs (Phase 3). Local only.
+bakeoff-runs/
+
+# Editor-local settings.
+.cursor/
+
+# Copied from node_modules by scripts/copy-maplibre-worker.mjs.
+public/maplibre/

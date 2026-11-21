@@ -1,0 +1,23 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm use 20
+        - node -v
+        - npm ci
+    build:
+      commands:
+        - 'node -e "if(!process.env.KHABAR_TABLE_NAME||!process.env.ADMIN_KEY){console.error(''Missing required Amplify env - KHABAR_TABLE_NAME and ADMIN_KEY must be set.'');process.exit(1)}"'
+        - npm run typecheck
+        - npm run test
+        - npm run amplify:env
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

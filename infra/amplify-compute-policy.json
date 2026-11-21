@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "DoNotAttach": "TEMPLATE — Do not attach. Render with: npm run iam:policy -- --table <table-name>",
+  "Statement": [
+    {
+      "Sid": "KhabarTableAndIndexes",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:TransactWriteItems",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:DescribeTable"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:*:*:table/__KHABAR_TABLE_NAME__",
+        "arn:aws:dynamodb:*:*:table/__KHABAR_TABLE_NAME__/index/*"
+      ]
+    }
+  ]
+}

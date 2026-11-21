@@ -1,0 +1,36 @@
+import Link from "next/link";
+
+const LINKS = [
+  { href: "/", label: "Report a road problem" },
+  { href: "/map", label: "Map of reports" },
+  { href: "/wards", label: "Ward money trail" },
+  { href: "/contractors", label: "Contractor scorecards" },
+] as const;
+
+/** UX4G dark footer. */
+export function SiteFooter() {
+  return (
+    <footer className="ux4g-footer-wrapper ux4g-footer-dark rh-footer">
+      <div className="ux4g-footer-row shell rh-footer-grid">
+        <p className="ux4g-heading-xs-strong">Rasta Hisaab</p>
+        <nav aria-label="Footer">
+          <ul className="ux4g-grid ux4g-gap-2xs">
+            {LINKS.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} className="ux4g-text-link-neutral-inverse ux4g-text-link-neutral-m touch-target">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <p className="ux4g-body-xs-default rh-footer-note">
+          Ward codes and road names are real. Every amount, date, contractor and
+          work order comes from the synthetic Claude Impact Lab dataset. Reports
+          filed here are public and anonymous, and do not reach the BMC
+          complaint system.
+        </p>
+      </div>
+    </footer>
+  );
+}

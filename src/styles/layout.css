@@ -1,0 +1,227 @@
+@layer components {
+  .shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 78rem;
+    padding-inline: var(--gutter);
+  }
+
+  .shell-narrow {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 46rem;
+    padding-inline: var(--gutter);
+  }
+
+  .deva {
+    font-family: var(--font-deva);
+    font-weight: 400;
+  }
+
+  header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  footer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  [data-status="unresolved"],
+  [data-status="returned"] {
+    --status: var(--oxide);
+  }
+
+  [data-status="recorded_intervention"] {
+    --status: var(--enamel);
+  }
+
+  [data-status="fixed"] {
+    --status: var(--moss);
+  }
+
+  .kg-home-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .kg-home-intro > * {
+    min-width: 0;
+  }
+
+  .kg-home-cta {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .kg-home-cta .ux4g-btn,
+  .kg-home-issues .ux4g-btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .kg-home-issues {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kg-home h1,
+  .kg-cited-link {
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+
+  .kg-cited-link {
+    display: inline;
+    white-space: normal;
+  }
+
+  @media (min-width: 64rem) {
+    .kg-home-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 2.5rem;
+    }
+  }
+}
+
+.touch-target {
+  box-sizing: border-box;
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.skip-link {
+  position: absolute;
+  left: max(0.75rem, env(safe-area-inset-left));
+  top: max(0.75rem, env(safe-area-inset-top));
+  z-index: 80;
+  display: inline-flex;
+  overflow: hidden;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
+  background-color: var(--enamel);
+  color: var(--card);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed;
+  z-index: 80;
+  clip-path: none;
+  overflow: visible;
+  width: auto;
+  height: auto;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0.75rem 1rem;
+  white-space: normal;
+  transform: none;
+  outline: 2px solid var(--marking);
+  outline-offset: 2px;
+}
+
+.kg-navbar-wordmark {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.9375rem;
+  line-height: 1.15;
+}
+
+.kg-wrap-link {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* ---- Rasta Hisaab chrome: UX4G navbar and footer, plus the lane marking. ---- */
+.rh-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding-top: env(safe-area-inset-top);
+  background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rh-header .ux4g-navbar-wrap {
+  padding-block: var(--ux4g-padding-xs);
+}
+
+.rh-wordmark {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--ux4g-text-neutral-primary);
+}
+
+.rh-nav {
+  display: flex;
+  gap: var(--ux4g-gap-column-2xs);
+}
+
+.rh-nav-link {
+  padding-inline: var(--ux4g-padding-s);
+  border-radius: var(--ux4g-radius-sm);
+}
+
+.rh-nav-link[aria-current="page"] {
+  color: var(--ux4g-text-brand-primary-default);
+  background: var(--ux4g-bg-primary);
+  font-weight: var(--ux4g-fw-bold);
+}
+
+/* The road's centre line: the one decorative device on the site. */
+.rh-lane {
+  height: 6px;
+  background: repeating-linear-gradient(90deg, var(--lane) 0 28px, transparent 28px 46px) center / 100% 2px no-repeat,
+    var(--asphalt);
+}
+
+.rh-footer {
+  margin-top: var(--ux4g-margin-4xl);
+  padding-bottom: calc(var(--ux4g-padding-2xl) + env(safe-area-inset-bottom));
+}
+
+.rh-footer-grid {
+  display: grid;
+  gap: var(--ux4g-gap-row-l);
+}
+
+.rh-footer-note {
+  opacity: 0.8;
+}
+
+@media (min-width: 48rem) {
+  .rh-footer-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+
+  .rh-footer-note {
+    grid-column: 1 / -1;
+  }
+}
+
+/* A comfortable reading measure for running text. */
+.rh-measure {
+  max-width: 38rem;
+}
+
+.rh-home {
+  padding-top: var(--ux4g-padding-l);
+}
+

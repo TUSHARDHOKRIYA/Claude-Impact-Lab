@@ -1,0 +1,71 @@
+/*
+ * Rasta Hisaab tokens. UX4G 3.3.3 is the design system: its violet primary,
+ * Noto Sans, neutrals, radii and spacing. The only additions are the asphalt
+ * and lane yellow of the header band and the three outcome colours.
+ */
+
+:root {
+  /* Brand marks UX4G does not have: the road surface and its lane paint. */
+  --asphalt: #1d272d;
+  --asphalt-lane: #2c3940;
+  --lane: #f5c400;
+
+  /* Everything else is a UX4G 3.3.3 semantic token under a short local name. */
+  --overcast: var(--ux4g-bg-neutral-soft);
+  --card: var(--ux4g-bg-neutral-elevated);
+  --enamel: var(--ux4g-bg-primary-strong);
+  --enamel-soft: var(--ux4g-bg-primary-soft);
+  --enamel-press: var(--ux4g-bg-primary-subtle);
+  --ink: var(--ux4g-text-neutral-primary);
+  --mist: var(--ux4g-text-neutral-secondary);
+  --rule: var(--ux4g-border-color-neutral-subtle);
+  --rule-firm: var(--ux4g-border-color-neutral-default);
+  --sheet: var(--ux4g-bg-neutral-subtle);
+
+  /* Outcome palette for the money bar, validated for colour-blind separation in this order. */
+  --held: #127a52;
+  --flagged: #e0a106;
+  --failed: #b0281f;
+
+  /* Older component names, kept so map and desk code reads the same tokens. */
+  --paper: var(--overcast);
+  --horse: var(--asphalt);
+  --marking: var(--lane);
+  --oxide: var(--failed);
+  --moss: var(--held);
+
+  --gutter: var(--ux4g-padding-m);
+  --font-ui: var(--ux4g-font-family-base, "Noto Sans"), system-ui, sans-serif;
+  --font-figure: var(--ux4g-font-family-base, "Noto Sans"), system-ui, sans-serif;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --gutter: var(--ux4g-padding-2xl);
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-asphalt: var(--asphalt);
+  --color-lane: var(--lane);
+  --color-enamel: var(--enamel);
+  --color-held: var(--held);
+  --color-failed: var(--failed);
+  --color-flagged: var(--flagged);
+  --color-mist: var(--mist);
+  --color-sheet: var(--sheet);
+  --color-rule: var(--rule);
+  --color-rule-firm: var(--rule-firm);
+  /* Legacy names still used in map and desk markup. */
+  --color-horse: var(--asphalt);
+  --color-marking: var(--lane);
+  --color-oxide: var(--failed);
+  --color-moss: var(--held);
+
+  --font-sans: var(--font-ui);
+  --font-figure: var(--font-figure);
+  --font-deva: "Noto Sans", "Noto Sans Devanagari", var(--ux4g-font-family-base), sans-serif;
+}

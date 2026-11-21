@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "khabar-local",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["KHABAR_REPO=memory", "npx", "next", "dev", "-p", "3100"],
+      "port": 3100
+    }
+  ]
+}

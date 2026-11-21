@@ -1,0 +1,310 @@
+/* Ward money trail. UX4G draws the cards, tables, tags, list and accordion;
+ * this file adds the outcome bar (UX4G has no stacked bar) and page layout. */
+
+.rh-page {
+  padding-top: var(--ux4g-padding-l);
+}
+
+.rh-section {
+  margin-top: var(--ux4g-margin-3xl);
+}
+
+.rh-num {
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.rh-table tbody tr:last-child > *,
+.rh-outcome-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.rh-table th[scope="row"] {
+  color: var(--ux4g-text-neutral-primary);
+  font-size: var(--ux4g-fs-14);
+  font-weight: var(--ux4g-fw-medium);
+  white-space: normal;
+}
+
+.rh-table .rh-worse {
+  color: var(--ux4g-text-error-default);
+  font-weight: var(--ux4g-fw-bold);
+}
+
+/* ---- Outcome bar: the one chart. Held, flagged, failed, in that order. ---- */
+.rh-outcome {
+  margin: 0;
+}
+
+.rh-outcome-track {
+  position: relative;
+  height: 1.5rem;
+  border-radius: var(--ux4g-radius-xs);
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rh-outcome-compact .rh-outcome-track {
+  height: 0.625rem;
+}
+
+.rh-outcome-fill {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+}
+
+.rh-seg {
+  min-width: 2px;
+  height: 100%;
+}
+
+.rh-seg:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.rh-seg:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.rh-seg:only-child {
+  border-radius: 4px;
+}
+
+.rh-seg-held {
+  background: var(--held);
+}
+
+.rh-seg-flagged {
+  background: var(--flagged);
+}
+
+.rh-seg-failed {
+  background: var(--failed);
+}
+
+.rh-budget-line {
+  position: absolute;
+  top: -0.3125rem;
+  bottom: -0.3125rem;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ux4g-text-neutral-primary);
+  box-shadow: 0 0 0 2px var(--ux4g-bg-neutral-elevated);
+}
+
+.rh-outcome-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ux4g-gap-column-xs);
+}
+
+.rh-outcome-table th[scope="row"] {
+  color: var(--ux4g-text-neutral-primary);
+  font-size: var(--ux4g-fs-14);
+  font-weight: var(--ux4g-fw-medium);
+  white-space: normal;
+}
+
+.rh-key {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: var(--ux4g-fw-bold);
+  line-height: 1;
+}
+
+.rh-key.rh-seg-flagged {
+  color: var(--ux4g-text-neutral-primary);
+}
+
+/* ---- Ward lists. ---- */
+.rh-list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ux4g-gap-column-s);
+}
+
+.rh-sort {
+  display: flex;
+  gap: var(--ux4g-gap-column-xs);
+}
+
+.rh-sort .ux4g-filter-chip-m {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--ux4g-padding-s);
+}
+
+.rh-ward-row:focus-visible {
+  outline: 3px solid var(--ux4g-bg-primary-strong);
+  outline-offset: 2px;
+}
+
+.rh-ward-list {
+  box-shadow: none;
+  border: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+  padding: 0;
+}
+
+.rh-ward-list .ux4g-list-item + .ux4g-list-item {
+  border-top: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rh-ward-row {
+  display: grid;
+  gap: var(--ux4g-gap-row-xs);
+  padding: var(--ux4g-padding-s) var(--ux4g-padding-m);
+  color: inherit;
+}
+
+.rh-ward-row-head,
+.rh-ward-row-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ux4g-gap-column-s);
+}
+
+.rh-ward-row-meta {
+  align-items: center;
+}
+
+@media (min-width: 48rem) {
+  .rh-ward-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rh-ward-list .ux4g-list-item:nth-child(2) {
+    border-top: 0;
+  }
+
+  .rh-ward-list .ux4g-list-item:nth-child(odd) {
+    border-right: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+  }
+}
+
+/* ---- Ward page. ---- */
+.rh-more > summary {
+  list-style: none;
+}
+
+.rh-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* UX4G accordion driven by native <details>, so it works without the runtime. */
+.rh-accordion .ux4g-accordion__item > summary {
+  list-style: none;
+  width: 100%;
+  padding: var(--ux4g-accordion-button-padding-y) var(--ux4g-accordion-button-padding-x);
+  text-align: start;
+}
+
+.rh-accordion .ux4g-accordion__item > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rh-accordion .ux4g-accordion__item:not([open]) > .ux4g-accordion__button {
+  background: var(--ux4g-accordion-body-bg);
+}
+
+.rh-accordion .ux4g-accordion__item:not([open]) > .ux4g-accordion__button::after {
+  margin-top: 0;
+  transform: rotate(45deg);
+}
+
+.rh-accordion .ux4g-accordion__button-content {
+  display: grid;
+  gap: var(--ux4g-gap-row-2xs);
+}
+
+.rh-accordion.ux4g-accordion-bordered {
+  gap: var(--ux4g-gap-row-s);
+}
+
+.rh-flag-rows {
+  display: grid;
+  gap: var(--ux4g-gap-row-s);
+  margin-top: var(--ux4g-margin-s);
+}
+
+.rh-flag-rows > li {
+  padding-top: var(--ux4g-padding-s);
+  border-top: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rh-next {
+  display: grid;
+  gap: var(--ux4g-gap-row-s);
+}
+
+.rh-next-body {
+  padding-top: 0;
+}
+
+.rh-next-body > .ux4g-tag-tonal-primary + .rh-next-reasons {
+  margin-top: var(--ux4g-margin-xs);
+}
+
+.rh-next-reasons {
+  padding-left: var(--ux4g-padding-l);
+  list-style: disc;
+}
+
+.rh-next-fix {
+  border-top: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ux4g-gap-column-xs);
+}
+
+.rh-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ux4g-gap-column-m);
+}
+
+/* ---- Contractor scorecards. ---- */
+.rh-score-grid {
+  display: grid;
+  gap: var(--ux4g-gap-row-m);
+}
+
+@media (min-width: 48rem) {
+  .rh-score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rh-score-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ux4g-gap-column-s);
+}
+
+.rh-score-flags {
+  padding-left: var(--ux4g-padding-l);
+  list-style: disc;
+}
+
+/* UX4G leaves these two unset: a vertical card stacks, an outline card sits on white. */
+.ux4g-card-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.ux4g-card-outline {
+  background: var(--ux4g-bg-neutral-elevated);
+}

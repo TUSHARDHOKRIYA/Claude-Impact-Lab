@@ -122,7 +122,7 @@ export default async function WardPage({ params, searchParams }: PageProps) {
           schools or hospitals on them.
         </p>
         <div className="ux4g-mt-s">
-          <BudgetSimulator wardCode={ward.code} wardBudgetInr={ledger.budgetInr} items={next} />
+          <BudgetSimulator wardCode={ward.code} items={next} />
         </div>
       </section>
 

@@ -24,7 +24,7 @@ export function RoadTrailCard({
       <div className="ux4g-card-header flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="ux4g-body-xs-default ux4g-text-neutral-secondary">
-            Connected BMC road record · {trail.ward} ward ({trail.roadId})
+            BMC road record, {trail.ward} ward, segment {trail.roadId}
           </p>
           <h2 className="ux4g-heading-xs-strong mt-1">{trail.roadName}</h2>
         </div>
@@ -40,7 +40,7 @@ export function RoadTrailCard({
           <p className="ux4g-body-s-strong">
             This road is still under its Defect Liability Period (resurfaced{" "}
             {trail.lastResurfaced}). Surface repairs should be done free by the
-            resurfacing contractor — BMC should not pay again.
+            resurfacing contractor. BMC should not pay again.
           </p>
         ) : null}
         <p className="ux4g-body-s-default">
@@ -71,10 +71,10 @@ export function RoadTrailCard({
         </p>
         <div className="flex flex-wrap gap-3 pt-1">
           <Link href={trail.wardHref} className="ux4g-text-link-s touch-target">
-            Open {trail.ward} ward money trail &rarr;
+            Where {trail.ward} ward&apos;s road money went
           </Link>
           <Link href={assistantHref} className="ux4g-text-link-s touch-target">
-            Ask AI about this road &rarr;
+            Ask about this road
           </Link>
         </div>
       </div>

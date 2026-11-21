@@ -120,14 +120,14 @@ export function OfficerActions({
         disabled={flags.length === 0}
         className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target"
       >
-        Download audit CSV ({flags.length})
+        Download the {flags.length} flagged bills (CSV)
       </button>
       <button
         type="button"
         onClick={() => void copyMemo()}
-        className="ux4g-btn ux4g-btn-m ux4g-btn-primary touch-target"
+        className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target"
       >
-        {copied ? "Copied ward memo ✓" : "Copy DLP & show-cause memo"}
+        {copied ? "Memo copied" : "Copy a memo for the ward office"}
       </button>
     </div>
   );

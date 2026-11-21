@@ -2,6 +2,24 @@ import { formatInr } from "@/lib/rupee/format";
 import { pct } from "@/lib/rupee/slug";
 import type { NextRupeeItem } from "@/lib/rupee/types";
 
+/** Where a road lands under a budget cap, when one is being tried. */
+export type TrancheStatus = "funded" | "next" | "dlp";
+
+const STATUS_LABEL: Record<TrancheStatus, string> = {
+  funded: "Fits the budget",
+  next: "Waits for next tranche",
+  dlp: "₹0, contractor's guarantee",
+};
+
+function StatusTag({ status, onDark = false }: { status?: TrancheStatus; onDark?: boolean }) {
+  if (!status) return null;
+  return (
+    <span className="rb-tranche" data-status={status} data-dark={onDark ? "true" : undefined}>
+      {STATUS_LABEL[status]}
+    </span>
+  );
+}
+
 function Fix({ item }: { item: NextRupeeItem }) {
   return item.underDlp
     ? "Still under guarantee: send it back to the contractor who laid it. BMC pays nothing."
@@ -12,7 +30,13 @@ function Fix({ item }: { item: NextRupeeItem }) {
  * The recommendation. The first road gets the one filled card on the page;
  * the rest follow as a short numbered queue, because the order is real.
  */
-export function NextRupeeList({ items }: { items: NextRupeeItem[] }) {
+export function NextRupeeList({
+  items,
+  status,
+}: {
+  items: NextRupeeItem[];
+  status?: Map<string, TrancheStatus>;
+}) {
   const [first, ...rest] = items;
   if (!first) {
     return (
@@ -40,6 +64,7 @@ export function NextRupeeList({ items }: { items: NextRupeeItem[] }) {
         <p className="rb-fixfirst-how">
           <Fix item={first} />
         </p>
+        <StatusTag status={status?.get(first.roadId)} onDark />
       </article>
 
       {rest.length ? (
@@ -60,6 +85,7 @@ export function NextRupeeList({ items }: { items: NextRupeeItem[] }) {
                       : `${item.suggestedMethod}, about ${formatInr(item.estCostInr)}`}
                     <span className="ux4g-text-neutral-secondary"> · segment {item.roadId}</span>
                   </p>
+                  <StatusTag status={status?.get(item.roadId)} />
                 </div>
                 <span className="rb-next-risk">
                   {item.score}

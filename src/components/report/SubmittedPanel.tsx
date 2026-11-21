@@ -5,18 +5,22 @@ import { useLayoutEffect } from "react";
 import { GovButton } from "@/components/gov/GovButton";
 import { CheckIcon } from "@/components/report/flow-icons";
 import { ReportSummary, type ReportAnswers } from "@/components/report/ReportSummary";
+import { RoadTrailCard } from "@/components/report/RoadTrailCard";
 import { toLabelLanguage } from "@/lib/chip-labels";
 import { SUBMITTED_COPY } from "@/lib/review-copy";
+import type { RoadTrailSummary } from "@/lib/rupee/road-trail";
 
 /** Sent: a calm tick, then the report exactly as it now stands on the record. */
 export function SubmittedPanel({
   reportId,
   answers,
+  roadTrail,
   lang,
   onAgain,
 }: {
   reportId: string;
   answers: ReportAnswers;
+  roadTrail?: RoadTrailSummary | null;
   lang: string;
   onAgain: () => void;
 }) {
@@ -39,6 +43,8 @@ export function SubmittedPanel({
         </h2>
         <p className="ux4g-body-m-default ux4g-text-neutral-secondary">{copy.body}</p>
       </div>
+
+      {roadTrail ? <RoadTrailCard trail={roadTrail} reportId={reportId} /> : null}
 
       <h3 className="ux4g-heading-xs-strong ux4g-mt-xl">Your report</h3>
       <ReportSummary answers={answers} lang={language} />

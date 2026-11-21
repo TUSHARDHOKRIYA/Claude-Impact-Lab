@@ -151,10 +151,14 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
     return this.seedMarker;
   }
 
-  async putSeedMarker(version: string): Promise<boolean> {
+  putSeedMarkerSync(version: string): boolean {
     if (this.seedMarker === version) return false;
     this.seedMarker = version;
     return true;
+  }
+
+  async putSeedMarker(version: string): Promise<boolean> {
+    return this.putSeedMarkerSync(version);
   }
 
   putSeedItemsSync(items: SeedItem[]): void {

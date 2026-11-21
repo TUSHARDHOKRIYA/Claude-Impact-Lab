@@ -49,6 +49,7 @@ export function ReportDraft({
   const [issueInvalid, setIssueInvalid] = useState(false);
   const [pin, setPin] = useState<{ lat: number; lng: number } | null>(null);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [roadTrail, setRoadTrail] = useState<import("@/lib/rupee/road-trail").RoadTrailSummary | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const photoState = useReportPhoto(() => setFormError(null));
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -179,6 +180,7 @@ export function ReportDraft({
       try {
         const result = await createReportAction(data);
         if (result?.ok) {
+          setRoadTrail(result.roadTrail ?? null);
           setSubmittedId(result.reportId);
           return;
         }
@@ -198,7 +200,7 @@ export function ReportDraft({
       ? { issueType, preview: photoState.preview, lat: pin.lat, lng: pin.lng, noticedWindow, recurs, accident, description }
       : null;
   if (submittedId && answers) {
-    return <SubmittedPanel reportId={submittedId} answers={answers} lang={convo.lang} onAgain={onAgain} />;
+    return <SubmittedPanel reportId={submittedId} answers={answers} roadTrail={roadTrail} lang={convo.lang} onAgain={onAgain} />;
   }
   const ready = stepReady(step, {
     photo: Boolean(photoState.photo), issueType, noticedWindow, recurs, accident, pin: pin !== null,

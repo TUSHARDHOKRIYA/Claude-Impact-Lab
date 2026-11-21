@@ -92,23 +92,22 @@ export function PinMap({ value, onChange, compact = false }: PinMapProps) {
       if (!cancelled) map.resize();
     });
 
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            if (!cancelled) map.resize();
+          })
+        : null;
+    observer?.observe(node);
+
     return () => {
       cancelled = true;
+      observer?.disconnect();
       markerRef.current?.remove();
       map.remove();
       mapRef.current = null;
       markerRef.current = null;
     };
-  }, []);
-
-  useEffect(() => {
-    const node = containerRef.current;
-    if (!node || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => {
-      mapRef.current?.resize();
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
   }, []);
 
   const pinLat = value?.lat;

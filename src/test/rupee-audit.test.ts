@@ -58,16 +58,43 @@ describe("auditWorkOrders", () => {
     expect(doubles[0].amountAtRiskInr).toBe(90000);
   });
 
-  it("flags work billed on a road still under DLP", () => {
+  it("flags surface work billed on a road under DLP, but skips drainage/manhole jobs", () => {
     const ds = baseDs();
     ds.rateCard = rateCard;
     ds.roads = [{ id: "RD1", name: "Test Road", underDlp: true } as Dataset["roads"][number]];
-    ds.workOrders = [order({ costInr: 21600 })];
+    ds.workOrders = [
+      order({ id: "WO_SURFACE", workType: "Pothole", costInr: 21600 }),
+      order({ id: "WO_DRAIN", workType: "Choked drain / nullah overflow", method: "Drain desilting", costInr: 90000 }),
+    ];
     const flags = auditWorkOrders(ds);
     expect(flags).toHaveLength(1);
+    expect(flags[0].workOrderId).toBe("WO_SURFACE");
     expect(flags[0].kind).toBe("paid_under_dlp");
     expect(flags[0].roadName).toBe("Test Road");
     expect(flags[0].reason).toContain("Defect Liability Period");
+  });
+
+  it("flags a phantom completion when 2+ complaints spike within 14 days after closure", () => {
+    const ds = baseDs();
+    ds.rateCard = rateCard;
+    ds.roads = [
+      {
+        id: "RD1",
+        name: "Hindmata Flyover Approach",
+        underDlp: false,
+        start: { lat: 19.002, lng: 72.842 },
+        end: { lat: 19.004, lng: 72.842 },
+      } as Dataset["roads"][number],
+    ];
+    ds.workOrders = [order({ id: "WO_SPIKE", completedAt: "2025-07-01 10:00", costInr: 21600 })];
+    ds.complaints = [
+      { id: "C1", ward: "F/S", lat: 19.003, lng: 72.842, receivedAt: "2025-07-04 09:00" } as Dataset["complaints"][number],
+      { id: "C2", ward: "F/S", lat: 19.0031, lng: 72.8421, receivedAt: "2025-07-08 14:00" } as Dataset["complaints"][number],
+    ];
+    const flags = auditWorkOrders(ds).filter((f) => f.kind === "phantom_completion");
+    expect(flags).toHaveLength(1);
+    expect(flags[0].workOrderId).toBe("WO_SPIKE");
+    expect(flags[0].evidence).toEqual(["C1", "C2"]);
   });
 
   it("stays factual on the real dataset", () => {

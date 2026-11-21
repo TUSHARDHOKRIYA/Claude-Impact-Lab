@@ -1,8 +1,9 @@
 import "server-only";
+import { SEED_VERSION } from "@/lib/repo/keys";
 import type { RastabaazRepository } from "@/lib/repo/port";
 import { DynamoRastabaazRepository } from "@/lib/repo/dynamo";
 import { MemoryRastabaazRepository } from "@/lib/repo/memory";
-import { buildSeedItems, runSeed } from "@/lib/seed/run";
+import { buildSeedItems } from "@/lib/seed/run";
 
 let override: RastabaazRepository | null = null;
 let singleton: RastabaazRepository | null = null;
@@ -34,7 +35,7 @@ export function getRepository(): RastabaazRepository {
       const repo = new MemoryRastabaazRepository({ strictPhoto: true });
       // Pre-seed synchronously so the map and catalog are immediately populated.
       repo.putSeedItemsSync(buildSeedItems());
-      void runSeed(repo);
+      repo.putSeedMarkerSync(SEED_VERSION);
       holder.__rastabaazMemoryRepository = repo;
     }
     return holder.__rastabaazMemoryRepository;

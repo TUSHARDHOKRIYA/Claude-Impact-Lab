@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { BudgetSimulator } from "@/components/rupee/BudgetSimulator";
 import { FlagList } from "@/components/rupee/FlagList";
-import { NextRupeeList } from "@/components/rupee/NextRupeeList";
+import { OfficerActions } from "@/components/rupee/OfficerActions";
 import { OutcomeBar } from "@/components/rupee/OutcomeBar";
 import { SpendCategories } from "@/components/rupee/SpendCategories";
 import { ScoreHow } from "@/components/rupee/ScoreHow";
@@ -64,7 +65,7 @@ export default async function WardPage({ params, searchParams }: PageProps) {
   if (!ledger) notFound();
 
   const { ward, outcome, complaints, context } = ledger;
-  const next = nextRupee(rupee.ds, rupee.flags, ward.code, 5);
+  const next = nextRupee(rupee.ds, rupee.flags, ward.code, 8);
   const scoreById = new Map(
     rupee.scores.map((score) => [score.contractor.id, score]),
   );
@@ -121,7 +122,7 @@ export default async function WardPage({ params, searchParams }: PageProps) {
           schools or hospitals on them.
         </p>
         <div className="ux4g-mt-s">
-          <NextRupeeList items={next} />
+          <BudgetSimulator wardCode={ward.code} wardBudgetInr={ledger.budgetInr} items={next} />
         </div>
       </section>
 
@@ -219,6 +220,7 @@ export default async function WardPage({ params, searchParams }: PageProps) {
         </p>
         <div className="ux4g-mt-s">
           <FlagList flags={ledger.flags} />
+          <OfficerActions wardCode={ward.code} wardName={ward.name} flags={ledger.flags} next={next} />
         </div>
       </section>
 

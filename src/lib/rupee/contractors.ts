@@ -60,6 +60,7 @@ export function contractorScores(ds: Dataset, flags: AuditFlag[]): ContractorSco
         over_rate: 0,
         double_billed: 0,
         paid_under_dlp: 0,
+        phantom_completion: 0,
       };
       for (const flag of ownFlags) flaggedCounts[flag.kind]++;
       const flaggedIds = new Set(ownFlags.map((f) => f.workOrderId));

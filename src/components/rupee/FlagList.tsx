@@ -5,6 +5,7 @@ export const FLAG_LABELS: Record<AuditFlagKind, string> = {
   over_rate: "Billed above the rate card",
   double_billed: "Billed twice for one stretch",
   paid_under_dlp: "BMC paid while the road was under guarantee",
+  phantom_completion: "Complaints spiked right after closure",
 };
 
 export const FLAG_EXPLAINERS: Record<AuditFlagKind, string> = {
@@ -13,7 +14,9 @@ export const FLAG_EXPLAINERS: Record<AuditFlagKind, string> = {
   double_billed:
     "A second bill for the same road and method within seven days, with no complaint linked to it.",
   paid_under_dlp:
-    "The road was inside its Defect Liability Period, so the contractor who resurfaced it should have fixed it free.",
+    "The road was inside its Defect Liability Period for surface repairs, so the contractor who resurfaced it should have fixed it free.",
+  phantom_completion:
+    "Two or more new complaints arrived within 250 m of this road in the 14 days immediately after the work order was marked completed.",
 };
 
 /** Flags grouped by kind in a UX4G bordered accordion, each row pointing at its work order. */

@@ -91,8 +91,11 @@ export function nextRupee(
   wardCode: string,
   limit = 10,
 ): NextRupeeItem[] {
-  void flags;
   const roads = ds.roads.filter((r) => r.ward === wardCode);
+  const flagsByRoad = new Map<string, number>();
+  for (const f of flags) {
+    if (f.ward === wardCode) flagsByRoad.set(f.roadId, (flagsByRoad.get(f.roadId) ?? 0) + 1);
+  }
   if (!roads.length) return [];
 
   const trafficByRoad = new Map<string, Traffic>(ds.traffic.map((t) => [t.roadId, t]));
@@ -200,6 +203,13 @@ export function nextRupee(
       candidates.push({
         text: `Heavy traffic: ${traffic.congestionIndex}/10 congestion, ${traffic.busRoutesCount} bus routes`,
         weight: contributions.traffic,
+      });
+    }
+    const roadFlags = flagsByRoad.get(r.id) ?? 0;
+    if (roadFlags > 0) {
+      candidates.push({
+        text: `${plural(roadFlags, "prior audit flag")} on this road`,
+        weight: Math.min(12, roadFlags * 4),
       });
     }
 

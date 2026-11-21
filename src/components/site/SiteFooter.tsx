@@ -10,9 +10,9 @@ const LINKS = [
 /** UX4G dark footer. */
 export function SiteFooter() {
   return (
-    <footer className="ux4g-footer-wrapper ux4g-footer-dark rh-footer">
-      <div className="ux4g-footer-row shell rh-footer-grid">
-        <p className="ux4g-heading-xs-strong">Rasta Hisaab</p>
+    <footer className="ux4g-footer-wrapper ux4g-footer-dark rb-footer">
+      <div className="ux4g-footer-row shell rb-footer-grid">
+        <p className="ux4g-heading-xs-strong">Rastabaaz</p>
         <nav aria-label="Footer">
           <ul className="ux4g-grid ux4g-gap-2xs">
             {LINKS.map((link) => (
@@ -24,7 +24,7 @@ export function SiteFooter() {
             ))}
           </ul>
         </nav>
-        <p className="ux4g-body-xs-default rh-footer-note">
+        <p className="ux4g-body-xs-default rb-footer-note">
           Ward codes and road names are real. Every amount, date, contractor and
           work order comes from the synthetic Claude Impact Lab dataset. Reports
           filed here are public and anonymous, and do not reach the BMC

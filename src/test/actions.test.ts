@@ -21,7 +21,7 @@ vi.mock("next/headers", () => ({
 
 import { kolkataTodayStamp } from "@/lib/noticed-date";
 import { ItemTooLargeError, ReportValidationError } from "@/lib/repo/errors";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { setRepositoryForTests } from "@/lib/repo/context";
 import { createReportAction } from "@/lib/actions";
 import { sampleJpegDataUrl } from "./sample-jpeg";
@@ -50,10 +50,10 @@ function form(overrides: Record<string, string> = {}): FormData {
 const PHOTO_ERROR = { ok: false, error: "Upload a JPEG, PNG, or WebP photo." };
 
 describe("createReportAction", () => {
-  let repo: MemoryKhabarRepository;
+  let repo: MemoryRastabaazRepository;
 
   beforeEach(() => {
-    repo = new MemoryKhabarRepository({ strictPhoto: false });
+    repo = new MemoryRastabaazRepository({ strictPhoto: false });
     setRepositoryForTests(repo);
   });
 
@@ -73,9 +73,9 @@ describe("createReportAction", () => {
     });
   });
 
-  it("rejects a pin outside Kala Ghoda", async () => {
+  it("rejects a pin outside Mumbai's wards", async () => {
     await expect(createReportAction(form({ lat: "19.1", lng: "72.8" }))).resolves.toEqual({
-      ok: false, error: "Place the pin inside Kala Ghoda.",
+      ok: false, error: "Place the pin inside a BMC ward in Mumbai.",
     });
   });
 
@@ -169,10 +169,10 @@ describe("createReportAction", () => {
 
   it("surfaces typed repository validation errors", async () => {
     repo.createReport = async () => {
-      throw new ReportValidationError("Place the pin inside Kala Ghoda.");
+      throw new ReportValidationError("Place the pin inside a BMC ward in Mumbai.");
     };
     await expect(createReportAction(form())).resolves.toEqual({
-      ok: false, error: "Place the pin inside Kala Ghoda.",
+      ok: false, error: "Place the pin inside a BMC ward in Mumbai.",
     });
   });
 

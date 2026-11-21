@@ -1,90 +1,86 @@
-# Kala Ghoda Khabar
+# Rastabaaz
 
-Kala Ghoda Khabar is a demo street-reporting site for the Kala Ghoda precinct in Mumbai (A Ward). A person records a street condition they can see: a photo, a few answers, and a place pin. Reports of the same issue type within 40 m share one place. Seeded reports are real issues in the precinct.
+Rastabaaz follows the rupee across Mumbai's monsoon roads. For each of the 24 BMC wards it shows where the road repair money went, whether the work held up, who did it, and where the next rupee should go. Citizens add to the record by photographing a road problem and pinning it.
 
-The landing page at `/` is the report form. Reporting comes first. The map is at `/map`, opened from the Map button in the header. This site is not a BMC complaint portal.
+It is a demo built on the synthetic Claude Impact Lab dataset in `data/rupee/`. Ward codes and road names are real. Every amount, date, contractor and work order is made up. It is not the BMC complaint portal.
+
+## What is in it
+
+| Page | What it shows |
+| --- | --- |
+| `/` | The report form, built for one hand on a phone: photo, problem type, history, risk, place, check. |
+| `/wards` | Citywide spend against budget, then all 24 wards. Sort by ward or by money that needs explaining. |
+| `/wards/<code>` | One ward, such as `/wards/f-s`: a plain-language summary, spend by outcome, durability by problem and repair method, contractors against a fair re-open rate, flagged bills, and a ranked list of where the next rupee should go. |
+| `/contractors` | A scorecard per contractor, furthest above their fair re-open rate first. |
+| `/map` | Citizen reports on a map of Mumbai. |
+
+Each ward's spend lands in exactly one of three outcomes: held up, failed within 30 days (re-opened), or needs an explanation (carries an audit flag). The three audit checks are a bill more than 35% above the rate card, a second bill for the same road and method within seven days with no complaint behind it, and BMC paying for a road still under its Defect Liability Period. A flag is a question for the ward office, not proof of wrongdoing.
+
+The ward summary is written by Claude from figures the app has already computed; Claude explains, it does not count. Without an API key the page uses a template summary built from the same figures.
 
 ## Run locally
 
-Node.js 20 or newer. Install with `npm ci`.
-
-Memory mode keeps records in the dev server. They disappear when the server stops. No AWS account is required. This mode is ignored in production.
+Node.js 20 or newer.
 
 ```bash
-KHABAR_REPO=memory npm run dev
+npm ci
+RASTABAAZ_REPO=memory npm run dev
 ```
 
-DynamoDB mode uses the table in `KHABAR_TABLE_NAME`. Set `AWS_REGION` (the example is `ap-south-1`) and credentials, or set `DYNAMODB_ENDPOINT` for a local DynamoDB. Create the table from `infra/khabar-table.yaml`, then seed it.
+Memory mode keeps citizen reports in the dev server and seeds them from the dataset's MyBMC complaints. They disappear when the server stops. No AWS account is needed. Memory mode is ignored in production.
 
-```bash
-npm run seed
-npm run dev
-```
+For DynamoDB, set `RASTABAAZ_TABLE_NAME`, `AWS_REGION` and credentials (or `DYNAMODB_ENDPOINT` for a local DynamoDB), create the table from `infra/rastabaaz-table.yaml`, then run `npm run seed`.
+
+To have Claude write the ward summaries, set `ANTHROPIC_API_KEY`.
 
 ## Environment variables
 
-Copy `.env.example`. Names match that file.
+Copy `.env.example`.
 
 | Name | Role |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Absolute site origin for Open Graph URLs. Leave unset locally. |
-| `ADMIN_KEY` | Desk password. |
-| `KHABAR_TABLE_NAME` | DynamoDB table name. |
+| `ANTHROPIC_API_KEY` | Claude API key for ward summaries. Optional. |
+| `RUPEE_BRIEF_MODEL` | Model for ward summaries. Default `claude-opus-5-5`. |
+| `RASTABAAZ_REPO` | `memory` for in-memory reports during `npm run dev`. |
+| `RASTABAAZ_TABLE_NAME` | DynamoDB table name. |
 | `AWS_REGION` | AWS region. The example is `ap-south-1`. |
 | `DYNAMODB_ENDPOINT` | Optional local DynamoDB URL. |
-| `KHABAR_REPO` | Set to `memory` for in-memory records during `npm run dev`. Ignored in production. |
 | `AWS_PROFILE` | Optional local AWS profile. |
-| `NEXT_PUBLIC_VOICE_UI` | Set to `1` to show the microphone on the report form. |
-| `SARVAM_API_KEY` | Key for Sarvam speech-to-text and text-to-speech. |
-| `OPENAI_API_KEY` | Optional chat provider key. |
-| `GEMINI_API_KEY` | Optional chat provider key. |
-| `CEREBRAS_API_KEY` | Optional chat provider key. |
-| `VOICE_LLM_BASE_URL` | OpenAI-compatible chat base URL. Default `https://api.sarvam.ai/v1`. |
-| `VOICE_LLM_MODEL` | Chat model. Default `sarvam-105b-conversations`. |
-| `VOICE_LLM_KEY_NAME` | Env var that holds the chat key. Default `SARVAM_API_KEY`. |
+| `ADMIN_KEY` | Desk password. |
+| `NEXT_PUBLIC_SITE_URL` | Absolute site origin for Open Graph URLs. Leave unset locally. |
+| `NEXT_PUBLIC_VOICE_UI` | `1` shows the microphone on the report form. |
+| `SARVAM_API_KEY` | Sarvam speech-to-text and text-to-speech, for voice reports. |
+| `OPENAI_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` | Optional voice chat providers. |
+| `VOICE_LLM_BASE_URL`, `VOICE_LLM_MODEL`, `VOICE_LLM_KEY_NAME` | Voice chat endpoint, model, and the env var holding its key. |
 
 ## Scripts
 
 | Script | What it does |
 | --- | --- |
 | `npm run dev` | Next.js dev server (Turbopack). |
-| `npm run build` | Production build. |
-| `npm start` | Production server. |
+| `npm run build` / `npm start` | Production build and server. |
 | `npm run typecheck` | TypeScript check. |
 | `npm run lint` | ESLint. |
-| `npm test` | Test suite. |
-| `npm run test:watch` | Tests in watch mode. |
-| `npm run test:lines` | Checks that each source file stays at or under 300 lines. |
-| `npm run bakeoff` | Runs the voice model comparison against the fixtures. |
+| `npm test` | Test suite (Vitest). |
 | `npm run seed` | Writes the seed reports into the current store. |
-| `npm run amplify:env` | Writes the server env file used by the Amplify build. |
+| `node scripts/build-geo.mjs` | Rebuilds the ward, road and locality geometry in `src/lib/geo-data/` from `data/rupee/`. |
+| `npm run amplify:env` | Writes the server env file for the Amplify build. |
 | `npm run iam:policy` | Renders a table-scoped IAM policy for the Amplify compute role. |
 
-## Project layout
+## Layout
 
-- `src/app` holds the pages: the report form, `/map`, public reports, places, and the desk.
-- `src/components` holds the form, the map, and the desk editor.
-- `src/lib` holds storage, voice, place naming, and seed data.
-- `src/styles` holds the CSS.
-- `infra` holds the DynamoDB table template and the IAM policy template.
-- `scripts` holds seed, the Amplify env writer, and the policy renderer.
-- `docs` holds the current product notes. Older plans are in `docs/archive`.
-- `research` holds historical evidence notes. The app does not use them.
+- `data/rupee/` is the dataset, with `DATA_DICTIONARY.md`.
+- `src/lib/rupee/` loads it and computes ledgers, audit flags, contractor scores, the next-rupee ranking and the Claude brief.
+- `src/app/` holds the pages; `src/components/` the report form, map and ward components.
+- `src/styles/` sits on UX4G 3.3.3 (`ux4g-web-components`). App CSS only adds the lane marking, the outcome bar and layout.
+- `infra/` holds the DynamoDB table and IAM policy templates.
+
+## Known gaps
+
+- Many tests in `src/test` still describe the earlier street-reporting app and do not compile against the road-only types. They need rewriting.
+- No dark mode yet.
+- Voice reports cannot answer the accident question; the Check step asks it.
 
 ## Deploy
 
-AWS Amplify Hosting serves the app as SSR from the `dev` branch. The build is `amplify.yml`. It requires `KHABAR_TABLE_NAME` and `ADMIN_KEY`. Production should set `NEXT_PUBLIC_SITE_URL`.
-
-Create the table from `infra/khabar-table.yaml`. Billing is on demand (`PAY_PER_REQUEST`) and point-in-time recovery is on. The table keys are `pk` and `sk`. Indexes are `gsi1` (slug and reports by location), `gsi2` (geo cells), and `byType` (`type` plus `pk`, INCLUDE projection, no photos). The map catalog reads `byType`. That index must exist. Until it does, the app falls back to a scan.
-
-Photos are a separate item (`sk = PHOTO`) and are served by `GET /reports/<id>/photo` with revalidating cache headers. Legacy photos stored on the report itself still work.
-
-After deploying this version to an existing table, run `npm run seed` with the operator's AWS credentials. The v5 seed repairs the old tender wording only if the description still matches the previous seed, preserves desk edits and existing photos, restores missing seed photo items, and clears illustration captions on real replacement photos. Existing landmark-as-street values are corrected when read; curated road names remain unchanged.
-
-Render the compute role policy with `npm run iam:policy`, then attach it. Steps are in [infra/README.md](infra/README.md).
-
-## Docs
-
-- [Build brief](docs/build-brief.md) describes the product as it runs now.
-- [Voice report journey](docs/voice-report-journey.md) walks through photo, answers, Check, and the Submitted screen.
-- [Archive](docs/archive/README.md) holds old plans. Those notes may be wrong about the current app.
+AWS Amplify Hosting serves the app as SSR using `amplify.yml`. It needs `RASTABAAZ_TABLE_NAME` and `ADMIN_KEY`; set `ANTHROPIC_API_KEY` for Claude summaries and `NEXT_PUBLIC_SITE_URL` in production. Table and IAM steps are in [infra/README.md](infra/README.md).

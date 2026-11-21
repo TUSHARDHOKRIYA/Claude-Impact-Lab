@@ -18,10 +18,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const initialIssueType = parseIssueType(type);
 
   return (
-    <div className="shell-narrow rh-home">
-      <div className="rh-intro">
+    <div className="shell-narrow rb-home">
+      <div className="rb-intro">
         <h1 className="ux4g-display-xs-strong">Report a road problem</h1>
-      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rh-measure ux4g-mt-xs">
+      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rb-measure ux4g-mt-xs">
         It takes about a minute. Your report goes on the ward&apos;s record, next
         to what the ward spent fixing that road.
       </p>

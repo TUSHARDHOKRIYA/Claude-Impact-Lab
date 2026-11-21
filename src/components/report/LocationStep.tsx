@@ -10,7 +10,7 @@ import { describePlace } from "@/lib/place-name";
 
 const PinMap = dynamic(() => import("@/components/report/PinMap"), {
   ssr: false,
-  loading: () => <div className="rh-pinmap h-72" aria-hidden="true" />,
+  loading: () => <div className="rb-pinmap h-72" aria-hidden="true" />,
 });
 
 export type MapPin = { lat: number; lng: number };
@@ -108,10 +108,10 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
 
   return (
     <div>
-      <h2 id="report-step-heading" tabIndex={-1} className="rh-step-heading ux4g-title-l-strong">
+      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
         Where is it?
       </h2>
-      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rh-measure">If you are standing at the spot, use your location.</p>
+      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rb-measure">If you are standing at the spot, use your location.</p>
 
       <div className="ux4g-mt-l">
         <GovButton
@@ -148,7 +148,7 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
           onChange={(event) => setQuery(event.target.value)}
         />
         {matches.length ? (
-          <ul className="ux4g-list ux4g-list-default ux4g-list-m rh-suggest" aria-label="Matching areas">
+          <ul className="ux4g-list ux4g-list-default ux4g-list-m rb-suggest" aria-label="Matching areas">
             {matches.map((row) => (
               <li key={row.id} className="ux4g-list-item">
                 <button
@@ -168,7 +168,7 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
         ) : query.trim() ? (
           <p className="ux4g-body-s-default ux4g-text-neutral-secondary mt-2">No area by that name. Try a nearby station or junction.</p>
         ) : (
-          <div className="rh-quickpicks" aria-label="Common monsoon trouble spots">
+          <div className="rb-quickpicks" aria-label="Common monsoon trouble spots">
             {LANDMARKS.map((landmark) => (
               <button
                 key={landmark.id}
@@ -188,7 +188,7 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
       </div>
 
       {value ? (
-        <div className="ux4g-card ux4g-card-solid ux4g-card-vertical rh-pin-readout" aria-live="polite">
+        <div className="ux4g-card ux4g-card-solid ux4g-card-vertical rb-pin-readout" aria-live="polite">
           <div className="ux4g-card-body">
           <p className="ux4g-card-title">{describePlace(value.lat, value.lng)}</p>
           <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-2xs">
@@ -204,7 +204,7 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
         </span>
       ) : null}
 
-      <details className="rh-details">
+      <details className="rb-details">
         <summary className="ux4g-btn-text-primary ux4g-btn-m touch-target">Enter coordinates instead</summary>
         <div className="mt-3 grid grid-cols-2 gap-3">
           <GovField

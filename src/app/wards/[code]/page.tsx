@@ -29,23 +29,23 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 function SliceTable({ caption, rows, firstColumn }: { caption: string; rows: SpendSlice[]; firstColumn: string }) {
   return (
     <div className="ux4g-table-responsive">
-      <table className="ux4g-table ux4g-table-s rh-table">
+      <table className="ux4g-table ux4g-table-s rb-table">
         <caption className="sr-only">{caption}</caption>
         <thead>
           <tr>
             <th scope="col">{firstColumn}</th>
-            <th scope="col" className="rh-num">Spent</th>
-            <th scope="col" className="rh-num">Jobs</th>
-            <th scope="col" className="rh-num">Re-opened</th>
+            <th scope="col" className="rb-num">Spent</th>
+            <th scope="col" className="rb-num">Jobs</th>
+            <th scope="col" className="rb-num">Re-opened</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
             <tr key={row.key}>
               <th scope="row">{row.label}</th>
-              <td className="rh-num">{formatInrShort(row.spentInr)}</td>
-              <td className="rh-num">{row.orders}</td>
-              <td className="rh-num">{pct(row.reopenRate)}</td>
+              <td className="rb-num">{formatInrShort(row.spentInr)}</td>
+              <td className="rb-num">{row.orders}</td>
+              <td className="rb-num">{pct(row.reopenRate)}</td>
             </tr>
           ))}
         </tbody>
@@ -79,7 +79,7 @@ export default async function WardPage({ params }: Params) {
   const after = rupee.ledgers[index + 1];
 
   return (
-    <div className="shell-narrow rh-page">
+    <div className="shell-narrow rb-page">
       <nav className="ux4g-breadcrumb ux4g-breadcrumb-divider" aria-label="Breadcrumb">
         <ol className="ux4g-breadcrumb-list flex">
           <li className="ux4g-breadcrumb-item">
@@ -118,18 +118,18 @@ export default async function WardPage({ params }: Params) {
         </div>
       </section>
 
-      <section className="rh-section" aria-labelledby="held-heading">
+      <section className="rb-section" aria-labelledby="held-heading">
         <h2 id="held-heading" className="ux4g-title-l-strong">
           Did the fix last?
         </h2>
-        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rh-measure">
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
           {pct(ledger.reopenRate)} of jobs were re-opened within 30 days. {pct(ledger.slaRate)} were finished on
           time.
         </p>
         <div className="ux4g-mt-s">
           <SliceTable caption="Durability by type of problem" rows={ledger.byWorkType} firstColumn="Problem" />
         </div>
-        <details className="rh-more ux4g-mt-s">
+        <details className="rb-more ux4g-mt-s">
           <summary className="ux4g-btn-text-primary ux4g-btn-m touch-target">By repair method</summary>
           <div className="ux4g-mt-xs">
             <SliceTable caption="Durability by repair method" rows={ledger.byMethod} firstColumn="Method" />
@@ -137,24 +137,24 @@ export default async function WardPage({ params }: Params) {
         </details>
       </section>
 
-      <section className="rh-section" aria-labelledby="who-heading">
+      <section className="rb-section" aria-labelledby="who-heading">
         <h2 id="who-heading" className="ux4g-title-l-strong">
           Who did the work
         </h2>
-        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rh-measure">
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
           Fair is the re-open rate expected for the same work in equally flood-prone wards
           ({context.floodHotspots} flood {context.floodHotspots === 1 ? "hotspot" : "hotspots"} here, low-lying
           index {ward.lowLyingIndex.toFixed(2)}).
         </p>
         <div className="ux4g-table-responsive ux4g-mt-s">
-          <table className="ux4g-table ux4g-table-s rh-table">
+          <table className="ux4g-table ux4g-table-s rb-table">
             <caption className="sr-only">Contractors working in {ward.code} ward</caption>
             <thead>
               <tr>
                 <th scope="col">Contractor</th>
-                <th scope="col" className="rh-num">Spent</th>
-                <th scope="col" className="rh-num">Re-opened</th>
-                <th scope="col" className="rh-num">Fair</th>
+                <th scope="col" className="rb-num">Spent</th>
+                <th scope="col" className="rb-num">Re-opened</th>
+                <th scope="col" className="rb-num">Fair</th>
               </tr>
             </thead>
             <tbody>
@@ -163,9 +163,9 @@ export default async function WardPage({ params }: Params) {
                 return (
                   <tr key={row.key}>
                     <th scope="row">{row.label.replace(" (synthetic)", "")}</th>
-                    <td className="rh-num">{formatInrShort(row.spentInr)}</td>
-                    <td className={row.reopenRate > fair + 0.05 ? "rh-num rh-worse" : "rh-num"}>{pct(row.reopenRate)}</td>
-                    <td className="rh-num">{pct(fair)}</td>
+                    <td className="rb-num">{formatInrShort(row.spentInr)}</td>
+                    <td className={row.reopenRate > fair + 0.05 ? "rb-num rb-worse" : "rb-num"}>{pct(row.reopenRate)}</td>
+                    <td className="rb-num">{pct(fair)}</td>
                   </tr>
                 );
               })}
@@ -179,11 +179,11 @@ export default async function WardPage({ params }: Params) {
         </p>
       </section>
 
-      <section className="rh-section" aria-labelledby="flags-heading">
+      <section className="rb-section" aria-labelledby="flags-heading">
         <h2 id="flags-heading" className="ux4g-title-l-strong">
           Bills that need an explanation
         </h2>
-        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rh-measure">
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
           {formatInr(outcome.flaggedInr)} sits on {ledger.flags.length} flagged{" "}
           {ledger.flags.length === 1 ? "bill" : "bills"}. A flag is a question for the ward office, not proof of wrongdoing.
         </p>
@@ -192,11 +192,11 @@ export default async function WardPage({ params }: Params) {
         </div>
       </section>
 
-      <section className="rh-section" aria-labelledby="next-heading">
+      <section className="rb-section" aria-labelledby="next-heading">
         <h2 id="next-heading" className="ux4g-title-l-strong">
           Where the next rupee should go
         </h2>
-        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rh-measure">
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
           Ranked by open complaints, accidents, flooding, traffic, and schools or hospitals on the road.
         </p>
         <div className="ux4g-mt-s">
@@ -204,18 +204,18 @@ export default async function WardPage({ params }: Params) {
         </div>
       </section>
 
-      <section className="rh-section" aria-labelledby="people-heading">
+      <section className="rb-section" aria-labelledby="people-heading">
         <h2 id="people-heading" className="ux4g-title-l-strong">
           What people reported
         </h2>
-        <p className="ux4g-body-m-default ux4g-mt-2xs rh-measure">
+        <p className="ux4g-body-m-default ux4g-mt-2xs rb-measure">
           {complaints.total} complaints this season. {complaints.linked} led to a work order;{" "}
           <strong>{complaints.stillOpen} are still open with none</strong>.{" "}
           {citizen.reports > 0
             ? `${citizen.reports} photo ${citizen.reports === 1 ? "report has" : "reports have"} been filed here.`
             : "No photo reports filed here yet."}
         </p>
-        <div className="rh-actions ux4g-mt-m">
+        <div className="rb-actions ux4g-mt-m">
           <Link href="/" className="ux4g-btn-primary ux4g-btn-m touch-target">
             Report a road problem
           </Link>
@@ -225,7 +225,7 @@ export default async function WardPage({ params }: Params) {
         </div>
       </section>
 
-      <nav className="rh-pager ux4g-mt-2xl" aria-label="Other wards">
+      <nav className="rb-pager ux4g-mt-2xl" aria-label="Other wards">
         {prev ? (
           <Link href={`/wards/${wardSlug(prev.ward.code)}`} className="ux4g-text-link-m touch-target">
             Previous: {prev.ward.code} ward

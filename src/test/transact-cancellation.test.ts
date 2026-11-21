@@ -9,10 +9,10 @@ const send = vi.fn();
 
 vi.mock("@/lib/repo/dynamo-client", () => ({
   getDocClient: () => ({ send }),
-  getTableName: () => "khabar-test",
+  getTableName: () => "rastabaaz-test",
 }));
 
-let DynamoKhabarRepository: typeof import("@/lib/repo/dynamo").DynamoKhabarRepository;
+let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaazRepository;
 let TransactionCanceledException: typeof import("@aws-sdk/client-dynamodb").TransactionCanceledException;
 
 const SPOT = { lat: 18.9298, lng: 72.8328 };
@@ -74,7 +74,7 @@ function transacts(): Input[] {
 describe("a cancelled transact", () => {
   beforeAll(async () => {
     ({ TransactionCanceledException } = await import("@aws-sdk/client-dynamodb"));
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -94,7 +94,7 @@ describe("a cancelled transact", () => {
       return { Items: [] };
     });
 
-    await expect(new DynamoKhabarRepository().createReport(input())).rejects.toThrow(
+    await expect(new DynamoRastabaazRepository().createReport(input())).rejects.toThrow(
       /transaction cancelled/,
     );
     // Not retried as a collision, so no slot walk and no unlocked fallback.
@@ -113,7 +113,7 @@ describe("a cancelled transact", () => {
       return { Items: [] };
     });
 
-    await new DynamoKhabarRepository().createReport(input());
+    await new DynamoRastabaazRepository().createReport(input());
 
     expect(attempts).toBe(2);
   });
@@ -127,7 +127,7 @@ describe("a cancelled transact", () => {
 describe("moving a report to a place that has to be created", () => {
   beforeAll(async () => {
     ({ TransactionCanceledException } = await import("@aws-sdk/client-dynamodb"));
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -148,7 +148,7 @@ describe("moving a report to a place that has to be created", () => {
       return reads(command);
     });
 
-    const moved = await new DynamoKhabarRepository().updateReport({
+    const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
       issueType: "waste",
     });
@@ -185,7 +185,7 @@ describe("moving a report to a place that has to be created", () => {
       return reads(command);
     });
 
-    const moved = await new DynamoKhabarRepository().updateReport({
+    const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
       issueType: "waste",
     });
@@ -204,11 +204,11 @@ describe("moving a report to a place that has to be created", () => {
       sk: "META",
       type: "location",
       id: "loc_winner",
-      name: "Waste at Kala Ghoda",
-      slug: "kala-ghoda-waste",
+      name: "Waterlogging at Hindmata",
+      slug: "hindmata-waterlogging",
       issueType: "waste",
       ...SPOT,
-      street: "Kala Ghoda",
+      street: "Hindmata",
       ward: "A Ward",
       createdAt: "2026-09-01T00:00:00.000Z",
     };
@@ -228,7 +228,7 @@ describe("moving a report to a place that has to be created", () => {
       return reads(command);
     });
 
-    const moved = await new DynamoKhabarRepository().updateReport({
+    const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
       issueType: "waste",
     });
@@ -249,11 +249,11 @@ describe("moving a report to a place that has to be created", () => {
       sk: "META",
       type: "location",
       id: "loc_waste",
-      name: "Waste at Kala Ghoda",
-      slug: "kala-ghoda-waste",
+      name: "Waterlogging at Hindmata",
+      slug: "hindmata-waterlogging",
       issueType: "waste",
       ...SPOT,
-      street: "Kala Ghoda",
+      street: "Hindmata",
       ward: "A Ward",
       createdAt: "2026-09-01T00:00:00.000Z",
     };
@@ -262,7 +262,7 @@ describe("moving a report to a place that has to be created", () => {
       return reads(command);
     });
 
-    const moved = await new DynamoKhabarRepository().updateReport({
+    const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
       issueType: "waste",
     });

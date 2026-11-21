@@ -4,8 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { filterMapPoints, MapFilters } from "@/components/map/MapFilters";
 import type { MapReportPoint, PlaceSummary } from "@/lib/types";
 
-vi.mock("@/components/map/KalaGhodaMap", () => ({
-  KalaGhodaMap: () => <div data-testid="kg-map-enhancement">map</div>,
+vi.mock("@/components/map/CityMap", () => ({
+  CityMap: () => <div data-testid="rb-map-enhancement">map</div>,
 }));
 
 const HINT =
@@ -14,12 +14,12 @@ const HINT =
 const place: PlaceSummary = {
   location: {
     id: "loc_1",
-    name: "K Dubash Marg footpath, Kala Ghoda Part 2",
-    slug: "k-dubash-marg-kala-ghoda-part-2-footpath",
+    name: "Pothole on Dr Ambedkar Road, Parel",
+    slug: "dr-ambedkar-road-parel-pothole",
     issueType: "waste",
     lat: 18.93,
     lng: 72.83,
-    street: "K Dubash Marg",
+    street: "Dr Ambedkar Road",
     ward: "A Ward",
     createdAt: "2026-09-01",
   },

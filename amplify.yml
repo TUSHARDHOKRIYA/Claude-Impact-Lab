@@ -8,7 +8,7 @@ frontend:
         - npm ci
     build:
       commands:
-        - 'node -e "if(!process.env.KHABAR_TABLE_NAME||!process.env.ADMIN_KEY){console.error(''Missing required Amplify env - KHABAR_TABLE_NAME and ADMIN_KEY must be set.'');process.exit(1)}"'
+        - 'node -e "if(!process.env.RASTABAAZ_TABLE_NAME||!process.env.ADMIN_KEY){console.error(''Missing required Amplify env - RASTABAAZ_TABLE_NAME and ADMIN_KEY must be set.'');process.exit(1)}"'
         - npm run typecheck
         - npm run test
         - npm run amplify:env

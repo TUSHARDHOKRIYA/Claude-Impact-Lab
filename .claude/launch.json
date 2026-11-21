@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "khabar-local",
+      "name": "rastabaaz-local",
       "runtimeExecutable": "env",
-      "runtimeArgs": ["KHABAR_REPO=memory", "npx", "next", "dev", "-p", "3100"],
+      "runtimeArgs": ["RASTABAAZ_REPO=memory", "npx", "next", "dev", "-p", "3100"],
       "port": 3100
     }
   ]

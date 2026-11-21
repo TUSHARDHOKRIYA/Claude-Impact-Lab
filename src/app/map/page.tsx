@@ -6,7 +6,7 @@ import { toLabelLanguage } from "@/lib/chip-labels";
 import { isReportId } from "@/lib/id";
 import { insightsFromPlaces, listMapPoints, listPlaces, readReportPlace, readReportPoint } from "@/lib/queries";
 import { SUBMITTED_BANNER } from "@/lib/review-copy";
-import type { MapReportPoint, PlaceSummary } from "@/lib/types";
+import type { MapReportPoint } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -16,15 +16,6 @@ export const metadata: Metadata = {
 
 function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
-}
-
-function findDubashPlace(places: PlaceSummary[]): PlaceSummary | null {
-  return (
-    places.find((place) => {
-      const text = `${place.location.name} ${place.location.street} ${place.location.slug}`;
-      return /dubash/i.test(text);
-    }) ?? null
-  );
 }
 
 type MapPageProps = {
@@ -65,7 +56,6 @@ export default async function MapPage({ searchParams }: MapPageProps) {
   const placeListed = highlighted
     ? places.some((place) => place.location.id === highlighted.locationId)
     : false;
-  const paving = reportId ? null : findDubashPlace(places);
 
   return (
     <>
@@ -74,7 +64,7 @@ export default async function MapPage({ searchParams }: MapPageProps) {
       <MapFilters
         points={points}
         places={places}
-        initialLocationId={placeListed ? highlighted?.locationId : paving?.location.id}
+        initialLocationId={placeListed ? highlighted?.locationId : undefined}
         focusPoint={highlighted ? { lat: highlighted.lat, lng: highlighted.lng } : undefined}
         focusZoom={highlighted ? 18 : undefined}
         highlightReportId={highlighted?.id}

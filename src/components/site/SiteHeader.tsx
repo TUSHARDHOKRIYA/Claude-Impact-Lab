@@ -19,22 +19,22 @@ export function SiteHeader() {
   const pathname = usePathname() ?? "/";
 
   return (
-    <header className="rh-header">
+    <header className="rb-header">
       <nav className="ux4g-navbar" aria-label="Site">
         <div className="ux4g-navbar-wrap shell">
-          <Link href="/" className="rh-wordmark touch-target">
-            <span className="ux4g-heading-xs-strong">Rasta Hisaab</span>
+          <Link href="/" className="rb-wordmark touch-target">
+            <span className="ux4g-heading-xs-strong">Rastabaaz</span>
             <span lang="mr" className="ux4g-label-m-default ux4g-text-neutral-secondary">
-              रस्ता हिशोब
+              रस्ताबाज
             </span>
           </Link>
-          <ul className="ux4g-navbar-links rh-nav">
+          <ul className="ux4g-navbar-links rb-nav">
             {NAV.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   aria-current={isActive(pathname, item.href) ? "page" : undefined}
-                  className="ux4g-text-link-neutral-m rh-nav-link touch-target"
+                  className="ux4g-text-link-neutral-m rb-nav-link touch-target"
                 >
                   {item.label}
                 </Link>
@@ -43,7 +43,7 @@ export function SiteHeader() {
           </ul>
         </div>
       </nav>
-      <div className="rh-lane" aria-hidden="true" />
+      <div className="rb-lane" aria-hidden="true" />
     </header>
   );
 }

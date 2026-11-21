@@ -37,21 +37,21 @@ export function OutcomeBar({
   const summary = OUTCOME_PARTS.map((part) => `${part.label} ${share(outcome[part.key], spentInr)}`).join(", ");
 
   return (
-    <figure className={compact ? "rh-outcome rh-outcome-compact" : "rh-outcome"}>
-      <div className="rh-outcome-track" role="img" aria-label={`${label}. ${summary}.`}>
-        <div className="rh-outcome-fill" style={{ width: `${(spentInr / scale) * 100}%` }}>
+    <figure className={compact ? "rb-outcome rb-outcome-compact" : "rb-outcome"}>
+      <div className="rb-outcome-track" role="img" aria-label={`${label}. ${summary}.`}>
+        <div className="rb-outcome-fill" style={{ width: `${(spentInr / scale) * 100}%` }}>
           {OUTCOME_PARTS.map((part) =>
             outcome[part.key] > 0 ? (
               <span
                 key={part.key}
-                className={`rh-seg rh-seg-${part.tone}`}
+                className={`rb-seg rb-seg-${part.tone}`}
                 style={{ flexGrow: outcome[part.key] }}
                 title={`${part.label}: ${formatInr(outcome[part.key])}`}
               />
             ) : null,
           )}
         </div>
-        <span className="rh-budget-line" style={{ left: `${budgetAt}%` }} aria-hidden="true" />
+        <span className="rb-budget-line" style={{ left: `${budgetAt}%` }} aria-hidden="true" />
       </div>
       {compact ? null : (
         <>
@@ -59,28 +59,28 @@ export function OutcomeBar({
             The line marks the {formatInrShort(budgetInr)} budget.{" "}
             {over > 0 ? `Spending ran ${formatInrShort(over)} past it.` : `${formatInrShort(-over)} of it is unspent.`}
           </figcaption>
-          <table className="ux4g-table ux4g-table-s ux4g-mt-s rh-outcome-table">
+          <table className="ux4g-table ux4g-table-s ux4g-mt-s rb-outcome-table">
             <caption className="sr-only">{label}</caption>
             <thead>
               <tr>
                 <th scope="col">Outcome</th>
-                <th scope="col" className="rh-num">Amount</th>
-                <th scope="col" className="rh-num">Share</th>
+                <th scope="col" className="rb-num">Amount</th>
+                <th scope="col" className="rb-num">Share</th>
               </tr>
             </thead>
             <tbody>
               {OUTCOME_PARTS.map((part) => (
                 <tr key={part.key}>
                   <th scope="row">
-                    <span className="rh-outcome-label">
-                      <span className={`rh-key rh-seg-${part.tone}`} aria-hidden="true">
+                    <span className="rb-outcome-label">
+                      <span className={`rb-key rb-seg-${part.tone}`} aria-hidden="true">
                         {part.mark}
                       </span>
                       {part.label}
                     </span>
                   </th>
-                  <td className="rh-num">{formatInr(outcome[part.key])}</td>
-                  <td className="rh-num">{share(outcome[part.key], spentInr)}</td>
+                  <td className="rb-num">{formatInr(outcome[part.key])}</td>
+                  <td className="rb-num">{share(outcome[part.key], spentInr)}</td>
                 </tr>
               ))}
             </tbody>

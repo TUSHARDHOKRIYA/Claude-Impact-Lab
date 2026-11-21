@@ -2,34 +2,34 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { DynamoKhabarRepository } from "@/lib/repo/dynamo";
+import { DynamoRastabaazRepository } from "@/lib/repo/dynamo";
 import { getRepository, wantsMemoryRepository } from "@/lib/repo/context";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 
 afterEach(() => {
   vi.unstubAllEnvs();
-  delete (globalThis as { __khabarMemoryRepository?: unknown }).__khabarMemoryRepository;
+  delete (globalThis as { __rastabaazMemoryRepository?: unknown }).__rastabaazMemoryRepository;
 });
 
 describe("the local, Docker-free repository switch", () => {
   it("serves one shared in-memory repository in development", () => {
     vi.stubEnv("NODE_ENV", "development");
-    vi.stubEnv("KHABAR_REPO", "memory");
+    vi.stubEnv("RASTABAAZ_REPO", "memory");
     const repo = getRepository();
-    expect(repo).toBeInstanceOf(MemoryKhabarRepository);
+    expect(repo).toBeInstanceOf(MemoryRastabaazRepository);
     expect(getRepository()).toBe(repo);
   });
 
   it("is ignored in production, so a deployed app always uses DynamoDB", () => {
-    expect(wantsMemoryRepository({ NODE_ENV: "production", KHABAR_REPO: "memory" })).toBe(false);
+    expect(wantsMemoryRepository({ NODE_ENV: "production", RASTABAAZ_REPO: "memory" })).toBe(false);
     vi.stubEnv("NODE_ENV", "production");
-    vi.stubEnv("KHABAR_REPO", "memory");
-    vi.stubEnv("KHABAR_TABLE_NAME", "khabar");
-    expect(getRepository()).toBeInstanceOf(DynamoKhabarRepository);
+    vi.stubEnv("RASTABAAZ_REPO", "memory");
+    vi.stubEnv("RASTABAAZ_TABLE_NAME", "rastabaaz");
+    expect(getRepository()).toBeInstanceOf(DynamoRastabaazRepository);
   });
 
   it("is off unless asked for", () => {
     expect(wantsMemoryRepository({ NODE_ENV: "development" })).toBe(false);
-    expect(wantsMemoryRepository({ NODE_ENV: "development", KHABAR_REPO: "dynamo" })).toBe(false);
+    expect(wantsMemoryRepository({ NODE_ENV: "development", RASTABAAZ_REPO: "dynamo" })).toBe(false);
   });
 });

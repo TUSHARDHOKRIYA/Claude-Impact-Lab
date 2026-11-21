@@ -16,7 +16,7 @@ describe("geo clusters", () => {
     expect(new Set(keys).size).toBe(25);
   });
 
-  it("keeps a point 40m north of Kala Ghoda inside the origin neighbourhood", () => {
+  it("keeps a point 40m north of the origin inside the origin neighbourhood", () => {
     const northLat = CENTER.lat + MATCH_METERS / METERS_PER_DEGREE_LAT;
     const northKey = clusterKey(northLat, CENTER.lng);
     expect(neighbourClusterKeys(CENTER.lat, CENTER.lng)).toContain(northKey);

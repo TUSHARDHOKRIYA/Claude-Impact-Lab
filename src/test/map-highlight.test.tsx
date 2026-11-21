@@ -44,7 +44,7 @@ describe("report highlight", () => {
     const map = { getLayer: () => true, setPaintProperty };
     paintSelectedLocation(map as never, "loc_1", "rpt_fresh");
     expect(setPaintProperty).toHaveBeenCalledWith(
-      "kg-points",
+      "rb-points",
       "circle-radius",
       ["case", ["==", ["get", "id"], "rpt_fresh"], 12, 7],
     );

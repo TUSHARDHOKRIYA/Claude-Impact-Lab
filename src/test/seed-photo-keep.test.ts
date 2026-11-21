@@ -4,7 +4,7 @@ import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from "@
 import { mockClient } from "aws-sdk-client-mock";
 
 import { writeSeedItems } from "@/lib/repo/dynamo-seed";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { PREVIOUS_SEED_DESCRIPTIONS } from "@/lib/seed/previous-copy";
 import { seedPaving } from "@/lib/seed-paving";
 
@@ -31,7 +31,7 @@ function photoPuts() {
 describe("re-seeding a report photo", () => {
   it("writes the seed photo when the report insert is new", async () => {
     ddbMock.on(PutCommand).resolves({});
-    await writeSeedItems(client(), "khabar-test", [pavingReport()]);
+    await writeSeedItems(client(), "rastabaaz-test", [pavingReport()]);
     expect(photoPuts()).toHaveLength(1);
   });
 
@@ -40,7 +40,7 @@ describe("re-seeding a report photo", () => {
     // fail their condition, and the run carries on without overwriting.
     ddbMock.on(PutCommand).rejects(new ConditionalCheckFailedException({ message: "exists", $metadata: {} }));
     ddbMock.on(GetCommand).resolves({ Item: { pk: "RPT#x", sk: "META", type: "report" } });
-    await expect(writeSeedItems(client(), "khabar-test", [pavingReport()])).resolves.toBeUndefined();
+    await expect(writeSeedItems(client(), "rastabaaz-test", [pavingReport()])).resolves.toBeUndefined();
     for (const call of photoPuts()) {
       expect(call.args[0].input.ConditionExpression).toBe("attribute_not_exists(pk)");
     }
@@ -55,7 +55,7 @@ describe("re-seeding a report photo", () => {
     });
     // Stored META without a legacy photo: the PHOTO item is what is missing.
     ddbMock.on(GetCommand).resolves({ Item: { pk: "RPT#x", sk: "META", type: "report" } });
-    await writeSeedItems(client(), "khabar-test", [pavingReport()]);
+    await writeSeedItems(client(), "rastabaaz-test", [pavingReport()]);
     expect(photoPuts()).toHaveLength(1);
     expect(photoPuts()[0].args[0].input.ConditionExpression).toBe("attribute_not_exists(pk)");
   });
@@ -69,12 +69,12 @@ describe("re-seeding a report photo", () => {
     });
     ddbMock.on(GetCommand).resolves({ Item: { pk: "RPT#x", sk: "META", photo: "data:image/jpeg;base64,edited" } });
     ddbMock.on(UpdateCommand).resolves({});
-    await writeSeedItems(client(), "khabar-test", [pavingReport()]);
+    await writeSeedItems(client(), "rastabaaz-test", [pavingReport()]);
     expect(photoPuts()).toHaveLength(0);
   });
 
   it("keeps an edited photo in memory", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const seeded = pavingReport();
     await repo.putSeedItems([seeded]);
     await repo.updateReport({ id: seeded.record.id, photo: "data:image/jpeg;base64,edited" });
@@ -93,7 +93,7 @@ describe("repairs on a report the previous seed already stored", () => {
     ddbMock.on(GetCommand).resolves({ Item: { photo: "/samples/paving.svg" } });
     ddbMock.on(UpdateCommand).resolves({});
     const report = pavingReport("rpt_paving_202509");
-    await writeSeedItems(client(), "khabar-test", [report]);
+    await writeSeedItems(client(), "rastabaaz-test", [report]);
     const updates = ddbMock.commandCalls(UpdateCommand);
     expect(updates).toHaveLength(1);
     expect(updates[0].args[0].input.ConditionExpression).toBe("description = :old");
@@ -108,7 +108,7 @@ describe("repairs on a report the previous seed already stored", () => {
     alreadyStored();
     ddbMock.on(GetCommand).resolves({ Item: { photo: "/samples/paving.svg" } });
     ddbMock.on(UpdateCommand).rejects(new ConditionalCheckFailedException({ message: "differs", $metadata: {} }));
-    await expect(writeSeedItems(client(), "khabar-test", [pavingReport("rpt_paving_202509")])).resolves.toBeUndefined();
+    await expect(writeSeedItems(client(), "rastabaaz-test", [pavingReport("rpt_paving_202509")])).resolves.toBeUndefined();
     const updates = ddbMock.commandCalls(UpdateCommand);
     expect(updates).toHaveLength(1);
     expect(updates[0].args[0].input.ConditionExpression).toBe("description = :old");
@@ -118,7 +118,7 @@ describe("repairs on a report the previous seed already stored", () => {
     alreadyStored();
     ddbMock.on(GetCommand).resolves({ Item: { photo: "data:image/jpeg;base64,desk" } });
     ddbMock.on(UpdateCommand).resolves({});
-    await writeSeedItems(client(), "khabar-test", [pavingReport()]);
+    await writeSeedItems(client(), "rastabaaz-test", [pavingReport()]);
     const updates = ddbMock.commandCalls(UpdateCommand);
     expect(updates).toHaveLength(1);
     expect(updates[0].args[0].input.UpdateExpression).toBe("SET isSample = :false");
@@ -130,7 +130,7 @@ describe("repairs on a report the previous seed already stored", () => {
     alreadyStored();
     ddbMock.on(GetCommand).resolves({ Item: { photo: "data:image/jpeg;base64,desk" } });
     ddbMock.on(UpdateCommand).rejects(new ConditionalCheckFailedException({ message: "flag", $metadata: {} }));
-    await expect(writeSeedItems(client(), "khabar-test", [pavingReport()])).resolves.toBeUndefined();
+    await expect(writeSeedItems(client(), "rastabaaz-test", [pavingReport()])).resolves.toBeUndefined();
     expect(ddbMock.commandCalls(UpdateCommand)).toHaveLength(1);
     expect(ddbMock.commandCalls(UpdateCommand)[0].args[0].input.ConditionExpression).toBe("isSample = :true");
   });
@@ -139,7 +139,7 @@ describe("repairs on a report the previous seed already stored", () => {
     alreadyStored();
     ddbMock.on(GetCommand).resolves({ Item: { photo: "/samples/paving.svg" } });
     ddbMock.on(UpdateCommand).resolves({});
-    await writeSeedItems(client(), "khabar-test", [pavingReport()]);
+    await writeSeedItems(client(), "rastabaaz-test", [pavingReport()]);
     expect(ddbMock.commandCalls(UpdateCommand)).toHaveLength(0);
   });
 });

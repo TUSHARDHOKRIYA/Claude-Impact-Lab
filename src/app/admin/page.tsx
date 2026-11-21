@@ -12,7 +12,7 @@ type AdminPageProps = {
 };
 
 export const metadata = {
-  title: "Desk — Kala Ghoda Khabar",
+  title: "Desk — Rastabaaz",
 };
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {

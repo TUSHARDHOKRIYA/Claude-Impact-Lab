@@ -7,12 +7,12 @@ import type { LocationRecord, PlaceSummary, PublicReportRecord, ReportListItem }
 
 const location: LocationRecord = {
   id: "loc_1",
-  name: "Footpath on K Dubash Marg",
-  slug: "k-dubash-marg",
+  name: "Pothole on Dr Ambedkar Road",
+  slug: "dr-ambedkar-road",
   issueType: "footpath",
   lat: 18.9298,
   lng: 72.8324,
-  street: "K Dubash Marg",
+  street: "Dr Ambedkar Road",
   ward: "A Ward",
   createdAt: "2022-01-01T00:00:00.000Z",
 };
@@ -76,8 +76,8 @@ describe("ReportStory", () => {
     );
     const image = screen.getByRole("img");
     expect(image).toHaveAttribute("src", "/reports/rpt_1/photo");
-    expect(image).toHaveAttribute("alt", "Footpath on K Dubash Marg");
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Footpath on K Dubash Marg");
+    expect(image).toHaveAttribute("alt", "Pothole on Dr Ambedkar Road");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Pothole on Dr Ambedkar Road");
     expect(screen.getByText(/Noticed in the week up to 1 August 2022/)).toBeInTheDocument();
     expect(screen.getByText(/Illustration\. No photo was supplied with this report\./)).toBeInTheDocument();
     expect(screen.getAllByText("Street report").length).toBeGreaterThan(0);
@@ -87,11 +87,11 @@ describe("ReportStory", () => {
     expect(screen.getByRole("link", { name: "Map" })).toHaveAttribute("href", "/map");
     expect(screen.getByRole("link", { name: location.name })).toHaveAttribute(
       "href",
-      "/places/k-dubash-marg?report=rpt_1",
+      "/places/dr-ambedkar-road?report=rpt_1",
     );
     expect(screen.getByRole("link", { name: `Open the full record for ${location.name}` })).toHaveAttribute(
       "href",
-      "/places/k-dubash-marg?report=rpt_1",
+      "/places/dr-ambedkar-road?report=rpt_1",
     );
     expect(screen.getByRole("link", { name: "Footpath" })).toHaveAttribute("href", "/reports/rpt_2");
   });

@@ -76,7 +76,7 @@ describe("the dock", () => {
     expect(screen.getByRole("button", { name: "Start speaking" })).toBeDisabled();
     finish(turn());
     await waitFor(() => expect(status()).toHaveTextContent("Press the microphone to speak"));
-    expect(screen.getByText("garbage near the horse")).toBeInTheDocument();
+    expect(screen.getByText("pothole near Hindmata")).toBeInTheDocument();
   });
 
   it("says a blocked microphone plainly and keeps the answers", async () => {
@@ -121,7 +121,7 @@ describe("checking what voice heard", () => {
     stubAudio();
     const weak = turn({
       fields: { issueType: "waste" },
-      reply: { text: "I heard “garbage near the horse”. Is that right?", ask: null, confirm: true },
+      reply: { text: "I heard “pothole near Hindmata”. Is that right?", ask: null, confirm: true },
     });
     vi.mocked(processVoiceTurnAction).mockResolvedValue(weak);
     const user = userEvent.setup();

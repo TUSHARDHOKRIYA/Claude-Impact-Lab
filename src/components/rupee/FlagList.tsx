@@ -27,7 +27,7 @@ export function FlagList({ flags, limit = 6 }: { flags: AuditFlag[]; limit?: num
     return <p className="ux4g-body-m-default ux4g-text-neutral-secondary">No audit flags in this ward.</p>;
   }
   return (
-    <div className="ux4g-accordion ux4g-accordion-arrow-right ux4g-accordion-bordered rh-accordion">
+    <div className="ux4g-accordion ux4g-accordion-arrow-right ux4g-accordion-bordered rb-accordion">
       {groups.map((group) => (
         <details key={group.kind} className="ux4g-accordion__item">
           <summary className="ux4g-accordion__button touch-target">
@@ -40,7 +40,7 @@ export function FlagList({ flags, limit = 6 }: { flags: AuditFlag[]; limit?: num
           </summary>
           <div className="ux4g-accordion__body">
             <p className="ux4g-body-s-default ux4g-text-neutral-secondary">{FLAG_EXPLAINERS[group.kind]}</p>
-            <ul className="rh-flag-rows">
+            <ul className="rb-flag-rows">
               {group.rows.slice(0, limit).map((flag) => (
                 <li key={`${flag.kind}-${flag.workOrderId}`}>
                   <p className="ux4g-body-m-strong">

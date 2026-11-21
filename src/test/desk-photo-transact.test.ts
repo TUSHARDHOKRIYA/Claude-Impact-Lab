@@ -7,10 +7,10 @@ const send = vi.fn();
 
 vi.mock("@/lib/repo/dynamo-client", () => ({
   getDocClient: () => ({ send }),
-  getTableName: () => "khabar-test",
+  getTableName: () => "rastabaaz-test",
 }));
 
-let DynamoKhabarRepository: typeof import("@/lib/repo/dynamo").DynamoKhabarRepository;
+let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaazRepository;
 let TransactionCanceledException: typeof import("@aws-sdk/client-dynamodb").TransactionCanceledException;
 
 const PHOTO = sampleJpegDataUrl();
@@ -50,7 +50,7 @@ function transacts(): Input[] {
 describe("desk photo replacement", () => {
   beforeAll(async () => {
     ({ TransactionCanceledException } = await import("@aws-sdk/client-dynamodb"));
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -65,7 +65,7 @@ describe("desk photo replacement", () => {
   });
 
   it("reads a report with a strongly consistent get", async () => {
-    await new DynamoKhabarRepository().getReport("rpt_1");
+    await new DynamoRastabaazRepository().getReport("rpt_1");
     expect(send.mock.calls[0]?.[0].input).toMatchObject({
       Key: { pk: "RPT#rpt_1", sk: "META" },
       ConsistentRead: true,
@@ -73,7 +73,7 @@ describe("desk photo replacement", () => {
   });
 
   it("writes a photo-only edit and the report in one transact", async () => {
-    const updated = await new DynamoKhabarRepository().updateReport({ id: "rpt_1", photo: PHOTO });
+    const updated = await new DynamoRastabaazRepository().updateReport({ id: "rpt_1", photo: PHOTO });
     expect(updated?.id).toBe("rpt_1");
     expect(transacts()).toHaveLength(1);
     const ops = transacts()[0]?.TransactItems ?? [];
@@ -85,7 +85,7 @@ describe("desk photo replacement", () => {
   });
 
   it("writes a photo and an issue-type move in one transact", async () => {
-    const updated = await new DynamoKhabarRepository().updateReport({
+    const updated = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
       issueType: "waste",
       photo: PHOTO,
@@ -115,7 +115,7 @@ describe("desk photo replacement", () => {
       return { Items: [] };
     });
     await expect(
-      new DynamoKhabarRepository().updateReport({ id: "rpt_1", photo: PHOTO }),
+      new DynamoRastabaazRepository().updateReport({ id: "rpt_1", photo: PHOTO }),
     ).resolves.toBeNull();
   });
 });

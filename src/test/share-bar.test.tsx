@@ -18,8 +18,8 @@ describe("ShareBar", () => {
     render(
       <ShareBar
         path="/reports/rpt_1"
-        title="Footpath on K Dubash Marg"
-        text="Footpath on K Dubash Marg, A Ward."
+        title="Pothole on Dr Ambedkar Road"
+        text="Pothole on Dr Ambedkar Road, A Ward."
       />,
     );
 

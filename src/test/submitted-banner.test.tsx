@@ -11,8 +11,8 @@ vi.mock("@/lib/queries", () => ({
   insightsFromPlaces: () => ({ reports: 1, places: 1, recurringPlaces: 0 }),
 }));
 
-vi.mock("@/components/map/KalaGhodaMap", () => ({
-  KalaGhodaMap: () => <div data-testid="kg-map-enhancement">map</div>,
+vi.mock("@/components/map/CityMap", () => ({
+  CityMap: () => <div data-testid="rb-map-enhancement">map</div>,
 }));
 
 import MapPage from "@/app/map/page";
@@ -24,12 +24,12 @@ import { SUBMITTED_BANNER } from "@/lib/review-copy";
 const place: PlaceSummary = {
   location: {
     id: "loc_1",
-    name: "K Dubash Marg footpath",
-    slug: "dubash-footpath",
+    name: "Pothole on Dr Ambedkar Road",
+    slug: "ambedkar-pothole",
     issueType: "footpath",
     lat: 18.9298,
     lng: 72.8328,
-    street: "K Dubash Marg",
+    street: "Dr Ambedkar Road",
     ward: "A Ward",
     createdAt: "2022-08-18",
   },
@@ -116,7 +116,7 @@ describe("submitted query cleanup", () => {
     window.history.replaceState({}, "", "/map?report=rpt_1&new=1&lang=hi");
     const replaceState = vi.spyOn(window.history, "replaceState");
     render(<MapFilters points={[point]} places={[place]} />);
-    await waitFor(() => expect(screen.getByTestId("kg-map-enhancement")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId("rb-map-enhancement")).toBeInTheDocument());
     expect(replaceState).not.toHaveBeenCalled();
     expect(window.location.search).toBe("?report=rpt_1&new=1&lang=hi");
     replaceState.mockRestore();

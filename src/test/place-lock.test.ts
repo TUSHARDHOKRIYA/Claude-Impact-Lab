@@ -10,10 +10,10 @@ const send = vi.fn();
 
 vi.mock("@/lib/repo/dynamo-client", () => ({
   getDocClient: () => ({ send }),
-  getTableName: () => "khabar-test",
+  getTableName: () => "rastabaaz-test",
 }));
 
-let DynamoKhabarRepository: typeof import("@/lib/repo/dynamo").DynamoKhabarRepository;
+let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaazRepository;
 let TransactionCanceledException: typeof import("@aws-sdk/client-dynamodb").TransactionCanceledException;
 
 function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
@@ -35,12 +35,12 @@ const WINNER_LOCATION = {
   sk: "META",
   type: "location",
   id: "loc_winner",
-  name: "Footpath near Kala Ghoda",
-  slug: "kala-ghoda-footpath",
+  name: "Pothole near Hindmata",
+  slug: "hindmata-pothole",
   issueType: "footpath",
   lat: 18.9298,
   lng: 72.8328,
-  street: "Kala Ghoda",
+  street: "Hindmata",
   ward: "A Ward",
   createdAt: "2026-09-01T00:00:00.000Z",
 };
@@ -72,7 +72,7 @@ function throttled() {
 describe("the place lock", () => {
   beforeAll(async () => {
     ({ TransactionCanceledException } = await import("@aws-sdk/client-dynamodb"));
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -93,7 +93,7 @@ describe("the place lock", () => {
   it("is written inside the create transact", async () => {
     // nearby query pages (25 cells), then the transact
     send.mockResolvedValue({ Items: [] });
-    await new DynamoKhabarRepository().createReport(input());
+    await new DynamoRastabaazRepository().createReport(input());
 
     const transact = send.mock.calls
       .map(([command]) => command.input)
@@ -124,7 +124,7 @@ describe("the place lock", () => {
       return { Items: [] };
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input());
+    const result = await new DynamoRastabaazRepository().createReport(input());
 
     expect(result.location.id).toBe("loc_winner");
     expect(result.report.locationId).toBe("loc_winner");
@@ -170,7 +170,7 @@ describe("the place lock", () => {
       return { Items: [] };
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input(pin));
+    const result = await new DynamoRastabaazRepository().createReport(input(pin));
 
     expect(result.location.id).not.toBe("loc_winner");
     expect(result.connectedCount).toBe(0);
@@ -211,7 +211,7 @@ describe("the place lock", () => {
       return { Items: [] };
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input(pin));
+    const result = await new DynamoRastabaazRepository().createReport(input(pin));
 
     // Joined the slot-1 holder rather than minting a third place.
     expect(result.location.id).toBe("loc_second");
@@ -233,7 +233,7 @@ describe("the place lock", () => {
       return { Items: [] };
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input());
+    const result = await new DynamoRastabaazRepository().createReport(input());
 
     const retry = send.mock.calls
       .map(([command]) => command.input)
@@ -260,7 +260,7 @@ describe("the place lock", () => {
       return { Items: [] };
     });
 
-    await expect(new DynamoKhabarRepository().createReport(input())).rejects.toThrow(
+    await expect(new DynamoRastabaazRepository().createReport(input())).rejects.toThrow(
       /transaction cancelled/,
     );
     expect(transacts).toBe(1);
@@ -278,7 +278,7 @@ describe("the place lock", () => {
       return { Items: [] };
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input());
+    const result = await new DynamoRastabaazRepository().createReport(input());
 
     // The slug, not the place, was the conflict: a new place is correct here.
     expect(transacts).toBe(2);

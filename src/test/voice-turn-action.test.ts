@@ -56,11 +56,11 @@ afterEach(() => {
 
 describe("a conversational voice turn", () => {
   it("fills what it heard, asks for the next slot, and speaks the reply", async () => {
-    heard("There is garbage near the Kala Ghoda horse");
+    heard("There is a big pothole near Hindmata");
     extractVoiceCalls.mockResolvedValue({
       calls: [
         { slot: "issue_type", value: "waste" },
-        { slot: "pin", value: "black-horse" },
+        { slot: "pin", value: "loc-hindmata" },
       ],
       warnings: [],
     });
@@ -71,7 +71,7 @@ describe("a conversational voice turn", () => {
     expect(result).toMatchObject({
       ok: true,
       fields: { issueType: "waste" },
-      pinProposal: { landmarkId: "black-horse" },
+      pinProposal: { landmarkId: "loc-hindmata" },
       replyLanguage: "en",
       reply: {
         text: "Got it. When did you notice it? Today, this week, this month, 1 to 6 months ago, or more than six months ago.",
@@ -180,17 +180,12 @@ describe("a landmark the person clearly named", () => {
     expect(result).toMatchObject({ ok: true, pinProposal: { landmarkId: "jehangir" } });
   });
 
-  it("matches distinctive names in either script, and stays out of it when unsure", () => {
-    expect(spokenLandmark("जहाँगीर art gallery के सामने")?.landmarkId).toBe("jehangir");
-    expect(spokenLandmark("outside Sassoon library")?.landmarkId).toBe("sassoon");
-    expect(spokenLandmark("मॅक्स म्युलर भवन जवळ")?.landmarkId).toBe("max-mueller");
-    expect(spokenLandmark("near the black horse statue")?.landmarkId).toBe("black-horse");
-    // The shops and buildings people actually name, from the landmark data, not just five.
-    expect(spokenLandmark("Kala Ghoda Cafe ke saamne kachra")?.landmarkId).toBe("kala-ghoda-cafe");
-    expect(spokenLandmark("रिदम हाउस के पास फुटपाथ टूटा है")?.landmarkId).toBe("rhythm-house");
-    expect(spokenLandmark("Trishna ke bahar gaadi khadi rehti hai")?.landmarkId).toBe("trishna");
-    // "Kala Ghoda" is the whole precinct, not the statue; two landmarks is a guess.
-    expect(spokenLandmark("Kala Ghoda mein kachra pada hai")).toBeNull();
-    expect(spokenLandmark("between Jehangir and Sassoon")).toBeNull();
+  it("matches area names in either script, and stays out of it when unsure", () => {
+    expect(spokenLandmark("Hindmata ke paas paani bhara hai")?.landmarkId).toBe("loc-hindmata");
+    expect(spokenLandmark("हिंदमाता के पास गड्ढा है")?.landmarkId).toBe("loc-hindmata");
+    expect(spokenLandmark("near King's Circle station")?.landmarkId).toBe("loc-kings-circle");
+    expect(spokenLandmark("सायन में सड़क धँस गई")?.landmarkId).toBe("loc-sion");
+    // Two areas named is a guess, so no pin.
+    expect(spokenLandmark("between Parel and Sion")).toBeNull();
   });
 });

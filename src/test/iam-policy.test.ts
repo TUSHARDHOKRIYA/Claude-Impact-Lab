@@ -27,14 +27,14 @@ describe("amplify compute IAM template", () => {
     const policy = JSON.parse(raw) as Policy;
     expect(policy.DoNotAttach).toMatch(/npm run iam:policy/);
     expect(raw).toContain(PLACEHOLDER);
-    expect(raw).not.toMatch(/\$\{KHABAR_TABLE_NAME\}/);
+    expect(raw).not.toMatch(/\$\{RASTABAAZ_TABLE_NAME\}/);
     expect(raw).not.toMatch(/"dynamodb:\*"/);
     expect(raw).not.toMatch(/s3:|appsync:|cognito-/i);
     expect(() => JSON.parse(raw)).not.toThrow();
   });
 
   it("renders a least-privilege policy for a valid table name", () => {
-    const rendered = renderAmplifyPolicy("khabar-dev");
+    const rendered = renderAmplifyPolicy("rastabaaz-dev");
     expect(rendered.Version).toBe("2012-10-17");
     expect(rendered.DoNotAttach).toBeUndefined();
     expect(rendered.Statement).toHaveLength(1);
@@ -42,14 +42,14 @@ describe("amplify compute IAM template", () => {
     expect(statement.Effect).toBe("Allow");
     expect([...statement.Action].sort()).toEqual([...REQUIRED_IAM_ACTIONS].sort());
     expect(statement.Resource).toEqual([
-      "arn:aws:dynamodb:*:*:table/khabar-dev",
-      "arn:aws:dynamodb:*:*:table/khabar-dev/index/*",
+      "arn:aws:dynamodb:*:*:table/rastabaaz-dev",
+      "arn:aws:dynamodb:*:*:table/rastabaaz-dev/index/*",
     ]);
     const json = JSON.stringify(rendered);
     expect(json).not.toContain(PLACEHOLDER);
     expect(json).not.toContain("${");
     expect(json).not.toMatch(/"dynamodb:\*"/);
-    expect(() => renderAmplifyPolicy("${KHABAR_TABLE_NAME}")).toThrow(
+    expect(() => renderAmplifyPolicy("${RASTABAAZ_TABLE_NAME}")).toThrow(
       /Invalid DynamoDB table name/,
     );
     expect(() => renderAmplifyPolicy(PLACEHOLDER)).toThrow(/Invalid DynamoDB table name/);

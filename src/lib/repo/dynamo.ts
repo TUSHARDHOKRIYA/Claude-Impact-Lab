@@ -36,7 +36,7 @@ import {
   type DynamoItem,
 } from "@/lib/repo/mappers";
 import { ExtraRejectedError, resolvePlace, type PlaceContext } from "@/lib/repo/place-resolve";
-import { toListItem, type KhabarRepository, type SeedItem } from "@/lib/repo/port";
+import { toListItem, type RastabaazRepository, type SeedItem } from "@/lib/repo/port";
 import type {
   Catalog,
   CreateReportInput,
@@ -49,7 +49,7 @@ import type {
   UpdateReportInput,
 } from "@/lib/types";
 
-export class DynamoKhabarRepository implements KhabarRepository {
+export class DynamoRastabaazRepository implements RastabaazRepository {
   private readonly client: DynamoDBDocumentClient;
   private readonly table: string;
 
@@ -144,7 +144,7 @@ export class DynamoKhabarRepository implements KhabarRepository {
 
   async createReport(input: CreateReportInput): Promise<CreateReportResult> {
     if (!isInsideCity(input.lat, input.lng)) {
-      throw new ReportValidationError("Place the pin inside Kala Ghoda.");
+      throw new ReportValidationError("Place the pin inside a BMC ward in Mumbai.");
     }
     assertWritePhoto(input.photo, false);
     const probe = buildCitizenReport(input, "loc_size_check");

@@ -71,7 +71,7 @@ describe("amplify SSR env wiring", () => {
     expect(yaml.indexOf("npm run amplify:env")).toBeLessThan(
       yaml.indexOf("npm run build"),
     );
-    expect(yaml).toMatch(/process\.env\.KHABAR_TABLE_NAME/);
+    expect(yaml).toMatch(/process\.env\.RASTABAAZ_TABLE_NAME/);
     expect(yaml).toMatch(/process\.env\.ADMIN_KEY/);
     expect(yaml).toMatch(/Missing required Amplify env/);
     expect(yaml).toMatch(/process\.exit\(1\)/);
@@ -94,12 +94,12 @@ describe("amplify SSR env wiring", () => {
   });
 
   it("writes required and configured voice server env into .env.production", () => {
-    expect(() => collectServerEnv({})).toThrow(/KHABAR_TABLE_NAME/);
-    expect(() => collectServerEnv({ KHABAR_TABLE_NAME: "khabar-test" })).toThrow(
+    expect(() => collectServerEnv({})).toThrow(/RASTABAAZ_TABLE_NAME/);
+    expect(() => collectServerEnv({ RASTABAAZ_TABLE_NAME: "rastabaaz-test" })).toThrow(
       /ADMIN_KEY/,
     );
     const values = collectServerEnv({
-      KHABAR_TABLE_NAME: "khabar-test",
+      RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
       SARVAM_API_KEY: "sarvam-key",
       VOICE_LLM_BASE_URL: "https://api.sarvam.ai/v1",
@@ -114,7 +114,7 @@ describe("amplify SSR env wiring", () => {
       NEXT_PUBLIC_FLAG: "no",
     });
     expect(values).toEqual({
-      KHABAR_TABLE_NAME: "khabar-test",
+      RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
       SARVAM_API_KEY: "sarvam-key",
       VOICE_LLM_BASE_URL: "https://api.sarvam.ai/v1",
@@ -127,7 +127,7 @@ describe("amplify SSR env wiring", () => {
     const body = formatDotEnv(values);
     expect(body).toBe(
       [
-        `KHABAR_TABLE_NAME=${quoteDotEnvValue("khabar-test")}`,
+        `RASTABAAZ_TABLE_NAME=${quoteDotEnvValue("rastabaaz-test")}`,
         `ADMIN_KEY=${quoteDotEnvValue("dev-admin-key")}`,
         `SARVAM_API_KEY=${quoteDotEnvValue("sarvam-key")}`,
         `VOICE_LLM_BASE_URL=${quoteDotEnvValue("https://api.sarvam.ai/v1")}`,
@@ -145,7 +145,7 @@ describe("amplify SSR env wiring", () => {
     temps.push(dir);
     const dest = join(dir, ".env.production");
     writeAmplifyProductionEnv(dest, {
-      KHABAR_TABLE_NAME: "khabar-test",
+      RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
       SARVAM_API_KEY: "sarvam-key",
       VOICE_LLM_BASE_URL: "https://api.sarvam.ai/v1",
@@ -164,7 +164,7 @@ describe("amplify SSR env wiring", () => {
 
   it("omits empty optional voice configuration", () => {
     const values = collectServerEnv({
-      KHABAR_TABLE_NAME: "khabar-test",
+      RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
       SARVAM_API_KEY: "",
       VOICE_LLM_BASE_URL: "   ",
@@ -172,7 +172,7 @@ describe("amplify SSR env wiring", () => {
       OPENAI_API_KEY: "configured",
     });
     expect(values).toEqual({
-      KHABAR_TABLE_NAME: "khabar-test",
+      RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
       OPENAI_API_KEY: "configured",
     });
@@ -184,25 +184,25 @@ describe("amplify SSR env wiring", () => {
   it("round-trips #, spaces, quotes, and $ without expansion", () => {
     const env = { HOME: "/not-home", bar: "EXPANDED", USER: "expanded-user" };
     const cases = [
-      { KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "hash#not-a-comment" },
-      { KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "spaced secret key" },
-      { KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: 'say "quoted"' },
-      { KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "token$bar$HOME" },
-      { KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "it's secret $USER" },
+      { RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "hash#not-a-comment" },
+      { RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "spaced secret key" },
+      { RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: 'say "quoted"' },
+      { RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "token$bar$HOME" },
+      { RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "it's secret $USER" },
     ];
     for (const values of cases) {
       const parsed = parseNextDotEnv(formatDotEnv(values), env);
       expect(parsed.ADMIN_KEY).toBe(values.ADMIN_KEY);
-      expect(parsed.KHABAR_TABLE_NAME).toBe(values.KHABAR_TABLE_NAME);
+      expect(parsed.RASTABAAZ_TABLE_NAME).toBe(values.RASTABAAZ_TABLE_NAME);
     }
     expect(() =>
-      collectServerEnv({ KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "a\nb" }),
+      collectServerEnv({ RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "a\nb" }),
     ).toThrow(/CR, LF, or NUL/);
     expect(() =>
-      collectServerEnv({ KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "a\rb" }),
+      collectServerEnv({ RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "a\rb" }),
     ).toThrow(/CR, LF, or NUL/);
     expect(() =>
-      collectServerEnv({ KHABAR_TABLE_NAME: "khabar-test", ADMIN_KEY: "a\0b" }),
+      collectServerEnv({ RASTABAAZ_TABLE_NAME: "rastabaaz-test", ADMIN_KEY: "a\0b" }),
     ).toThrow(/CR, LF, or NUL/);
   });
 });

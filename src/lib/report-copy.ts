@@ -6,7 +6,7 @@ type Noticed = { noticedAt: string; noticedWindow: NoticedWindow | null; created
 
 /**
  * The line under the headline. It names the landmark and the street, not the
- * place title, so "Footpath on Kaikhushru Dubash Marg" is not said twice.
+ * place title, so "Pothole on Dr Ambedkar Road" is not said twice.
  */
 export function reportAside(report: Noticed, location: LocationRecord): string {
   const landmark = nearestLandmarkName(location.lat, location.lng);

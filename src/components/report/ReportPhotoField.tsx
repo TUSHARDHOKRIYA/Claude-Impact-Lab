@@ -41,13 +41,13 @@ export function ReportPhotoField({
 
   return (
     <div>
-      <h2 id="report-step-heading" tabIndex={-1} className="rh-step-heading ux4g-title-l-strong">
+      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
         Photograph the problem
       </h2>
-      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rh-measure">Get the road and a shop sign or landmark in the frame.</p>
+      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rb-measure">Get the road and a shop sign or landmark in the frame.</p>
 
       {preview ? (
-        <figure className="rh-viewfinder rh-viewfinder-filled">
+        <figure className="rb-viewfinder rb-viewfinder-filled">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={preview} alt="Your photo of the road problem" />
         </figure>
@@ -55,18 +55,18 @@ export function ReportPhotoField({
         <button
           id="photo-take"
           type="button"
-          className="rh-viewfinder"
+          className="rb-viewfinder"
           aria-describedby={error ? "photo-error" : undefined}
           aria-busy={busy || undefined}
           onClick={openCamera}
         >
           <CameraIcon />
           <span className="ux4g-title-l-strong">{busy ? "Preparing photo…" : "Take a photo"}</span>
-          <span className="ux4g-body-s-default rh-viewfinder-sub">Opens your camera</span>
+          <span className="ux4g-body-s-default rb-viewfinder-sub">Opens your camera</span>
         </button>
       )}
 
-      <div className="rh-photo-actions">
+      <div className="rb-photo-actions">
         {preview ? (
           <button
             id="photo-take"

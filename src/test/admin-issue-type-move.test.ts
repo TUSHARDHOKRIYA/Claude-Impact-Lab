@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { CITY } from "@/lib/city";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import type { CreateReportInput } from "@/lib/types";
 
 import { sampleJpegDataUrl } from "./sample-jpeg";
@@ -26,10 +26,10 @@ function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInp
  * one, which no later report of the corrected type could ever join.
  */
 describe("changing a report's problem at the desk", () => {
-  let repo: MemoryKhabarRepository;
+  let repo: MemoryRastabaazRepository;
 
   beforeEach(() => {
-    repo = new MemoryKhabarRepository({ strictPhoto: false });
+    repo = new MemoryRastabaazRepository({ strictPhoto: false });
   });
 
   it("moves the report to a place for the new problem", async () => {

@@ -8,7 +8,7 @@ export default function OpenGraphImage() {
     (
       <div
         style={{
-          background: "white",
+          background: "#1d272d",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -17,11 +17,11 @@ export default function OpenGraphImage() {
           padding: "80px",
         }}
       >
-        <div style={{ color: "#1157ce", fontSize: 72, fontWeight: 700, lineHeight: 1.1 }}>
-          Kala Ghoda Khabar
+        <div style={{ color: "#ffffff", fontSize: 80, fontWeight: 700, lineHeight: 1.1 }}>
+          Rastabaaz
         </div>
-        <div style={{ color: "#1157ce", fontSize: 36, marginTop: 28 }}>
-          Report a street condition in Kala Ghoda.
+        <div style={{ color: "#f5c400", fontSize: 36, marginTop: 28 }}>
+          Where Mumbai&apos;s monsoon road money went, and whether the fix held.
         </div>
       </div>
     ),

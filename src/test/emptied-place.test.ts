@@ -5,7 +5,7 @@ vi.mock("server-only", () => ({}));
 import { CITY } from "@/lib/city";
 import { getMapInsights, getPlacePage, listPlaces } from "@/lib/queries";
 import { setRepositoryForTests } from "@/lib/repo/context";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import type { CreateReportInput } from "@/lib/types";
 
 function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInput {
@@ -32,10 +32,10 @@ function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInp
  * reported.
  */
 describe("a place a move emptied", () => {
-  let repo: MemoryKhabarRepository;
+  let repo: MemoryRastabaazRepository;
 
   beforeEach(() => {
-    repo = new MemoryKhabarRepository({ strictPhoto: false });
+    repo = new MemoryRastabaazRepository({ strictPhoto: false });
     setRepositoryForTests(repo);
   });
 

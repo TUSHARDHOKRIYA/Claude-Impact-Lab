@@ -50,7 +50,6 @@ describe("home page copy", () => {
     expect(map).toMatch(/Map of reports/);
     expect(map).toMatch(/InsightStrip/);
     expect(map).toMatch(/MapFilters/);
-    expect(map).toMatch(/findDubashPlace/);
     expect(map).toMatch(/dynamic = "force-dynamic"/);
     expect(map).toMatch(/Promise\.all/);
     expect(map).toMatch(/SUBMITTED_BANNER/);
@@ -92,7 +91,7 @@ describe("report-first public pages", () => {
   it("labels the not-found return control exactly", () => {
     const source = read("src/app/not-found.tsx");
     expect(source).toMatch(/GovButton/);
-    expect(source).toMatch(/Return to Kala Ghoda records/);
+    expect(source).toMatch(/Go to the wards/);
     expect(source).toMatch(/href="\/map"/);
     expect(source).not.toMatch(/Return to the map/);
   });
@@ -134,17 +133,17 @@ describe("report-first public pages", () => {
     expect(source.indexOf("<dt")).toBeLessThan(source.indexOf("<dd"));
   });
 
-  it("composes the desktop report column and Dubash card at 64rem", () => {
+  it("composes the desktop report column and featured place card at 64rem", () => {
     const layout = read("src/styles/layout.css");
-    expect(layout).toMatch(/\.kg-home-intro/);
-    expect(layout).toMatch(/\.kg-home-cta/);
+    expect(layout).toMatch(/\.rb-home-intro/);
+    expect(layout).toMatch(/\.rb-home-cta/);
     expect(layout).not.toMatch(
-      /\.kg-home-cta[^{]*\{[^}]*safe-area-inset-bottom/,
+      /\.rb-home-cta[^{]*\{[^}]*safe-area-inset-bottom/,
     );
-    expect(layout).not.toMatch(/\.kg-home\s*\{[^}]*overflow-x:\s*hidden/);
+    expect(layout).not.toMatch(/\.rb-home\s*\{[^}]*overflow-x:\s*hidden/);
     expect(layout).toMatch(/overflow-wrap:\s*(anywhere|break-word)/);
     const desktop = layout.match(
-      /@media\s*\(\s*min-width:\s*64rem\s*\)\s*\{[\s\S]*?\.kg-home-intro\s*\{([^}]+)\}/,
+      /@media\s*\(\s*min-width:\s*64rem\s*\)\s*\{[\s\S]*?\.rb-home-intro\s*\{([^}]+)\}/,
     );
     expect(desktop?.[1], "desktop intro grid").toMatch(/grid-template-columns/);
     expect(lines("src/styles/layout.css")).toBeLessThanOrEqual(300);

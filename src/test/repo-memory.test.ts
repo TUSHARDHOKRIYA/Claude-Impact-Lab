@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { getReportPage } from "@/lib/queries/reports";
 import { PAVING_SLUG } from "@/lib/seed-paving";
 import type { CreateReportInput } from "@/lib/types";
@@ -24,9 +24,9 @@ function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   };
 }
 
-describe("MemoryKhabarRepository", () => {
+describe("MemoryRastabaazRepository", () => {
   it("creates a location and a report together", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const created = await repo.createReport(input());
     expect(created.report.locationId).toBe(created.location.id);
     expect(created.connectedCount).toBe(0);
@@ -35,7 +35,7 @@ describe("MemoryKhabarRepository", () => {
   });
 
   it("reuses a location within 40 metres", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const first = await repo.createReport(input());
     const second = await repo.createReport(input({ lat: 18.92981, lng: 72.83281 }));
     expect(second.location.id).toBe(first.location.id);
@@ -43,7 +43,7 @@ describe("MemoryKhabarRepository", () => {
   });
 
   it("omits photo from catalog reports", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     await repo.createReport(input());
     const catalog = await repo.loadCatalog();
     expect(catalog.reports).toHaveLength(1);
@@ -51,7 +51,7 @@ describe("MemoryKhabarRepository", () => {
   });
 
   it("stores the voice transcript but strips it from catalog reports", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const created = await repo.createReport(
       input({ voiceTranscript: "mixed transcript" }),
     );
@@ -66,7 +66,7 @@ describe("MemoryKhabarRepository", () => {
   });
 
   it("seeds once for version 2026-09-08-v1", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     expect(await repo.putSeedMarker("2026-09-08-v1")).toBe(true);
     expect(await repo.putSeedMarker("2026-09-08-v1")).toBe(false);
     expect(await repo.getSeedMarker()).toBe("2026-09-08-v1");
@@ -74,19 +74,19 @@ describe("MemoryKhabarRepository", () => {
   });
 
   it("replaces the seed marker when the version changes", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     expect(await repo.putSeedMarker("v1")).toBe(true);
     expect(await repo.putSeedMarker("v2")).toBe(true);
     expect(await repo.getSeedMarker()).toBe("v2");
   });
 
   it("rejects a fake jpeg data url when strictPhoto defaults on", async () => {
-    const repo = new MemoryKhabarRepository();
+    const repo = new MemoryRastabaazRepository();
     await expect(repo.createReport(input())).rejects.toThrow(/JPEG, PNG, or WebP/);
   });
 
   it("does not persist an oversize description under strictPhoto", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: true });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: true });
     await expect(
       repo.createReport(input({ photo: sampleJpegDataUrl(), description: "x".repeat(410000) })),
     ).rejects.toThrow(/too large/);

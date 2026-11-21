@@ -5,8 +5,8 @@ vi.mock("server-only", () => ({}));
 import { CITY } from "@/lib/city";
 import { getPlacePage } from "@/lib/queries";
 import { setRepositoryForTests } from "@/lib/repo/context";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
-import { toListItem, type KhabarRepository } from "@/lib/repo/port";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
+import { toListItem, type RastabaazRepository } from "@/lib/repo/port";
 import type { CreateReportInput, LocationRecord, ReportRecord } from "@/lib/types";
 
 function deferred<T>() {
@@ -32,10 +32,10 @@ function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInp
 }
 
 describe("getPlacePage just after a report is recorded", () => {
-  let repo: MemoryKhabarRepository;
+  let repo: MemoryRastabaazRepository;
 
   beforeEach(() => {
-    repo = new MemoryKhabarRepository({ strictPhoto: false });
+    repo = new MemoryRastabaazRepository({ strictPhoto: false });
     setRepositoryForTests(repo);
   });
 
@@ -143,7 +143,7 @@ describe("getPlacePage catalog fallback confirmation", () => {
         started.push(id);
         return gates[id as keyof typeof gates].promise;
       },
-    } as unknown as KhabarRepository;
+    } as unknown as RastabaazRepository;
     const pending = getPlacePage(fallbackLocation.slug, repo);
     for (let i = 0; i < 15; i++) await Promise.resolve();
     expect(started).toEqual(["rpt_keep", "rpt_gone", "rpt_moved"]);

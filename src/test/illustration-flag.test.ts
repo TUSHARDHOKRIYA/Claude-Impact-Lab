@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { toListItem } from "@/lib/repo/port";
 import { buildSeedItems } from "@/lib/seed/run";
 import { sampleJpegDataUrl } from "@/test/sample-jpeg";
 
 describe("illustration caption flag", () => {
   it("stops captioning a seeded report once the desk gives it a real photo", async () => {
-    const repo = new MemoryKhabarRepository();
+    const repo = new MemoryRastabaazRepository();
     await repo.putSeedItems(buildSeedItems());
     const seeded = buildSeedItems().find((item) => item.entity === "report");
     if (!seeded || seeded.entity !== "report") throw new Error("seed has no report");

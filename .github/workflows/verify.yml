@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 15
     env:
       ADMIN_KEY: ci-admin-key
-      KHABAR_TABLE_NAME: khabar-ci
+      RASTABAAZ_TABLE_NAME: rastabaaz-ci
       AWS_REGION: ap-south-1
     steps:
       - uses: actions/checkout@v4

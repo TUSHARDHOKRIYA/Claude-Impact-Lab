@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { SEED_VERSION } from "@/lib/repo/keys";
 import { RETIRED_HEATMAP_REPORTS } from "@/lib/seed-heatmap";
 import { PAVING_SLUG, seedPaving } from "@/lib/seed-paving";
@@ -7,11 +7,11 @@ import { PREVIOUS_SEED_DESCRIPTIONS } from "@/lib/seed/previous-copy";
 import { buildSeedItems, runSeed } from "@/lib/seed/run";
 
 const REQUIRED_LOCATION_IDS = [
-  "loc_k_dubash_footpath",
+  "loc_ambedkar_pothole",
   "loc_mg_road_surface",
   "loc_rampart_row_waste",
   "loc_jehangir_lighting",
-  "loc_black_horse_parking",
+  "loc_hindmata_waterlogging",
   "loc_max_mueller_drain",
   "loc_csmvs_street",
 ] as const;
@@ -26,9 +26,9 @@ const REQUIRED_REPORT_IDS = [
   "rpt_rampart_waste_202511",
   "rpt_jehangir_light_202412",
   "rpt_jehangir_light_202607",
-  "rpt_horse_park_202505",
-  "rpt_horse_park_202608",
-  "rpt_horse_park_202609",
+  "rpt_hindmata_flood_202505",
+  "rpt_hindmata_flood_202608",
+  "rpt_hindmata_flood_202609",
   "rpt_drain_202609",
   "rpt_csmvs_bench_202510",
 ] as const;
@@ -43,11 +43,11 @@ function entitiesOf(items: ReturnType<typeof buildSeedItems>): string[] {
 
 describe("runSeed", () => {
   it("inserts paving, heatmap, and tender records once", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     expect(await runSeed(repo)).toBe("seeded");
     expect(await runSeed(repo)).toBe("already");
     const catalog = await repo.loadCatalog();
-    expect(catalog.locations.some((row) => row.id === "loc_k_dubash_footpath")).toBe(true);
+    expect(catalog.locations.some((row) => row.id === "loc_ambedkar_pothole")).toBe(true);
     expect(catalog.reports.some((row) => row.id === "rpt_paving_202509")).toBe(true);
     expect(catalog).not.toHaveProperty("interventions");
     expect(entitiesOf(buildSeedItems()).includes("note")).toBe(false);
@@ -58,7 +58,7 @@ describe("runSeed", () => {
     const sample = await repo.getReport("rpt_paving_202208");
     expect(await repo.getReportPhoto("rpt_paving_202208")).toBe("/samples/paving.svg");
     expect(sample?.isSample).toBe(true);
-    expect(catalog.locations.find((row) => row.id === "loc_k_dubash_footpath")?.slug).toBe(PAVING_SLUG);
+    expect(catalog.locations.find((row) => row.id === "loc_ambedkar_pothole")?.slug).toBe(PAVING_SLUG);
     expect(SEED_VERSION).toBe("2026-09-27-v5");
     expect(await repo.getSeedMarker()).toBe(SEED_VERSION);
     for (const id of REQUIRED_LOCATION_IDS) {
@@ -72,7 +72,7 @@ describe("runSeed", () => {
 
   it("deletes a report an earlier seed wrote and this one retired, while it is still the seed's", async () => {
     const [retired] = RETIRED_HEATMAP_REPORTS;
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     // The -v2 seed's museum obstruction report, stored as that seed wrote it.
     await repo.putSeedItems([{ entity: "report", record: retired }]);
     expect(await repo.getReport(retired.id)).not.toBeNull();
@@ -83,12 +83,12 @@ describe("runSeed", () => {
 
   it("keeps a retired seed report the desk has edited or annotated", async () => {
     const [retired] = RETIRED_HEATMAP_REPORTS;
-    const edited = new MemoryKhabarRepository({ strictPhoto: false });
+    const edited = new MemoryRastabaazRepository({ strictPhoto: false });
     await edited.putSeedItems([{ entity: "report", record: { ...retired, description: "Corrected by the desk." } }]);
     await runSeed(edited);
     expect(await edited.getReport(retired.id)).not.toBeNull();
 
-    const annotated = new MemoryKhabarRepository({ strictPhoto: false });
+    const annotated = new MemoryRastabaazRepository({ strictPhoto: false });
     await annotated.putSeedItems([{ entity: "report", record: retired }]);
     await annotated.addDeskNote(retired.id, "Inspected on site.");
     await runSeed(annotated);
@@ -96,7 +96,7 @@ describe("runSeed", () => {
   });
 
   it("returns already without writing when the marker exists", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     expect(await repo.putSeedMarker(SEED_VERSION)).toBe(true);
     expect(await runSeed(repo)).toBe("already");
     const catalog = await repo.loadCatalog();
@@ -118,12 +118,12 @@ describe("re-seeding a report the previous version already stored", () => {
       ...current,
       record: { ...current.record, description: PREVIOUS_SEED_DESCRIPTIONS.rpt_paving_202509 },
     };
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     await repo.putSeedItems([previous]);
     await repo.putSeedItems([current]);
     expect((await repo.getReport(current.record.id))?.description).toBe(current.record.description);
 
-    const edited = new MemoryKhabarRepository({ strictPhoto: false });
+    const edited = new MemoryRastabaazRepository({ strictPhoto: false });
     await edited.putSeedItems([{ ...current, record: { ...current.record, description: "Corrected by the desk." } }]);
     await edited.putSeedItems([current]);
     expect((await edited.getReport(current.record.id))?.description).toBe("Corrected by the desk.");
@@ -131,7 +131,7 @@ describe("re-seeding a report the previous version already stored", () => {
 
   it("clears the illustration flag when a desk photo is already stored", async () => {
     const current = pavingReport("rpt_paving_202208");
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     await repo.putSeedItems([{ ...current, record: { ...current.record, photo: "data:image/jpeg;base64,desk" } }]);
     expect((await repo.getReport(current.record.id))?.isSample).toBe(true);
     await repo.putSeedItems([current]);

@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Kala Ghoda Khabar single-table DynamoDB
+Description: Rastabaaz single-table DynamoDB
 Parameters:
   TableName:
     Type: String
-    Default: khabar
+    Default: rastabaaz
 Resources:
-  KhabarTable:
+  RastabaazTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Ref TableName
@@ -78,6 +78,6 @@ Resources:
               - body
 Outputs:
   TableName:
-    Value: !Ref KhabarTable
+    Value: !Ref RastabaazTable
   TableArn:
-    Value: !GetAtt KhabarTable.Arn
+    Value: !GetAtt RastabaazTable.Arn

@@ -41,11 +41,11 @@ export function GovChoiceGroup<T extends string>({
   const describedBy = [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") || undefined;
   return (
     <fieldset
-      className={["ux4g-form-group rh-choice-group", className].filter(Boolean).join(" ")}
+      className={["ux4g-form-group rb-choice-group", className].filter(Boolean).join(" ")}
       aria-invalid={error ? true : undefined}
       aria-describedby={describedBy}
     >
-      <legend className={hideLegend ? "sr-only" : "rh-legend ux4g-heading-xs-strong"}>
+      <legend className={hideLegend ? "sr-only" : "rb-legend ux4g-heading-xs-strong"}>
         {legend}
         {badge}
       </legend>
@@ -54,7 +54,7 @@ export function GovChoiceGroup<T extends string>({
           {hint}
         </p>
       ) : null}
-      <div className={columns === 2 ? "rh-options rh-options-2" : "rh-options"}>
+      <div className={columns === 2 ? "rb-options rb-options-2" : "rb-options"}>
         {options.map((option) => (
           <GovChoice
             key={option.value}

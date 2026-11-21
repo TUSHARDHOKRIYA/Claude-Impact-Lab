@@ -26,7 +26,7 @@ export default function ContractorsPage() {
   );
 
   return (
-    <div className="shell rh-page">
+    <div className="shell rb-page">
       <nav className="ux4g-breadcrumb ux4g-breadcrumb-divider" aria-label="Breadcrumb">
         <ol className="ux4g-breadcrumb-list flex">
           <li className="ux4g-breadcrumb-item">
@@ -40,12 +40,12 @@ export default function ContractorsPage() {
         </ol>
       </nav>
       <h1 className="ux4g-display-xs-strong ux4g-mt-xs">Who did the work, and did it hold?</h1>
-      <p className="ux4g-body-l-default ux4g-text-neutral-secondary ux4g-mt-xs rh-measure">
+      <p className="ux4g-body-l-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
         Each contractor&apos;s re-open rate sits next to a fair one: what we would expect for the same kinds of job in
         equally flood-prone wards. The furthest above fair come first.
       </p>
 
-      <ul className="rh-score-grid ux4g-mt-l">
+      <ul className="rb-score-grid ux4g-mt-l">
         {rows.map((score) => {
           const gap = score.reopenRate - score.expectedReopenRate;
           const flagKinds = (Object.keys(score.flags) as AuditFlagKind[]).filter((kind) => score.flags[kind] > 0);
@@ -72,7 +72,7 @@ export default function ContractorsPage() {
                     <GovBadge tone="neutral" small>About fair</GovBadge>
                   )}
                 </div>
-                <dl className="rh-score-facts ux4g-mt-s">
+                <dl className="rb-score-facts ux4g-mt-s">
                   <div>
                     <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">Finished on time</dt>
                     <dd className="ux4g-body-m-strong">{pct(score.slaRate)}</dd>
@@ -87,7 +87,7 @@ export default function ContractorsPage() {
                   </div>
                 </dl>
                 {flagKinds.length ? (
-                  <ul className="ux4g-body-s-default rh-score-flags ux4g-mt-s">
+                  <ul className="ux4g-body-s-default rb-score-flags ux4g-mt-s">
                     {flagKinds.map((kind) => (
                       <li key={kind}>
                         {FLAG_LABELS[kind]}: {score.flags[kind]}

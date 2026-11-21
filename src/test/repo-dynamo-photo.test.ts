@@ -7,7 +7,7 @@ const send = vi.fn();
 
 vi.mock("@/lib/repo/dynamo-client", () => ({
   getDocClient: () => ({ send }),
-  getTableName: () => "khabar-test",
+  getTableName: () => "rastabaaz-test",
 }));
 
 const REPORT_ITEM = {
@@ -31,17 +31,17 @@ const REPORT_ITEM = {
 const LOCATION = {
   type: "location",
   id: "loc_1",
-  name: "Footpath on Kaikhushru Dubash Marg",
-  slug: "dubash-footpath",
+  name: "Pothole on Dr Ambedkar Road",
+  slug: "ambedkar-pothole",
   issueType: "footpath",
   lat: 18.9298,
   lng: 72.8328,
-  street: "K Dubash Marg",
+  street: "Dr Ambedkar Road",
   ward: "A Ward",
   createdAt: "2026-01-01T00:00:00.000Z",
 };
 
-let DynamoKhabarRepository: typeof import("@/lib/repo/dynamo").DynamoKhabarRepository;
+let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaazRepository;
 let ScanCommand: typeof import("@aws-sdk/lib-dynamodb").ScanCommand;
 
 function citizenInput(): CreateReportInput {
@@ -107,7 +107,7 @@ function photoBesideReport(command: { input?: { TransactItems?: { Put?: { Item: 
 describe("Dynamo photo and catalog reads", () => {
   beforeAll(async () => {
     ({ ScanCommand } = await import("@aws-sdk/lib-dynamodb"));
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -116,7 +116,7 @@ describe("Dynamo photo and catalog reads", () => {
 
   it("getReportPhoto reads the PHOTO item and falls back to a legacy META photo", async () => {
     send.mockResolvedValueOnce({ Item: { pk: "RPT#rpt_1", sk: "PHOTO", photo: "data:image/jpeg;base64,aa" } });
-    const photo = await new DynamoKhabarRepository().getReportPhoto("rpt_1");
+    const photo = await new DynamoRastabaazRepository().getReportPhoto("rpt_1");
     expect(send.mock.calls[0]?.[0].input.Key).toEqual({ pk: "RPT#rpt_1", sk: "PHOTO" });
     expect(photo).toBe("data:image/jpeg;base64,aa");
 
@@ -124,7 +124,7 @@ describe("Dynamo photo and catalog reads", () => {
     send
       .mockResolvedValueOnce({ Item: undefined })
       .mockResolvedValueOnce({ Item: { ...REPORT_ITEM, photo: "data:image/jpeg;base64,legacy" } });
-    const legacy = await new DynamoKhabarRepository().getReportPhoto("rpt_1");
+    const legacy = await new DynamoRastabaazRepository().getReportPhoto("rpt_1");
     expect(send.mock.calls[1]?.[0].input.Key).toEqual({ pk: "RPT#rpt_1", sk: "META" });
     expect(legacy).toBe("data:image/jpeg;base64,legacy");
   });
@@ -139,7 +139,7 @@ describe("Dynamo photo and catalog reads", () => {
       }
       return { Items: items, LastEvaluatedKey: undefined };
     });
-    const catalog = await new DynamoKhabarRepository().loadCatalog();
+    const catalog = await new DynamoRastabaazRepository().loadCatalog();
     const queries = send.mock.calls.map((call) => call[0].input);
     expect(queries.map((input) => input.IndexName)).toEqual(["byType", "byType", "byType"]);
     expect(queries.map((input) => input.ExpressionAttributeValues[":type"])).toEqual(["location", "report", "note"]);
@@ -164,7 +164,7 @@ describe("Dynamo photo and catalog reads", () => {
       if (command.constructor?.name === "ScanCommand") return { Items: [REPORT_ITEM] };
       return Promise.reject(missing);
     });
-    const catalog = await new DynamoKhabarRepository().loadCatalog();
+    const catalog = await new DynamoRastabaazRepository().loadCatalog();
     expect(send.mock.calls.some((call) => call[0] instanceof ScanCommand)).toBe(true);
     expect(catalog.reports[0]?.id).toBe("rpt_1");
     expect(warn).toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe("Dynamo photo and catalog reads", () => {
       if (command.input?.IndexName === "gsi2") return { Items: [LOCATION] };
       return { Items: [] };
     });
-    await new DynamoKhabarRepository().createReport(citizenInput());
+    await new DynamoRastabaazRepository().createReport(citizenInput());
     const transact = send.mock.calls.map(([command]) => command).find((command) => command.constructor?.name === "TransactWriteCommand");
     photoBesideReport(transact);
     expect(toPhotoItem("rpt_1", "data:image/jpeg;base64,aa")).toEqual({
@@ -189,7 +189,7 @@ describe("Dynamo photo and catalog reads", () => {
 
   it("writes the photo in the same transact when the place is new", async () => {
     send.mockResolvedValue({ Items: [] });
-    await new DynamoKhabarRepository().createReport(citizenInput());
+    await new DynamoRastabaazRepository().createReport(citizenInput());
     const transact = send.mock.calls.map(([command]) => command).find((command) => command.constructor?.name === "TransactWriteCommand");
     photoBesideReport(transact);
     const puts = transact.input.TransactItems as { Put?: { Item: Record<string, unknown> } }[];

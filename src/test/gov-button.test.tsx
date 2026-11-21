@@ -67,8 +67,8 @@ describe("GovButton", () => {
   });
 
   it("does not prevent navigation on an enabled link", () => {
-    render(<GovButton href="/">Return to Kala Ghoda records</GovButton>);
-    const link = screen.getByRole("link", { name: "Return to Kala Ghoda records" });
+    render(<GovButton href="/">Go to the wards</GovButton>);
+    const link = screen.getByRole("link", { name: "Go to the wards" });
     expect(link).not.toHaveAttribute("aria-disabled");
     expect(fireEvent.click(link)).toBe(true);
   });

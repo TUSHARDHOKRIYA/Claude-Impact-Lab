@@ -6,8 +6,8 @@ import {
 } from "@/components/map/HeatLayer";
 import { readMarkerColors } from "@/components/map/map-style";
 
-export const POINT_LAYER = "kg-points";
-export const COUNT_LAYER = "kg-cluster-count";
+export const POINT_LAYER = "rb-points";
+export const COUNT_LAYER = "rb-cluster-count";
 
 /**
  * Draw one dot larger. A report id marks that report; otherwise every dot at
@@ -52,7 +52,7 @@ export function ensureReportLayers(map: MapLibreMap) {
         ["get", "point_count"],
         mark.enamel,
         4,
-        mark.horse,
+        mark.dark,
         8,
         mark.oxide,
       ],
@@ -89,7 +89,7 @@ export function ensureReportLayers(map: MapLibreMap) {
         "road_cave_in",
         mark.oxide,
         "open_manhole",
-        mark.horse,
+        mark.dark,
         "waterlogging",
         mark.enamel,
         "choked_drain",

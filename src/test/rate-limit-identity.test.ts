@@ -22,7 +22,7 @@ vi.mock("next/headers", () => ({
 
 import { createReportAction } from "@/lib/actions";
 import { setRepositoryForTests } from "@/lib/repo/context";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { resetRateLimits } from "@/lib/rate-limit";
 import { CITY } from "@/lib/city";
 
@@ -54,7 +54,7 @@ async function submit(): Promise<string | null> {
 describe("the citizen write limiter binds to an identity", () => {
   beforeEach(() => {
     resetRateLimits();
-    setRepositoryForTests(new MemoryKhabarRepository({ strictPhoto: false }));
+    setRepositoryForTests(new MemoryRastabaazRepository({ strictPhoto: false }));
     requestHeaders = new Headers();
   });
 

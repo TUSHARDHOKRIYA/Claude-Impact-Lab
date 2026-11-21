@@ -8,7 +8,7 @@ import type { VoiceFormPatch } from "./contracts";
  * else". The photo is taken before the conversation starts. Place only counts
  * once the person confirms the pin themselves; voice can only propose one.
  */
-export const ASK_SLOTS = ["issue_type", "noticed_window", "recurs", "affects", "place", "description"] as const;
+export const ASK_SLOTS = ["issue_type", "noticed_window", "recurs", "place", "description"] as const;
 export type AskSlot = (typeof ASK_SLOTS)[number];
 
 /** Every reply the assistant can speak without echoing user speech. */
@@ -26,7 +26,6 @@ export type VoiceFormValues = {
   issueType: string;
   noticedWindow: string;
   recurs: string;
-  affects: readonly string[];
   description: string;
   /** The person tapped "Yes, this is the spot". */
   placeConfirmed: boolean;
@@ -51,7 +50,6 @@ export function filledSlots(values: VoiceFormValues): AskSlot[] {
   if (values.issueType) filled.push("issue_type");
   if ((NOTICED_WINDOWS as readonly string[]).includes(values.noticedWindow)) filled.push("noticed_window");
   if (values.recurs === "true" || values.recurs === "false") filled.push("recurs");
-  if (values.affects.length > 0) filled.push("affects");
   if (values.placeConfirmed) filled.push("place");
   if (values.descriptionDone || values.description.trim()) filled.push("description");
   return filled;
@@ -62,7 +60,6 @@ export function patchSlots(patch: VoiceFormPatch): AskSlot[] {
   if (patch.issueType) filled.push("issue_type");
   if (patch.noticedWindow) filled.push("noticed_window");
   if (patch.recurs) filled.push("recurs");
-  if (patch.affects && patch.affects.length > 0) filled.push("affects");
   if (patch.description?.trim()) filled.push("description");
   return filled;
 }
@@ -93,7 +90,6 @@ const TEMPLATES: Record<LabelLanguage, Templates> = {
     noticed_window:
       "When did you notice it? Today, this week, this month, 1 to 6 months ago, or more than six months ago.",
     recurs: "Does it keep coming back after it is cleared?",
-    affects: "Who does it affect? For example people walking, wheelchairs, or shops nearby.",
     place: "Where is it? Say a nearby landmark or shop, or pick one below. Then check the pin on the map.",
     place_confirm: "Is the pin in the right spot? Drag it if not, then tap Yes.",
     place_tap: "To confirm the place, check the map and tap “Yes, this is the spot”.",
@@ -109,7 +105,6 @@ const TEMPLATES: Record<LabelLanguage, Templates> = {
     noticed_window:
       "आपने यह कब देखा? आज, इस हफ़्ते, इस महीने, एक से छह महीने पहले, या छह महीने से ज़्यादा?",
     recurs: "क्या यह साफ़ होने के बाद फिर से हो जाता है?",
-    affects: "इससे किसे परेशानी होती है? जैसे पैदल चलने वाले, व्हीलचेयर, या आसपास की दुकानें।",
     place: "यह कहाँ है? पास की किसी जगह या दुकान का नाम बोलिए, या नीचे से चुनिए। फिर नक्शे पर पिन देख लीजिए।",
     place_confirm: "क्या पिन सही जगह पर है? नहीं तो उसे खिसकाइए, फिर हाँ दबाइए।",
     place_tap: "जगह पक्की करने के लिए नक्शा देखिए और “हाँ, यही जगह है” दबाइए।",
@@ -125,7 +120,6 @@ const TEMPLATES: Record<LabelLanguage, Templates> = {
     noticed_window:
       "तुम्ही हे कधी पाहिलं? आज, या आठवड्यात, या महिन्यात, एक ते सहा महिन्यांपूर्वी, किंवा सहा महिन्यांपेक्षा जास्त?",
     recurs: "साफ केल्यानंतर हे पुन्हा पुन्हा होतं का?",
-    affects: "याचा त्रास कोणाला होतो? जसं पायी चालणारे, व्हीलचेअर, किंवा आजूबाजूची दुकानं.",
     place: "हे कुठे आहे? जवळच्या एखाद्या ठिकाणाचं किंवा दुकानाचं नाव सांगा, किंवा खालून निवडा. मग नकाशावर पिन तपासा.",
     place_confirm: "पिन बरोबर ठिकाणी आहे का? नसेल तर ती हलवा, मग होय दाबा.",
     place_tap: "जागा निश्चित करण्यासाठी नकाशा पाहा आणि “होय, हीच जागा” दाबा.",

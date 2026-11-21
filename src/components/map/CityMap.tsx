@@ -58,9 +58,13 @@ export function CityMap({
     const instance = new maplibregl.Map({
       container: node,
       style: osmStyle(),
-      center: [CITY.center.lng, CITY.center.lat],
-      zoom: CITY.defaultZoom,
-      minZoom: 14,
+      // Open on the whole city: Mumbai is tall and thin, so fit its bounds rather than a fixed zoom.
+      bounds: [
+        [CITY.bounds.west, CITY.bounds.south],
+        [CITY.bounds.east, CITY.bounds.north],
+      ],
+      fitBoundsOptions: { padding: 8 },
+      minZoom: 9,
       maxZoom: 19,
       maxBounds: [
         [CITY.bounds.west, CITY.bounds.south],

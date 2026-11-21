@@ -48,13 +48,6 @@ export function checkDescription(check: DescriptionCheck, text: string): boolean
   return !check.mustNotMention.some((word) => lower.includes(word.toLowerCase()));
 }
 
-function sameSet(a: readonly string[], b: readonly string[]): boolean {
-  if (a.length !== b.length) return false;
-  const left = [...a].sort();
-  const right = [...b].sort();
-  return left.every((value, index) => value === right[index]);
-}
-
 function show(value: NormalizedCall["value"] | null): string | null {
   if (value === null) return null;
   return Array.isArray(value) ? value.join("+") : value;
@@ -93,19 +86,6 @@ function gradeSlot(
     if (!present) return { verdict: "missed", expected: label };
     const matches = typeof got === "string" && (allowed as string[]).includes(got);
     return { verdict: matches ? "correct" : "wrong", expected: label };
-  }
-
-  if (slot === "affects") {
-    const want = expected.affects;
-    if (want.length === 0) {
-      return { verdict: present ? "hallucinated" : "correct_abstain", expected: "(no call)" };
-    }
-    const label = want.join("+");
-    if (!present) return { verdict: "missed", expected: label };
-    return {
-      verdict: Array.isArray(got) && sameSet(got, want) ? "correct" : "wrong",
-      expected: label,
-    };
   }
 
   const want =

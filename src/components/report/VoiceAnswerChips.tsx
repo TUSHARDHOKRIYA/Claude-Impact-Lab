@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { affectsLabel, issueTypeLabel, noticedWindowLabel, type LabelLanguage } from "@/lib/chip-labels";
+import { issueTypeLabel, noticedWindowLabel, type LabelLanguage } from "@/lib/chip-labels";
 import { isInsideCity, LANDMARKS } from "@/lib/city";
-import { AFFECTS, ISSUE_TYPES, NOTICED_WINDOWS, type Affects } from "@/lib/types";
+import { ISSUE_TYPES, NOTICED_WINDOWS } from "@/lib/types";
 import type { AskSlot } from "@/lib/voice/conversation";
 import type { VoiceCopy } from "@/lib/voice/voice-copy";
 import type { MapPoint } from "./use-voice-conversation";
@@ -18,7 +18,6 @@ export function chipClass(pressed = false): string {
 
 export type ChipHandlers = {
   onAnswer: (answer: VoiceAnswer, label: string) => void;
-  onFinishAffects: (label: string) => void;
   onPlace: (pin: MapPoint, label: string) => void;
   onSkipDescription: (label: string) => void;
   onConfirm: (yes: boolean, label: string) => void;
@@ -104,7 +103,6 @@ function PlaceChips({ copy, disabled, onPlace }: { copy: VoiceCopy; disabled: bo
 export function VoiceAnswerChips({
   ask,
   confirming,
-  affects,
   lang,
   copy,
   disabled,
@@ -112,7 +110,6 @@ export function VoiceAnswerChips({
 }: {
   ask: AskSlot | null;
   confirming: boolean;
-  affects: readonly Affects[];
   lang: LabelLanguage;
   copy: VoiceCopy;
   disabled: boolean;
@@ -168,34 +165,6 @@ export function VoiceAnswerChips({
         {options.map(([value, label]) => (
           <Chip key={value} label={label} disabled={disabled} onClick={() => handlers.onAnswer({ slot: "recurs", value }, label)} />
         ))}
-      </div>
-    );
-  }
-
-  if (ask === "affects") {
-    const chosen = affects.map((item) => affectsLabel(lang, item)).join(", ");
-    return (
-      <div className={row} role="group" aria-label={copy.fields.affects}>
-        {AFFECTS.map((item) => {
-          const label = affectsLabel(lang, item);
-          return (
-            <Chip
-              key={item}
-              label={label}
-              pressed={affects.includes(item)}
-              disabled={disabled}
-              onClick={() => handlers.onAnswer({ slot: "affects", value: item }, label)}
-            />
-          );
-        })}
-        <button
-          type="button"
-          className="min-h-11 rounded-full bg-enamel px-5 py-2 text-sm font-semibold text-white focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-enamel disabled:opacity-50"
-          disabled={disabled || affects.length === 0}
-          onClick={() => handlers.onFinishAffects(chosen)}
-        >
-          {copy.done}
-        </button>
       </div>
     );
   }

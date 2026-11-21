@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { Affects, IssueType, NoticedWindow } from "@/lib/types";
+import type { IssueType, NoticedWindow } from "@/lib/types";
 import {
   MAX_VOICE_TRANSCRIPT_CHARS,
   type VoiceFormPatch,
@@ -9,23 +9,21 @@ import {
 } from "@/lib/voice/contracts";
 
 export type VoiceField = keyof VoiceFormPatch;
-type FieldValue = string | readonly string[];
+type FieldValue = string;
 
 /** Udyam-Saathi's scan conflict: voice heard X, the person already chose Y. */
 export type VoiceConflict = { field: VoiceField; existing: FieldValue; incoming: FieldValue };
 
-/** A chip tap in the conversation. Affects toggles; the rest set one value. */
+/** A chip tap in the conversation. Each sets one value. */
 export type VoiceAnswer =
   | { slot: "issue_type"; value: IssueType }
   | { slot: "noticed_window"; value: NoticedWindow }
-  | { slot: "recurs"; value: "true" | "false" }
-  | { slot: "affects"; value: Affects };
+  | { slot: "recurs"; value: "true" | "false" };
 
 export type ReportVoiceValues = {
   issueType: IssueType | "";
   noticedWindow: NoticedWindow | "";
   recurs: "" | "true" | "false";
-  affects: Affects[];
   description: string;
 };
 
@@ -34,7 +32,6 @@ export type ReportVoiceWriters = {
   issueType: (value: IssueType) => void;
   noticedWindow: (value: NoticedWindow) => void;
   recurs: (value: "true" | "false") => void;
-  affects: (value: Affects[]) => void;
   description: (value: string) => void;
   pin: (next: { lat: number; lng: number }) => void;
 };
@@ -43,16 +40,14 @@ const SLOT_FIELD = {
   issue_type: "issueType",
   noticed_window: "noticedWindow",
   recurs: "recurs",
-  affects: "affects",
 } as const satisfies Record<VoiceAnswer["slot"], VoiceField>;
 
 function isEmpty(value: FieldValue): boolean {
-  return typeof value === "string" ? value === "" : value.length === 0;
+  return value === "";
 }
 
 function same(a: FieldValue, b: FieldValue): boolean {
-  if (typeof a === "string" || typeof b === "string") return a === b;
-  return a.length === b.length && [...a].sort().join() === [...b].sort().join();
+  return a === b;
 }
 
 /** Each turn is appended, so a bare "kal" keeps the sentence it answered. */
@@ -81,7 +76,6 @@ export function useReportVoice(values: ReportVoiceValues, write: ReportVoiceWrit
     if (field === "issueType") to.issueType(value as IssueType);
     else if (field === "noticedWindow") to.noticedWindow(value as NoticedWindow);
     else if (field === "recurs") to.recurs(value as "true" | "false");
-    else if (field === "affects") to.affects([...(value as Affects[])]);
     else to.description(value as string);
   }
 
@@ -126,12 +120,7 @@ export function useReportVoice(values: ReportVoiceValues, write: ReportVoiceWrit
   }
 
   function answer(input: VoiceAnswer) {
-    if (input.slot === "affects") {
-      const has = values.affects.includes(input.value);
-      write.affects(has ? values.affects.filter((item) => item !== input.value) : [...values.affects, input.value]);
-    } else {
-      writeField(SLOT_FIELD[input.slot], input.value);
-    }
+    writeField(SLOT_FIELD[input.slot], input.value);
     userEdited(SLOT_FIELD[input.slot]);
   }
 

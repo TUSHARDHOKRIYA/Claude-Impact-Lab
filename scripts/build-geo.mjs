@@ -78,14 +78,6 @@ const CATEGORY_TYPE = {
   "Road cave-in": "road_cave_in",
   "Broken paver blocks": "broken_paver_blocks",
 };
-const TYPE_AFFECTS = {
-  pothole: ["two_wheelers", "cars_and_autos"],
-  waterlogging: ["walking", "buses"],
-  open_manhole: ["walking", "school_route"],
-  choked_drain: ["walking"],
-  road_cave_in: ["cars_and_autos", "buses"],
-  broken_paver_blocks: ["walking", "wheeling"],
-};
 const complaints = csv("complaints.csv").filter(
   (c) => c.channel === "MyBMC App" && c.lat && c.ward_code && CATEGORY_TYPE[c.category_reported] && c.language === "en",
 );
@@ -107,7 +99,6 @@ for (const c of complaints) {
     noticedAt: c.received_at.slice(0, 10),
     recurs: Number(c.upvotes) >= 20,
     accident: Number(c.upvotes) >= 40 ? "near_miss" : "not_sure",
-    affects: TYPE_AFFECTS[issueType],
     description: c.description.slice(0, 280),
     status: c.status,
   });

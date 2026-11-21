@@ -264,7 +264,6 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
       noticedWindow: input.noticedWindow ?? null,
       recurs: input.recurs,
       accident: input.accident ?? null,
-      affects: input.affects,
       description: input.description,
       isSample: false,
       createdAt: new Date().toISOString(),

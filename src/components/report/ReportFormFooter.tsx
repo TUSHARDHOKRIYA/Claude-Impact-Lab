@@ -10,7 +10,6 @@ type ReportFormFooterProps = {
   noticedWindow: string;
   recurs: string;
   accident: string;
-  affects: string;
   description: string;
   locationConfirmed: string;
   voiceTranscript: string;
@@ -34,7 +33,6 @@ export function ReportFormFooter(props: ReportFormFooterProps) {
       <input type="hidden" name="noticedWindow" value={props.noticedWindow} />
       <input type="hidden" name="recurs" value={props.recurs} />
       <input type="hidden" name="accident" value={props.accident} />
-      <input type="hidden" name="affects" value={props.affects} />
       <input type="hidden" name="description" value={props.description} />
       <input type="hidden" name="locationConfirmed" value={props.locationConfirmed} />
       <input type="hidden" name="voiceTranscript" value={props.voiceTranscript} />

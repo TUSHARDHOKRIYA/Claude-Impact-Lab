@@ -22,7 +22,6 @@ export function groundTruthCalls(fixture: VoiceFixture, _now = new Date()): RawT
     push("save_noticed_window", { noticed_window: expected.noticed_window });
   }
   if (expected.recurs) push("save_recurs", { recurs: expected.recurs });
-  if (expected.affects.length > 0) push("save_affects", { affects: expected.affects });
   if (expected.description) {
     const words = expected.description.mustMention.map((group) => group[0]);
     push("save_description", { description: `The ${words.join(" and the ")} were reported.` });
@@ -47,7 +46,6 @@ export function sloppyModelCalls(fixture: VoiceFixture, now = new Date()): RawTo
     { name: "save_issue_type", argumentsJson: JSON.stringify({ issue_type: "garbage" }) },
     { name: "save_noticed_window", argumentsJson: JSON.stringify({ noticed_window: "do din pehle" }) },
     { name: "save_recurs", argumentsJson: JSON.stringify({ recurs: true }) },
-    { name: "save_affects", argumentsJson: JSON.stringify({ affects: ["night safety"] }) },
     { name: "submit_report", argumentsJson: "{}" },
     {
       name: "save_description",

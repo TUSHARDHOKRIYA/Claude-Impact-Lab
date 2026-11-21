@@ -3,7 +3,7 @@ import seedRows from "@/lib/geo-data/seed-reports.data.json";
 import { slugify } from "@/lib/id";
 import { namePlace, nearestRoad } from "@/lib/place-name";
 import type { SeedItem } from "@/lib/repo/port";
-import type { AccidentSeen, Affects, IssueType, LocationRecord, SeedReport } from "@/lib/types";
+import type { AccidentSeen, IssueType, LocationRecord, SeedReport } from "@/lib/types";
 
 type SeedRow = {
   id: string;
@@ -14,7 +14,6 @@ type SeedRow = {
   noticedAt: string;
   recurs: boolean;
   accident: AccidentSeen;
-  affects: Affects[];
   description: string;
 };
 
@@ -63,7 +62,6 @@ export function seedRoads(): SeedItem[] {
       noticedWindow: null,
       recurs: row.recurs,
       accident: row.accident,
-      affects: row.affects,
       description: row.description,
       isSample: true,
       createdAt: row.noticedAt,

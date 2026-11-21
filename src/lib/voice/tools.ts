@@ -1,8 +1,8 @@
 import { PINNABLE_LANDMARKS } from "@/lib/landmarks";
-import { AFFECTS, ISSUE_TYPES, NOTICED_WINDOWS } from "@/lib/types";
+import { ISSUE_TYPES, NOTICED_WINDOWS } from "@/lib/types";
 
 /**
- * Six tools. There is no seventh. In particular there is no submit tool and
+ * Five tools. There is no sixth. In particular there is no submit tool and
  * none may ever be added here: the human tap on Record is the only submit path
  * (see docs/handoff-goal.md hard rule 2).
  */
@@ -10,7 +10,6 @@ export const VOICE_TOOL_NAMES = [
   "save_issue_type",
   "save_noticed_window",
   "save_recurs",
-  "save_affects",
   "save_description",
   "propose_pin",
 ] as const;
@@ -106,19 +105,6 @@ export const VOICE_TOOLS: ChatTool[] = [
         enum: ["true", "false"],
         description:
           "'true' if the condition recurs, 'false' if it is a single standing occurrence. Strings, not JSON booleans: the form carries radio values.",
-      },
-    },
-  ),
-  tool(
-    "save_affects",
-    "Save every group the condition affects. Multi-select: include all that apply from the speaker's words, even when they are spread across one long sentence. Never collapse to one value when two were described. If the speaker named none, do NOT call this tool — ask.",
-    {
-      affects: {
-        type: "array",
-        minItems: 1,
-        items: { type: "string", enum: [...AFFECTS] },
-        description:
-          "One or more affected groups, as snake_case enum values, no duplicates. Never display labels such as 'night safety'; the value is 'safety_at_night'.",
       },
     },
   ),

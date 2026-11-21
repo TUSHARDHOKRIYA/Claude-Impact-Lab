@@ -7,7 +7,7 @@ import { validateToolCall, type RawToolCall } from "./validate";
 import { ChatHttpError, chatCompletion, type ChatMessage, type FetchLike } from "./chat";
 
 /**
- * Six tools means six calls if a model emits one per turn. The default must
+ * Five tools means five calls if a model emits one per turn. The default must
  * exceed that, or a correct-but-slow model is scored as having missed slots.
  */
 export const DEFAULT_MAX_TURNS = 8;
@@ -55,7 +55,7 @@ export async function runFixture(
   options: RunOptions = {},
 ): Promise<FixtureRun> {
   const now = options.now ?? new Date();
-  // Six tools exist, so a model that emits one call per turn needs six turns to
+  // Five tools exist, so a model that emits one call per turn needs five turns to
   // fill every slot. A lower default cuts it off mid-form and scores the unsent
   // slots as missed, which understates exactly the behaviour this loop exists to
   // measure. Eight leaves headroom for a closing turn.

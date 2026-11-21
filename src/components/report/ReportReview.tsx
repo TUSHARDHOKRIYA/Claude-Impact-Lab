@@ -1,6 +1,6 @@
 import { GovAlert } from "@/components/gov/GovAlert";
 import { GovChoiceGroup } from "@/components/gov/GovChoiceGroup";
-import { affectsLabel, issueTypeLabel, noticedWindowLabel, toLabelLanguage } from "@/lib/chip-labels";
+import { issueTypeLabel, noticedWindowLabel, toLabelLanguage } from "@/lib/chip-labels";
 import { describePlace } from "@/lib/place-name";
 import { REVIEW_COPY } from "@/lib/review-copy";
 import { wardAt } from "@/lib/city";
@@ -8,7 +8,6 @@ import {
   ACCIDENT_SEEN,
   ACCIDENT_SEEN_LABELS,
   type AccidentSeen,
-  type Affects,
   type IssueType,
   type NoticedWindow,
 } from "@/lib/types";
@@ -25,7 +24,6 @@ export function ReportReview({
   accident,
   accidentError,
   onAccident,
-  affects,
   description,
   voiceLanguageCode,
   locationConfirmed,
@@ -39,7 +37,6 @@ export function ReportReview({
   accident: AccidentSeen | "";
   accidentError?: string;
   onAccident: (value: AccidentSeen) => void;
-  affects: Affects[];
   description: string;
   voiceLanguageCode: string;
   locationConfirmed: boolean;
@@ -117,12 +114,6 @@ export function ReportReview({
             <dd className="ux4g-body-m-strong">{ACCIDENT_SEEN_LABELS[accident]}</dd>
           </div>
         ) : null}
-        <div>
-          <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">{copy.fields.affects}</dt>
-          <dd className="ux4g-body-m-strong">
-            {affects.map((item) => affectsLabel(lang, item)).join(", ")}
-          </dd>
-        </div>
         {description.trim() ? (
           <div>
             <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">{copy.fields.description}</dt>

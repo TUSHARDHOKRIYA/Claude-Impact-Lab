@@ -1,5 +1,5 @@
 import type { LabelLanguage } from "@/lib/chip-labels";
-import type { Affects, IssueType, NoticedWindow } from "@/lib/types";
+import type { IssueType, NoticedWindow } from "@/lib/types";
 import type { AskSlot } from "./conversation";
 
 export const MAX_VOICE_AUDIO_BYTES = 750_000;
@@ -16,7 +16,6 @@ export type VoiceFormPatch = {
   issueType?: IssueType;
   noticedWindow?: NoticedWindow;
   recurs?: "true" | "false";
-  affects?: Affects[];
   description?: string;
 };
 

@@ -27,7 +27,7 @@ import { useReportVoice, type VoiceField } from "@/components/report/use-report-
 import { useVoiceConversation } from "@/components/report/use-voice-conversation";
 import { createReportAction } from "@/lib/actions";
 import { isInsideCity } from "@/lib/city";
-import { type AccidentSeen, type Affects, type IssueType, type NoticedWindow } from "@/lib/types";
+import { type AccidentSeen, type IssueType, type NoticedWindow } from "@/lib/types";
 import { VOICE_UI_ENABLED } from "@/lib/voice/ui-flag";
 
 /**
@@ -60,7 +60,6 @@ export function ReportDraft({
   const [noticedWindow, setNoticedWindow] = useState<NoticedWindow | "">("");
   const [recurs, setRecurs] = useState<"" | "true" | "false">("");
   const [accident, setAccident] = useState<AccidentSeen | "">("");
-  const [affects, setAffects] = useState<Affects[]>([]);
   const [description, setDescription] = useState("");
   const [descriptionDone, setDescriptionDone] = useState(false);
   const [mode, setMode] = useState<AnswerMode>(voiceEnabled ? "voice" : "tap");
@@ -75,12 +74,11 @@ export function ReportDraft({
       setDetailsError((current) => ({ ...current, noticedWindow: undefined }));
     },
     recurs: (value: "true" | "false") => { setRecurs(value); setDetailsError((c) => ({ ...c, recurs: undefined })); },
-    affects: (value: Affects[]) => { setAffects(value); setDetailsError((c) => ({ ...c, affects: undefined })); },
     description: setDescription,
     // Voice never moves a confirmed pin, even one confirmed while its turn was in flight.
     pin: (next: { lat: number; lng: number }) => { if (!confirmedRef.current) changePin(next); },
   };
-  const values = { issueType, noticedWindow, recurs, affects, description };
+  const values = { issueType, noticedWindow, recurs, description };
   const voice = useReportVoice(values, write);
   const convo = useVoiceConversation({
     values: { ...values, placeConfirmed: locationConfirmed, descriptionDone },
@@ -126,7 +124,7 @@ export function ReportDraft({
     goTo(STEP.issue);
   }
   function finishChat() {
-    const problem = answersProblem({ issueType, noticedWindow, recurs, affects, pin, locationConfirmed });
+    const problem = answersProblem({ issueType, noticedWindow, recurs, pin, locationConfirmed });
     if (problem) setFormError(problem);
     else goTo(STEP.review);
   }
@@ -145,7 +143,7 @@ export function ReportDraft({
       return;
     }
     if (step === STEP.history || step === STEP.impact) {
-      const next = step === STEP.history ? validateHistory(noticedWindow, recurs) : validateImpact(accident, affects);
+      const next = step === STEP.history ? validateHistory(noticedWindow, recurs) : validateImpact(accident);
       if (detailsHasError(next)) {
         setDetailsError(next);
         focusDetailsError(next);
@@ -232,7 +230,6 @@ export function ReportDraft({
       {chatting ? (
         <VoiceChat
           convo={convo}
-          affects={affects}
           conflicts={voice.conflicts}
           pin={pin}
           placeConfirmed={locationConfirmed}
@@ -248,7 +245,6 @@ export function ReportDraft({
           noticedWindow={noticedWindow}
           recurs={recurs}
           accident={accident}
-          affects={affects}
           description={description}
           detailsError={detailsError}
           voiceFilled={voice.voiceFilled}
@@ -262,12 +258,6 @@ export function ReportDraft({
             setAccident(value);
             setDetailsError((current) => ({ ...current, accident: undefined }));
           }}
-          onToggleAffect={edited("affects", (value: Affects) => {
-            setAffects((current) =>
-              current.includes(value) ? current.filter((item) => item !== value) : [...current, value],
-            );
-            setDetailsError((current) => ({ ...current, affects: undefined }));
-          })}
           onDescription={edited("description", setDescription)}
           onPin={changePin}
           onConfirmPin={confirmPin}
@@ -287,7 +277,6 @@ export function ReportDraft({
             setAccident(value);
             setDetailsError((current) => ({ ...current, accident: undefined }));
           }}
-          affects={affects}
           description={description}
           voiceLanguageCode={convo.lang}
           locationConfirmed={locationConfirmed}
@@ -301,7 +290,6 @@ export function ReportDraft({
         noticedWindow={noticedWindow}
         recurs={recurs}
         accident={accident}
-        affects={JSON.stringify(affects)}
         description={description}
         locationConfirmed={locationConfirmed ? "true" : "false"}
         voiceTranscript={voice.transcript}

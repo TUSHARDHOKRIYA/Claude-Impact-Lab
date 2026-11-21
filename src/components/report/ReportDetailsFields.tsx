@@ -6,12 +6,9 @@ import { VoiceBadge } from "@/components/report/VoiceBadge";
 import {
   ACCIDENT_SEEN,
   ACCIDENT_SEEN_LABELS,
-  AFFECTS,
-  AFFECTS_LABELS,
   NOTICED_WINDOWS,
   NOTICED_WINDOW_LABELS,
   type AccidentSeen,
-  type Affects,
   type NoticedWindow,
 } from "@/lib/types";
 
@@ -19,7 +16,6 @@ export type DetailsErrors = {
   noticedWindow?: string;
   recurs?: string;
   accident?: string;
-  affects?: string;
 };
 
 const RECURS_OPTIONS = [
@@ -29,7 +25,6 @@ const RECURS_OPTIONS = [
 
 const NOTICED_OPTIONS = NOTICED_WINDOWS.map((value) => ({ value, label: NOTICED_WINDOW_LABELS[value] }));
 const ACCIDENT_OPTIONS = ACCIDENT_SEEN.map((value) => ({ value, label: ACCIDENT_SEEN_LABELS[value] }));
-const AFFECTS_OPTIONS = AFFECTS.map((value) => ({ value, label: AFFECTS_LABELS[value] }));
 
 /** Step 3: how long it has been there and whether a repair failed before. */
 export function HistoryFields({
@@ -79,24 +74,20 @@ export function HistoryFields({
   );
 }
 
-/** Step 4: harm seen, who it gets in the way of, and an optional note. */
+/** Step 4: harm seen and an optional note. */
 export function ImpactFields({
   accident,
-  affects,
   description,
   error,
   fromVoice,
   onAccident,
-  onToggleAffect,
   onDescription,
 }: {
   accident: AccidentSeen | "";
-  affects: Affects[];
   description: string;
   error: DetailsErrors;
   fromVoice?: ReadonlySet<string>;
   onAccident: (value: AccidentSeen) => void;
-  onToggleAffect: (value: Affects) => void;
   onDescription: (value: string) => void;
 }) {
   return (
@@ -115,19 +106,6 @@ export function ImpactFields({
         error={error.accident}
         columns={2}
         onPick={onAccident}
-      />
-      <GovChoiceGroup
-        className="ux4g-mt-2xl"
-        legend="Who does it get in the way of?"
-        hint="Choose all that apply."
-        name="affectsPick"
-        type="checkbox"
-        options={AFFECTS_OPTIONS}
-        selected={affects}
-        error={error.affects}
-        columns={2}
-        badge={fromVoice?.has("affects") ? <VoiceBadge /> : null}
-        onPick={onToggleAffect}
       />
       <div className="ux4g-mt-2xl">
         {fromVoice?.has("description") ? <VoiceBadge className="mb-1 ml-0" /> : null}

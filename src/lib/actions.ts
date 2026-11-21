@@ -9,11 +9,9 @@ import { allowRequest } from "@/lib/rate-limit";
 import { ItemTooLargeError, ReportValidationError } from "@/lib/repo/errors";
 import {
   ACCIDENT_SEEN,
-  AFFECTS,
   ISSUE_TYPES,
   NOTICED_WINDOWS,
   type AccidentSeen,
-  type Affects,
   type IssueType,
   type NoticedWindow,
 } from "@/lib/types";
@@ -41,23 +39,6 @@ const CREATE_WINDOW_MS = 60 * 60 * 1000;
 
 function isIssueType(value: string): value is IssueType {
   return (ISSUE_TYPES as readonly string[]).includes(value);
-}
-
-function parseAffects(raw: string): Affects[] | null {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) return null;
-    const allowed = new Set<string>(AFFECTS);
-    const unique: Affects[] = [];
-    for (const item of parsed) {
-      if (typeof item !== "string" || !allowed.has(item)) return null;
-      const affect = item as Affects;
-      if (!unique.includes(affect)) unique.push(affect);
-    }
-    return unique;
-  } catch {
-    return null;
-  }
 }
 
 export async function createReportAction(
@@ -102,9 +83,6 @@ export async function createReportAction(
   }
   const accident = accidentRaw as AccidentSeen;
 
-  const affects = parseAffects(String(formData.get("affects") ?? ""));
-  if (!affects) return fail("Select what this condition affects.");
-
   const descriptionRaw = String(formData.get("description") ?? "").trim();
   const description = descriptionRaw.length > 0 ? descriptionRaw.slice(0, 2000) : null;
   const voiceTranscript = String(formData.get("voiceTranscript") ?? "");
@@ -122,7 +100,6 @@ export async function createReportAction(
       noticedWindow,
       recurs: recursRaw === "true",
       accident,
-      affects,
       description,
       voiceTranscript: voiceTranscript || null,
     });

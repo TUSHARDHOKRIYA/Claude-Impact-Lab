@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LABEL_LANGUAGES, type LabelLanguage } from "@/lib/chip-labels";
-import type { Affects } from "@/lib/types";
 import { VOICE_RECORDING_SECONDS } from "@/lib/voice/contracts";
 import { VOICE_COPY, type VoiceCopy } from "@/lib/voice/voice-copy";
 import { VoiceAnswerChips } from "./VoiceAnswerChips";
@@ -46,7 +45,6 @@ function LanguagePill({ lang, copy, onChange }: { lang: LabelLanguage; copy: Voi
  */
 export function VoiceChat({
   convo,
-  affects,
   conflicts,
   pin,
   placeConfirmed,
@@ -55,7 +53,6 @@ export function VoiceChat({
   onForm,
 }: {
   convo: VoiceConversation;
-  affects: readonly Affects[];
   conflicts: VoiceConflict[];
   pin: MapPoint | null;
   placeConfirmed: boolean;
@@ -144,13 +141,11 @@ export function VoiceChat({
           <VoiceAnswerChips
             ask={convo.ask}
             confirming={convo.confirming}
-            affects={affects}
             lang={convo.lang}
             copy={copy}
             disabled={busy}
             handlers={{
               onAnswer: convo.answer,
-              onFinishAffects: convo.finishAffects,
               onPlace: convo.pickPlace,
               onSkipDescription: convo.skipDescription,
               onConfirm: convo.confirm,

@@ -1,8 +1,6 @@
 import {
-  AFFECTS_LABELS,
   ISSUE_TYPE_LABELS,
   NOTICED_WINDOW_LABELS,
-  type Affects,
   type IssueType,
   type NoticedWindow,
 } from "@/lib/types";
@@ -46,26 +44,6 @@ const ISSUE_TYPE_LABELS_MR: Record<IssueType, string> = {
   other: "रस्त्याची इतर समस्या",
 };
 
-const AFFECTS_LABELS_HI: Record<Affects, string> = {
-  walking: "पैदल चलने वाले",
-  wheeling: "व्हीलचेयर और प्रैम",
-  two_wheelers: "दोपहिया",
-  cars_and_autos: "कार, ऑटो और टैक्सी",
-  buses: "बेस्ट बसें",
-  ambulances: "एम्बुलेंस",
-  school_route: "स्कूल जाने वाले बच्चे",
-};
-
-const AFFECTS_LABELS_MR: Record<Affects, string> = {
-  walking: "चालणारे लोक",
-  wheeling: "व्हीलचेअर आणि प्रॅम",
-  two_wheelers: "दुचाकी",
-  cars_and_autos: "कार, रिक्षा आणि टॅक्सी",
-  buses: "बेस्ट बस",
-  ambulances: "रुग्णवाहिका",
-  school_route: "शाळेत जाणारी मुले",
-};
-
 export const ISSUE_TYPE_LABELS_BY_LANGUAGE: Record<
   LabelLanguage,
   Record<IssueType, string>
@@ -73,15 +51,6 @@ export const ISSUE_TYPE_LABELS_BY_LANGUAGE: Record<
   en: ISSUE_TYPE_LABELS,
   hi: ISSUE_TYPE_LABELS_HI,
   mr: ISSUE_TYPE_LABELS_MR,
-};
-
-export const AFFECTS_LABELS_BY_LANGUAGE: Record<
-  LabelLanguage,
-  Record<Affects, string>
-> = {
-  en: AFFECTS_LABELS,
-  hi: AFFECTS_LABELS_HI,
-  mr: AFFECTS_LABELS_MR,
 };
 
 const NOTICED_WINDOW_LABELS_HI: Record<NoticedWindow, string> = {
@@ -128,13 +97,6 @@ export function issueTypeLabel(
   type: IssueType,
 ): string {
   return ISSUE_TYPE_LABELS_BY_LANGUAGE[toLabelLanguage(code)][type];
-}
-
-export function affectsLabel(
-  code: string | null | undefined,
-  affects: Affects,
-): string {
-  return AFFECTS_LABELS_BY_LANGUAGE[toLabelLanguage(code)][affects];
 }
 
 export function noticedWindowLabel(

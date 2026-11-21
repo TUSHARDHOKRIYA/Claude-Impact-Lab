@@ -1,7 +1,7 @@
 "use client";
 
-import { affectsLabel, issueTypeLabel, noticedWindowLabel, type LabelLanguage } from "@/lib/chip-labels";
-import type { Affects, IssueType, NoticedWindow } from "@/lib/types";
+import { issueTypeLabel, noticedWindowLabel, type LabelLanguage } from "@/lib/chip-labels";
+import type { IssueType, NoticedWindow } from "@/lib/types";
 import type { VoiceCopy } from "@/lib/voice/voice-copy";
 import type { VoiceConflict, VoiceField } from "./use-report-voice";
 
@@ -15,7 +15,6 @@ function fieldName(copy: VoiceCopy, field: VoiceField): string {
 function display(field: VoiceField, value: Value, lang: LabelLanguage, copy: VoiceCopy): string {
   if (field === "issueType") return issueTypeLabel(lang, value as IssueType);
   if (field === "noticedWindow") return noticedWindowLabel(lang, value as NoticedWindow);
-  if (field === "affects") return (value as Affects[]).map((item) => affectsLabel(lang, item)).join(", ");
   if (field === "recurs") return value === "true" ? copy.recursYes : copy.recursNo;
   return String(value);
 }

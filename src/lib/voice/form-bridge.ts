@@ -13,7 +13,6 @@ export function callsToFormPatch(
     if (call.slot === "issue_type") fields.issueType = call.value;
     else if (call.slot === "noticed_window") fields.noticedWindow = call.value;
     else if (call.slot === "recurs") fields.recurs = call.value;
-    else if (call.slot === "affects") fields.affects = call.value;
     else if (call.slot === "description") fields.description = call.value;
     else pinProposal = landmarkPin(call.value) ?? pinProposal;
   }

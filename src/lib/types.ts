@@ -42,28 +42,6 @@ export const ISSUE_TYPE_WORK_TYPE: Record<IssueType, string | null> = {
   other: null,
 };
 
-export const AFFECTS = [
-  "walking",
-  "wheeling",
-  "two_wheelers",
-  "cars_and_autos",
-  "buses",
-  "ambulances",
-  "school_route",
-] as const;
-
-export type Affects = (typeof AFFECTS)[number];
-
-export const AFFECTS_LABELS: Record<Affects, string> = {
-  walking: "People walking",
-  wheeling: "Wheelchairs and prams",
-  two_wheelers: "Two-wheelers",
-  cars_and_autos: "Cars, autos and taxis",
-  buses: "BEST buses",
-  ambulances: "Ambulances",
-  school_route: "Children going to school",
-};
-
 /** Have you seen anyone hurt or nearly hurt here? */
 export const ACCIDENT_SEEN = ["injury", "near_miss", "none", "not_sure"] as const;
 
@@ -133,7 +111,6 @@ export type ReportRecord = {
   recurs: boolean;
   /** Null on rows written before the question existed. */
   accident?: AccidentSeen | null;
-  affects: Affects[];
   description: string | null;
   isSample: boolean;
   createdAt: string;
@@ -197,7 +174,6 @@ export type CreateReportInput = {
   noticedWindow?: NoticedWindow | null;
   recurs: boolean;
   accident?: AccidentSeen | null;
-  affects: Affects[];
   description: string | null;
   voiceTranscript?: string | null;
 };

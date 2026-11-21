@@ -2,7 +2,7 @@ import type { LabelLanguage } from "@/lib/chip-labels";
 
 /**
  * Every string on the voice surface, in the three languages the app already
- * labels chips in (`src/lib/chip-labels.ts`). Issue and affects names are not
+ * labels chips in (`src/lib/chip-labels.ts`). Issue names are not
  * repeated here: they come from chip-labels so the two cannot drift.
  *
  * Native Devanagari only, Mumbai street register, as chip-labels asks.
@@ -51,7 +51,7 @@ export type VoiceCopy = {
   yours: string;
   voice: string;
   conflict: string;
-  fields: { issueType: string; noticedAt: string; recurs: string; affects: string; description: string };
+  fields: { issueType: string; noticedAt: string; recurs: string; description: string };
 };
 
 export const VOICE_COPY: Record<LabelLanguage, VoiceCopy> = {
@@ -103,7 +103,6 @@ export const VOICE_COPY: Record<LabelLanguage, VoiceCopy> = {
       issueType: "Type",
       noticedAt: "Noticed",
       recurs: "Recurs",
-      affects: "Affects",
       description: "Description",
     },
   },
@@ -155,7 +154,6 @@ export const VOICE_COPY: Record<LabelLanguage, VoiceCopy> = {
       issueType: "प्रकार",
       noticedAt: "कब देखा",
       recurs: "बार-बार होता है?",
-      affects: "किसे परेशानी",
       description: "विवरण",
     },
   },
@@ -207,7 +205,6 @@ export const VOICE_COPY: Record<LabelLanguage, VoiceCopy> = {
       issueType: "प्रकार",
       noticedAt: "कधी पाहिलं",
       recurs: "पुन्हा होतं?",
-      affects: "कोणाला त्रास",
       description: "वर्णन",
     },
   },

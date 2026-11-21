@@ -5,7 +5,6 @@ import { noticedWhen } from "@/lib/noticed-label";
 import { reportHeadline } from "@/lib/place-name";
 import { reportAside } from "@/lib/report-copy";
 import {
-  AFFECTS_LABELS,
   ISSUE_TYPE_LABELS,
   type LocationRecord,
   type PlaceHistoryEvent,
@@ -43,7 +42,6 @@ export function ReportStory({
   const headline = reportHeadline(issue, location.street);
   const placeHref = `/places/${location.slug}?report=${report.id}`;
   const others = similar.filter((item) => item.id !== report.id);
-  const affects = report.affects.map((item) => AFFECTS_LABELS[item]).filter(Boolean);
 
   return (
     <div className="min-w-0">
@@ -105,17 +103,6 @@ export function ReportStory({
       <p className="ux4g-text mt-3">{connectedLine(connectedCount)}</p>
 
       {report.description ? <p className="ux4g-text mt-4 break-words">{report.description}</p> : null}
-
-      {affects.length > 0 ? (
-        <p className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="ux4g-heading-xs-strong">Affects</span>
-          {affects.map((item) => (
-            <GovBadge key={item} tone="info">
-              {item}
-            </GovBadge>
-          ))}
-        </p>
-      ) : null}
 
       <section className="mt-10 min-w-0" aria-labelledby="place-history-heading">
         <h2 id="place-history-heading" className="ux4g-heading-xs-strong">

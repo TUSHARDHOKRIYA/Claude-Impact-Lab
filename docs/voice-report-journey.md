@@ -13,13 +13,12 @@ The person speaks or taps. The slots are:
 1. Problem type: pothole, waterlogging, open or broken manhole, choked drain or nullah, road cave-in, broken paver blocks, or other.
 2. When they noticed it. The five choices are Today, This week, This month, 1 to 6 months ago, and More than six months ago.
 3. Whether it recurs.
-4. Who it gets in the way of: people walking, wheelchairs and prams, two-wheelers, cars and autos, buses, ambulances, a school route.
-5. An optional description.
-6. A place pin. There is no default pin. They use their location, search for an area, or tap the map, then confirm the pin.
+4. An optional description.
+5. A place pin. There is no default pin. They use their location, search for an area, or tap the map, then confirm the pin.
 
 Voice does not ask whether they have seen an accident; the Check step asks it.
 
-Speech-to-text is Sarvam `saaras` (code-mixed Hindi, Marathi, and English). The chat model writes slots with `save_issue_type`, `save_noticed_window`, `save_recurs`, `save_affects`, `save_description`, and `propose_pin`. Replies are spoken with Sarvam `bulbul`. There is no submit tool.
+Speech-to-text is Sarvam `saaras` (code-mixed Hindi, Marathi, and English). The chat model writes slots with `save_issue_type`, `save_noticed_window`, `save_recurs`, `save_description`, and `propose_pin`. Replies are spoken with Sarvam `bulbul`. There is no submit tool.
 
 Each voice turn has a 20 second budget and at most 3 model turns. Rate limits are per isolate. The verbatim transcript is stored and is never shown on a public page.
 

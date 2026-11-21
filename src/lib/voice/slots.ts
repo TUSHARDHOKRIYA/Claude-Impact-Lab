@@ -1,14 +1,13 @@
-import type { Affects, IssueType, NoticedWindow } from "@/lib/types";
+import type { IssueType, NoticedWindow } from "@/lib/types";
 
 /**
- * The five form slots plus the pin proposal. These names are the scoring keys,
+ * The four form slots plus the pin proposal. These names are the scoring keys,
  * not tool names. Tool names live in `./tools`.
  */
 export const VOICE_SLOTS = [
   "issue_type",
   "noticed_window",
   "recurs",
-  "affects",
   "description",
   "pin",
 ] as const;
@@ -41,8 +40,6 @@ export type ExpectedSlots = {
   noticed_window: NoticedWindow | null;
   /** null means recurrence was never stated and the tool must NOT be called. */
   recurs: "true" | "false" | null;
-  /** Exact set, order-insensitive. */
-  affects: Affects[];
   /** null means the description is not scored for this fixture. */
   description: DescriptionCheck | null;
   /** A landmark id, or null when no landmark was named and no pin may be proposed. */

@@ -1,6 +1,6 @@
 import type { DetailsErrors } from "@/components/report/ReportDetailsFields";
 import { isInsideCity } from "@/lib/city";
-import { ACCIDENT_SEEN, NOTICED_WINDOWS, type Affects } from "@/lib/types";
+import { ACCIDENT_SEEN, NOTICED_WINDOWS } from "@/lib/types";
 
 export const FORM_ALERT_ID = "report-form-alert";
 
@@ -11,7 +11,6 @@ export const REPORT_MSG = {
   noticedWindow: "Say when you first noticed it.",
   recurs: "Say whether it was repaired before and came back.",
   accident: "Say whether you have seen an accident or a fall here.",
-  affects: "Choose at least one group it gets in the way of.",
   pin: "Confirm the pin before you continue.",
 } as const;
 
@@ -35,22 +34,20 @@ export function validateHistory(noticedWindow: string, recurs: "" | "true" | "fa
   return next;
 }
 
-export function validateImpact(accident: string, affects: Affects[]): DetailsErrors {
+export function validateImpact(accident: string): DetailsErrors {
   const next: DetailsErrors = {};
   if (!(ACCIDENT_SEEN as readonly string[]).includes(accident)) next.accident = REPORT_MSG.accident;
-  if (affects.length === 0) next.affects = REPORT_MSG.affects;
   return next;
 }
 
 export function detailsHasError(errors: DetailsErrors): boolean {
-  return Boolean(errors.noticedWindow || errors.recurs || errors.accident || errors.affects);
+  return Boolean(errors.noticedWindow || errors.recurs || errors.accident);
 }
 
 export function focusDetailsError(errors: DetailsErrors) {
   if (errors.noticedWindow) focusSelector('input[name="noticedWindow"][type="radio"]');
   else if (errors.recurs) focusSelector('input[name="recurs"][type="radio"]');
   else if (errors.accident) focusSelector('input[name="accident"][type="radio"]');
-  else focusSelector('input[name="affectsPick"]');
 }
 
 /**
@@ -61,14 +58,12 @@ export function answersProblem(answers: {
   issueType: string;
   noticedWindow: string;
   recurs: "" | "true" | "false";
-  affects: Affects[];
   pin: { lat: number; lng: number } | null;
   locationConfirmed: boolean;
 }): string | null {
   if (!answers.issueType) return REPORT_MSG.issue;
   const history = validateHistory(answers.noticedWindow, answers.recurs);
   if (detailsHasError(history)) return history.noticedWindow ?? history.recurs ?? null;
-  if (answers.affects.length === 0) return REPORT_MSG.affects;
   if (!answers.pin || !isInsideCity(answers.pin.lat, answers.pin.lng)) return REPORT_MSG.location;
   return answers.locationConfirmed ? null : REPORT_MSG.pin;
 }

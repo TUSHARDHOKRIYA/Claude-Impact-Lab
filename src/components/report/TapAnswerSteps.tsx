@@ -5,7 +5,7 @@ import { LocationStep, type MapPin } from "@/components/report/LocationStep";
 import { HistoryFields, ImpactFields, type DetailsErrors } from "@/components/report/ReportDetailsFields";
 import { REPORT_MSG } from "@/components/report/report-form-helpers";
 import type { VoiceField } from "@/components/report/use-report-voice";
-import type { AccidentSeen, Affects, IssueType, NoticedWindow } from "@/lib/types";
+import type { AccidentSeen, IssueType, NoticedWindow } from "@/lib/types";
 
 export const TAP_STEP = { issue: 2, history: 3, impact: 4, place: 5 } as const;
 
@@ -20,7 +20,6 @@ export function TapAnswerSteps(props: {
   noticedWindow: NoticedWindow | "";
   recurs: "" | "true" | "false";
   accident: AccidentSeen | "";
-  affects: Affects[];
   description: string;
   detailsError: DetailsErrors;
   voiceFilled: ReadonlySet<VoiceField>;
@@ -31,7 +30,6 @@ export function TapAnswerSteps(props: {
   onNoticedWindow: (value: NoticedWindow) => void;
   onRecurs: (value: "true" | "false") => void;
   onAccident: (value: AccidentSeen) => void;
-  onToggleAffect: (value: Affects) => void;
   onDescription: (value: string) => void;
   onPin: (pin: MapPin) => void;
   onConfirmPin: () => void;
@@ -70,12 +68,10 @@ export function TapAnswerSteps(props: {
       <div className="rb-step">
         <ImpactFields
           accident={props.accident}
-          affects={props.affects}
           description={props.description}
           error={props.detailsError}
           fromVoice={props.voiceFilled}
           onAccident={props.onAccident}
-          onToggleAffect={props.onToggleAffect}
           onDescription={props.onDescription}
         />
       </div>

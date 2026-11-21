@@ -15,7 +15,6 @@ export const VOICE_FIXTURES: VoiceFixture[] = [
       issue_type: "pothole",
       noticed_window: "this_week",
       recurs: "false",
-      affects: ["two_wheelers"],
       description: {
         mustMention: [["pothole", "hole", "crater", "pit"]],
         mustNotMention: ["photo", "photograph", "image", "picture"],
@@ -32,7 +31,6 @@ export const VOICE_FIXTURES: VoiceFixture[] = [
       issue_type: "waterlogging",
       noticed_window: "this_week",
       recurs: "true",
-      affects: ["buses"],
       description: {
         mustMention: [["water", "flood", "waterlog"]],
         mustNotMention: ["photo", "photograph", "image", "picture"],
@@ -49,7 +47,6 @@ export const VOICE_FIXTURES: VoiceFixture[] = [
       issue_type: "open_manhole",
       noticed_window: "over_six_months",
       recurs: null,
-      affects: ["school_route"],
       description: {
         mustMention: [["manhole", "chamber", "cover"]],
         mustNotMention: ["photo", "photograph", "image", "picture"],

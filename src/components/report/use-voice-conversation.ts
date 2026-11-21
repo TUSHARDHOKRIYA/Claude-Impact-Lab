@@ -188,20 +188,10 @@ export function useVoiceConversation(options: {
     (input: VoiceAnswer, label: string) => {
       tapped();
       onAnswer(input);
-      if (input.slot === "affects") return;
       push({ role: "user", text: label });
       followUp([...filledSlots(latest.current.values), input.slot], "ack");
     },
     [followUp, onAnswer, push, tapped],
-  );
-
-  const finishAffects = useCallback(
-    (label: string) => {
-      tapped();
-      push({ role: "user", text: label });
-      followUp([...filledSlots(latest.current.values), "affects"], "ack");
-    },
-    [followUp, push, tapped],
   );
 
   const pickPlace = useCallback(
@@ -283,7 +273,6 @@ export function useVoiceConversation(options: {
     leave,
     processClip,
     answer,
-    finishAffects,
     pickPlace,
     movePin,
     confirmPlace,

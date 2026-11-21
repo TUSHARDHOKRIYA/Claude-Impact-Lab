@@ -10,7 +10,7 @@ describe("GovField", () => {
     render(
       <GovField
         label="Latitude"
-        error="Enter a latitude in the precinct."
+        error="Enter a latitude in Mumbai."
       />,
     );
     const input = screen.getByLabelText("Latitude");

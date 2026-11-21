@@ -19,7 +19,6 @@ const CONTENT_SECURITY_POLICY = [
 const nextConfig: NextConfig = {
   // Lets a phone on the same Wi-Fi load the dev server (dev only).
   allowedDevOrigins: ["10.*.*.*", "192.168.*.*", "*.local"],
-  // The dev-only badge sat on the voice dock's Replay button when testing on a phone.
   devIndicators: false,
   experimental: {
     serverActions: {
@@ -41,7 +40,7 @@ const nextConfig: NextConfig = {
           { key: "Content-Security-Policy", value: CONTENT_SECURITY_POLICY },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(self), geolocation=(self)",
+            value: "camera=(), geolocation=(self)",
           },
         ],
       },

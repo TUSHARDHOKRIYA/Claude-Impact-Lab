@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Broken wet limestone pavers on Rampart Row">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Broken wet paver blocks on a Mumbai road">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#6d716c"/>
@@ -22,9 +22,6 @@
   <rect width="800" height="118" fill="url(#sky)"/>
   <path fill="#7a7468" d="M0 96h800v40H0z"/>
   <path fill="#5c564e" d="M0 118h800v22H0z"/>
-  <rect x="48" y="22" width="196" height="46" rx="3" fill="#123a73"/>
-  <rect x="54" y="28" width="184" height="34" rx="2" fill="none" stroke="#e3b505" stroke-width="1.4"/>
-  <text x="146" y="51" text-anchor="middle" fill="#ddd6c8" font-family="Georgia, serif" font-size="15" letter-spacing="2.2">RAMPART ROW</text>
   <path fill="#4a453e" d="M0 140 800 118v38L0 178z"/>
   <g stroke="#6f695f" stroke-width="2">
     <path fill="#b7b09f" d="M18 176h92l-8 48H8z"/>

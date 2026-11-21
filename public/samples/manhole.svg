@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Open manhole with its cover pushed aside on a wet Mumbai road">
+  <defs>
+    <linearGradient id="skym" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6e746f"/>
+      <stop offset="1" stop-color="#8a8680"/>
+    </linearGradient>
+    <linearGradient id="tarm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d3934"/>
+      <stop offset="1" stop-color="#1c1916"/>
+    </linearGradient>
+    <radialGradient id="shaft" cx="50%" cy="58%" r="55%">
+      <stop offset="0" stop-color="#050505"/>
+      <stop offset=".7" stop-color="#14120f"/>
+      <stop offset="1" stop-color="#2a2420"/>
+    </radialGradient>
+    <linearGradient id="iron" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5c564e"/>
+      <stop offset="1" stop-color="#2f2b27"/>
+    </linearGradient>
+    <filter id="gm">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="11"/>
+      <feColorMatrix values="0 0 0 0 .14  0 0 0 0 .13  0 0 0 0 .12  0 0 0 .14 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="600" fill="#2a2420"/>
+  <rect width="800" height="150" fill="url(#skym)"/>
+  <path fill="#7a7468" d="M0 66h800v94H0z"/>
+  <g fill="#5c564e">
+    <rect x="30" y="88" width="96" height="72"/>
+    <rect x="156" y="80" width="80" height="80"/>
+    <rect x="268" y="92" width="104" height="68"/>
+    <rect x="404" y="84" width="72" height="76"/>
+    <rect x="508" y="90" width="92" height="70"/>
+    <rect x="632" y="78" width="80" height="82"/>
+    <rect x="734" y="92" width="56" height="68"/>
+  </g>
+  <path fill="#c5bfb3" d="M0 160h800v36H0z"/>
+  <path fill="#e3b505" d="M0 196h800v14H0z"/>
+  <path fill="url(#tarm)" d="M0 210h800v390H0z"/>
+  <g fill="#e3b505">
+    <rect x="40" y="252" width="110" height="12" transform="skewX(-8)"/>
+    <rect x="620" y="262" width="110" height="12" transform="skewX(-8)"/>
+    <rect x="60" y="520" width="120" height="13" transform="skewX(-8)"/>
+  </g>
+  <path fill="#123a73" opacity=".2" d="M0 450c150-14 260 16 400 8 150-10 260 18 400 4v138H0z"/>
+  <ellipse cx="330" cy="392" rx="150" ry="62" fill="#8a8680"/>
+  <ellipse cx="330" cy="388" rx="134" ry="52" fill="#4a453e"/>
+  <ellipse cx="330" cy="394" rx="118" ry="44" fill="url(#shaft)"/>
+  <path fill="none" stroke="#123a73" stroke-width="3" opacity=".55" d="M262 418c30 10 104 12 140 0"/>
+  <g transform="rotate(-14 590 410)">
+    <ellipse cx="590" cy="414" rx="122" ry="50" fill="#14120f" opacity=".55"/>
+    <ellipse cx="590" cy="404" rx="118" ry="48" fill="url(#iron)" stroke="#1c1916" stroke-width="4"/>
+    <ellipse cx="590" cy="404" rx="94" ry="37" fill="none" stroke="#1c1916" stroke-width="3" opacity=".7"/>
+    <g stroke="#1c1916" stroke-width="3" opacity=".55">
+      <path d="M520 384h140M508 396h164M506 410h168M514 424h152"/>
+      <path d="M552 372v62M590 368v72M628 372v62"/>
+    </g>
+  </g>
+  <path fill="#6a5340" d="M190 446 160 470l42 8 14-26z"/>
+  <path fill="#8a6a48" d="M470 360 458 384l30 4 4-24z"/>
+  <rect width="800" height="600" filter="url(#gm)" style="mix-blend-mode:multiply"/>
+</svg>

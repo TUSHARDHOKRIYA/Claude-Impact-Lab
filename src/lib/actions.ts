@@ -16,7 +16,6 @@ import {
   type NoticedWindow,
 } from "@/lib/types";
 import { getRoadTrail, type RoadTrailSummary } from "@/lib/rupee/road-trail";
-import { MAX_VOICE_TRANSCRIPT_CHARS } from "@/lib/voice/contracts";
 
 export type CreateReportActionResult =
   | { ok: true; reportId: string; roadTrail?: RoadTrailSummary | null }
@@ -91,10 +90,6 @@ export async function createReportAction(
 
   const descriptionRaw = String(formData.get("description") ?? "").trim();
   const description = descriptionRaw.length > 0 ? descriptionRaw.slice(0, 2000) : null;
-  const voiceTranscript = String(formData.get("voiceTranscript") ?? "");
-  if (voiceTranscript.length > MAX_VOICE_TRANSCRIPT_CHARS) {
-    return fail("Voice transcript is too long. Continue by typing.");
-  }
 
   try {
     const created = await createReport({
@@ -107,7 +102,6 @@ export async function createReportAction(
       recurs: recursRaw === "true",
       accident,
       description,
-      voiceTranscript: voiceTranscript || null,
     });
     let roadTrail: RoadTrailSummary | null = null;
     try { roadTrail = getRoadTrail(created.location.roadId); } catch { /* dataset optional in isolated tests */ }

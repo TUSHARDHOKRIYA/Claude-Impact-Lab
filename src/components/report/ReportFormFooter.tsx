@@ -12,12 +12,10 @@ type ReportFormFooterProps = {
   accident: string;
   description: string;
   locationConfirmed: string;
-  voiceTranscript: string;
   formError: string | null;
   showBack: boolean;
   pending: boolean;
   busy: boolean;
-  chatting: boolean;
   showRecord: boolean;
   /** The current screen has its answer, so the main button reads as ready. */
   ready: boolean;
@@ -39,7 +37,6 @@ export function ReportFormFooter(props: ReportFormFooterProps) {
       <input type="hidden" name="accident" value={props.accident} />
       <input type="hidden" name="description" value={props.description} />
       <input type="hidden" name="locationConfirmed" value={props.locationConfirmed} />
-      <input type="hidden" name="voiceTranscript" value={props.voiceTranscript} />
       {/* Spam honeypot: hidden from humans and screen readers; bots that auto-fill it are rejected server-side. */}
       <input
         type="text"
@@ -70,7 +67,7 @@ export function ReportFormFooter(props: ReportFormFooterProps) {
           </button>
         ) : null}
         {/* Distinct keys: reusing one node let the Continue click submit once React made it type=submit. */}
-        {props.chatting ? null : props.showRecord ? (
+        {props.showRecord ? (
           <button key="record" type="submit" className="rb-forward touch-target" disabled={props.busy}>
             {props.pending ? "Sending…" : "Send report"}
           </button>

@@ -93,7 +93,7 @@ describe("amplify SSR env wiring", () => {
     expect(isInvokedAsCli(process.argv)).toBe(false);
   });
 
-  it("writes required and configured voice server env into .env.production", () => {
+  it("writes required and configured server env into .env.production", () => {
     expect(() => collectServerEnv({})).toThrow(/RASTABAAZ_TABLE_NAME/);
     expect(() => collectServerEnv({ RASTABAAZ_TABLE_NAME: "rastabaaz-test" })).toThrow(
       /ADMIN_KEY/,
@@ -101,15 +101,11 @@ describe("amplify SSR env wiring", () => {
     const values = collectServerEnv({
       RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
-      SARVAM_API_KEY: "sarvam-key",
-      VOICE_LLM_BASE_URL: "https://api.sarvam.ai/v1",
-      VOICE_LLM_MODEL: "sarvam-105b-conversations",
-      VOICE_LLM_KEY_NAME: "SARVAM_API_KEY",
-      OPENAI_API_KEY: "openai-key",
-      GEMINI_API_KEY: "gemini-key",
-      CEREBRAS_API_KEY: "cerebras-key",
       ANTHROPIC_API_KEY: "anthropic-key",
-      RUPEE_BRIEF_MODEL: "claude-opus-5-5",
+      ANTHROPIC_AUTH_TOKEN: "anthropic-token",
+      ANTHROPIC_MODEL: "claude-sonnet-4-5",
+      RUPEE_CONTRACTOR_MODEL: "claude-haiku-5-5",
+      RUPEE_PHANTOM_FLAG: "1",
       AWS_REGION: "ap-south-1",
       AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE",
       AWS_SECRET_ACCESS_KEY: "wJalrXUtnFEMI/K7MDENG",
@@ -118,30 +114,22 @@ describe("amplify SSR env wiring", () => {
     expect(values).toEqual({
       RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
-      SARVAM_API_KEY: "sarvam-key",
-      VOICE_LLM_BASE_URL: "https://api.sarvam.ai/v1",
-      VOICE_LLM_MODEL: "sarvam-105b-conversations",
-      VOICE_LLM_KEY_NAME: "SARVAM_API_KEY",
-      OPENAI_API_KEY: "openai-key",
-      GEMINI_API_KEY: "gemini-key",
-      CEREBRAS_API_KEY: "cerebras-key",
       ANTHROPIC_API_KEY: "anthropic-key",
-      RUPEE_BRIEF_MODEL: "claude-opus-5-5",
+      ANTHROPIC_AUTH_TOKEN: "anthropic-token",
+      ANTHROPIC_MODEL: "claude-sonnet-4-5",
+      RUPEE_CONTRACTOR_MODEL: "claude-haiku-5-5",
+      RUPEE_PHANTOM_FLAG: "1",
     });
     const body = formatDotEnv(values);
     expect(body).toBe(
       [
         `RASTABAAZ_TABLE_NAME=${quoteDotEnvValue("rastabaaz-test")}`,
         `ADMIN_KEY=${quoteDotEnvValue("dev-admin-key")}`,
-        `SARVAM_API_KEY=${quoteDotEnvValue("sarvam-key")}`,
-        `VOICE_LLM_BASE_URL=${quoteDotEnvValue("https://api.sarvam.ai/v1")}`,
-        `VOICE_LLM_MODEL=${quoteDotEnvValue("sarvam-105b-conversations")}`,
-        `VOICE_LLM_KEY_NAME=${quoteDotEnvValue("SARVAM_API_KEY")}`,
-        `OPENAI_API_KEY=${quoteDotEnvValue("openai-key")}`,
-        `GEMINI_API_KEY=${quoteDotEnvValue("gemini-key")}`,
-        `CEREBRAS_API_KEY=${quoteDotEnvValue("cerebras-key")}`,
         `ANTHROPIC_API_KEY=${quoteDotEnvValue("anthropic-key")}`,
-        `RUPEE_BRIEF_MODEL=${quoteDotEnvValue("claude-opus-5-5")}`,
+        `ANTHROPIC_AUTH_TOKEN=${quoteDotEnvValue("anthropic-token")}`,
+        `ANTHROPIC_MODEL=${quoteDotEnvValue("claude-sonnet-4-5")}`,
+        `RUPEE_CONTRACTOR_MODEL=${quoteDotEnvValue("claude-haiku-5-5")}`,
+        `RUPEE_PHANTOM_FLAG=${quoteDotEnvValue("1")}`,
         "",
       ].join("\n"),
     );
@@ -153,15 +141,11 @@ describe("amplify SSR env wiring", () => {
     writeAmplifyProductionEnv(dest, {
       RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
-      SARVAM_API_KEY: "sarvam-key",
-      VOICE_LLM_BASE_URL: "https://api.sarvam.ai/v1",
-      VOICE_LLM_MODEL: "sarvam-105b-conversations",
-      VOICE_LLM_KEY_NAME: "SARVAM_API_KEY",
-      OPENAI_API_KEY: "openai-key",
-      GEMINI_API_KEY: "gemini-key",
-      CEREBRAS_API_KEY: "cerebras-key",
       ANTHROPIC_API_KEY: "anthropic-key",
-      RUPEE_BRIEF_MODEL: "claude-opus-5-5",
+      ANTHROPIC_AUTH_TOKEN: "anthropic-token",
+      ANTHROPIC_MODEL: "claude-sonnet-4-5",
+      RUPEE_CONTRACTOR_MODEL: "claude-haiku-5-5",
+      RUPEE_PHANTOM_FLAG: "1",
       AWS_REGION: "ap-south-1",
     });
     expect(read(dest)).toBe(body);
@@ -170,22 +154,22 @@ describe("amplify SSR env wiring", () => {
     }
   });
 
-  it("omits empty optional voice configuration", () => {
+  it("omits empty optional server configuration", () => {
     const values = collectServerEnv({
       RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
-      SARVAM_API_KEY: "",
-      VOICE_LLM_BASE_URL: "   ",
-      VOICE_LLM_MODEL: undefined,
-      OPENAI_API_KEY: "configured",
+      ANTHROPIC_API_KEY: "",
+      ANTHROPIC_MODEL: "   ",
+      ANTHROPIC_AUTH_TOKEN: undefined,
+      RUPEE_CONTRACTOR_MODEL: "configured",
     });
     expect(values).toEqual({
       RASTABAAZ_TABLE_NAME: "rastabaaz-test",
       ADMIN_KEY: "dev-admin-key",
-      OPENAI_API_KEY: "configured",
+      RUPEE_CONTRACTOR_MODEL: "configured",
     });
     expect(formatDotEnv(values)).not.toMatch(
-      /SARVAM_API_KEY|VOICE_LLM_BASE_URL|VOICE_LLM_MODEL/,
+      /ANTHROPIC_API_KEY|ANTHROPIC_MODEL|ANTHROPIC_AUTH_TOKEN/,
     );
   });
 

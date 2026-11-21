@@ -1,9 +1,5 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import {
-  FORBIDDEN_TOOL_NAMES,
-  VOICE_TOOL_NAMES,
-} from "@/lib/voice/tools";
 
 type Manifest = {
   overrides?: Record<string, string>;
@@ -123,35 +119,3 @@ describe("Node 20 lock contract", () => {
   });
 });
 
-describe("human-only voice submission boundary", () => {
-  it("keeps forbidden submit names out of the voice tool contract", () => {
-    const forbidden = new Set<string>(FORBIDDEN_TOOL_NAMES);
-    expect(VOICE_TOOL_NAMES.filter((name) => forbidden.has(name))).toEqual([]);
-  });
-
-  it("keeps browser voice code unable to submit the report form", () => {
-    const browserVoiceFiles = [
-      "src/components/report/VoiceChat.tsx",
-      "src/components/report/VoiceTurns.tsx",
-      "src/components/report/VoiceDock.tsx",
-      "src/components/report/VoicePlaceCard.tsx",
-      "src/components/report/VoiceConflicts.tsx",
-      "src/components/report/use-push-to-talk.ts",
-      "src/components/report/VoiceAnswerChips.tsx",
-      "src/components/report/VoiceBadge.tsx",
-      "src/components/report/use-reply-audio.ts",
-      "src/components/report/use-report-voice.ts",
-      "src/components/report/use-voice-conversation.ts",
-      "src/lib/voice/conversation.ts",
-      "src/lib/voice/voice-copy.ts",
-      "src/lib/voice/speak-action.ts",
-    ];
-
-    for (const file of browserVoiceFiles) {
-      const source = readFileSync(file, "utf8");
-      expect(source, file).not.toMatch(/createReportAction/);
-      expect(source, file).not.toMatch(/requestSubmit\s*\(/);
-      expect(source, file).not.toMatch(/\.click\s*\(/);
-    }
-  });
-});

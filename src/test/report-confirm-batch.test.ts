@@ -36,12 +36,12 @@ function row(id: string, locationId: string, description: string): ReportRecord 
 
 const location: LocationRecord = {
   id: "loc_batch",
-  name: "Waste on Rampart Row",
-  slug: "batch-confirm-waste",
+  name: "Pothole on SV Road",
+  slug: "batch-confirm-pothole",
   issueType: "pothole",
   lat: 18.93,
   lng: 72.83,
-  street: "Rampart Row",
+  street: "SV Road",
   ward: "A Ward",
   createdAt: "2026-01-01",
 };

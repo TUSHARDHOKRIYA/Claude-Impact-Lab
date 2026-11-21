@@ -10,12 +10,12 @@ import type { LocationRecord, PublicReportRecord, ReportPageData } from "@/lib/t
 
 const location: LocationRecord = {
   id: "loc_1",
-  name: "Waste on Rampart Row",
-  slug: "rampart-waste",
+  name: "Pothole on SV Road",
+  slug: "sv-road-pothole",
   issueType: "pothole",
   lat: 18.93,
   lng: 72.83,
-  street: "Rampart Row",
+  street: "SV Road",
   ward: "A Ward",
   createdAt: "2026-01-01",
 };

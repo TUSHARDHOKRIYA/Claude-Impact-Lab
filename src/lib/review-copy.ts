@@ -1,10 +1,8 @@
 import type { LabelLanguage } from "@/lib/chip-labels";
 import { ACCIDENT_SEEN_LABELS, type AccidentSeen } from "@/lib/types";
-import { VOICE_COPY } from "@/lib/voice/voice-copy";
 
 /**
- * The Check step speaks one language: the one the answers are shown in. Field
- * names come from the voice panel's copy so the two never disagree.
+ * The Check step speaks one language: the one the answers are shown in.
  */
 export type ReviewCopy = {
   heading: string;
@@ -23,7 +21,7 @@ export type ReviewCopy = {
   edit: string;
   accident: string;
   accidentAnswers: Record<AccidentSeen, string>;
-  fields: (typeof VOICE_COPY)[LabelLanguage]["fields"];
+  fields: { issueType: string; noticedAt: string; recurs: string; description: string };
 };
 
 export type SubmittedCopy = {
@@ -69,8 +67,7 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
     heading: "Check your report",
     badge: "Citizen report",
     anonymous: "Anonymous by default",
-    publicNote:
-      "Everything on this card becomes public, including the description. Your voice recording does not.",
+    publicNote: "Everything on this card becomes public, including the description.",
     pinConfirmed: "Pin confirmed at",
     pinNotConfirmed: "Pin not confirmed at",
     photo: "Photo",
@@ -82,21 +79,25 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
     edit: "Edit",
     accident: "Accident or fall seen",
     accidentAnswers: ACCIDENT_SEEN_LABELS,
-    fields: VOICE_COPY.en.fields,
+    fields: {
+      issueType: "Type",
+      noticedAt: "Noticed",
+      recurs: "Fixed before and came back",
+      description: "Description",
+    },
   },
   hi: {
     heading: "यह रिकॉर्ड जाँच लीजिए",
     badge: "नागरिक रिपोर्ट",
     anonymous: "आपका नाम नहीं दिखेगा",
-    publicNote:
-      "इस कार्ड पर लिखी हर बात, विवरण समेत, सबको दिखेगी। आपकी आवाज़ की रिकॉर्डिंग नहीं दिखेगी।",
+    publicNote: "इस कार्ड पर लिखी हर बात, विवरण समेत, सबको दिखेगी।",
     pinConfirmed: "पिन पक्की की गई:",
     pinNotConfirmed: "पिन अभी पक्की नहीं:",
     photo: "फ़ोटो",
     photoAlt: "सड़क की फ़ोटो",
     place: "जगह",
-    recursYes: VOICE_COPY.hi.recursYes,
-    recursNo: VOICE_COPY.hi.recursNo,
+    recursYes: "हाँ, बार-बार होता है",
+    recursNo: "नहीं, एक ही बार",
     sections: { problem: "समस्या", place: "जगह", answers: "आपके जवाब" },
     edit: "बदलें",
     accident: "दुर्घटना या गिरना देखा",
@@ -106,21 +107,25 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
       none: "नहीं",
       not_sure: "पता नहीं",
     },
-    fields: VOICE_COPY.hi.fields,
+    fields: {
+      issueType: "प्रकार",
+      noticedAt: "कब देखा",
+      recurs: "बार-बार होता है?",
+      description: "विवरण",
+    },
   },
   mr: {
     heading: "हा रेकॉर्ड तपासा",
     badge: "नागरिक रिपोर्ट",
     anonymous: "तुमचं नाव दिसणार नाही",
-    publicNote:
-      "या कार्डवरची प्रत्येक गोष्ट, वर्णनासह, सगळ्यांना दिसेल. तुमच्या आवाजाचं रेकॉर्डिंग दिसणार नाही.",
+    publicNote: "या कार्डवरची प्रत्येक गोष्ट, वर्णनासह, सगळ्यांना दिसेल.",
     pinConfirmed: "पिन निश्चित केली:",
     pinNotConfirmed: "पिन अजून निश्चित नाही:",
     photo: "फोटो",
     photoAlt: "रस्त्याचा फोटो",
     place: "ठिकाण",
-    recursYes: VOICE_COPY.mr.recursYes,
-    recursNo: VOICE_COPY.mr.recursNo,
+    recursYes: "होय, पुन्हा पुन्हा होतं",
+    recursNo: "नाही, एकदाच",
     sections: { problem: "समस्या", place: "ठिकाण", answers: "तुमची उत्तरं" },
     edit: "बदला",
     accident: "अपघात किंवा पडणं पाहिलं",
@@ -130,6 +135,11 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
       none: "नाही",
       not_sure: "माहीत नाही",
     },
-    fields: VOICE_COPY.mr.fields,
+    fields: {
+      issueType: "प्रकार",
+      noticedAt: "कधी पाहिलं",
+      recurs: "पुन्हा होतं?",
+      description: "वर्णन",
+    },
   },
 };

@@ -3,7 +3,7 @@ import { LOCALITIES, type Landmark } from "@/lib/city";
 /**
  * Places a pin may land on by name: the 118 localities in the gazetteer
  * (`data/rupee/localities.csv`), with their spellings and Devanagari aliases.
- * Voice and the place search both read this list.
+ * The report form's place search reads this list.
  */
 export type MergedLandmark = Landmark & {
   kind: "locality";

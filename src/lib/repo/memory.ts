@@ -273,7 +273,6 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
       description: input.description,
       isSample: false,
       createdAt: new Date().toISOString(),
-      voiceTranscript: input.voiceTranscript ?? null,
     };
   }
 }

@@ -14,14 +14,12 @@ export type MapPin = { lat: number; lng: number };
 type PinMapProps = {
   value: MapPin | null;
   onChange: (pin: MapPin) => void;
-  /** A shorter map with no hint line, for the card inside the voice chat. */
-  compact?: boolean;
 };
 
 const EMPTY_HINT = "Or zoom in and tap the spot on the map.";
 const PLACED_HINT = "Drag the pin or tap the map to move it onto the exact spot.";
 
-export function PinMap({ value, onChange, compact = false }: PinMapProps) {
+export function PinMap({ value, onChange }: PinMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
@@ -32,7 +30,7 @@ export function PinMap({ value, onChange, compact = false }: PinMapProps) {
   latestRef.current = value;
   /** Set when the move started on this map, so the camera does not chase a drag or tap. */
   const selfMoveRef = useRef(false);
-  /** The map opens centred on the pin, or on the precinct when there is none yet. */
+  /** The map opens centred on the pin, or on Mumbai when there is none yet. */
   const cameraReadyRef = useRef(false);
   const placeMarkerRef = useRef<(pin: MapPin) => void>(() => {});
 
@@ -134,21 +132,19 @@ export function PinMap({ value, onChange, compact = false }: PinMapProps) {
   const hint = value ? PLACED_HINT : EMPTY_HINT;
   return (
     <div>
-      {compact ? null : (
-        <p id="pin-map-hint" className="ux4g-body-s-default ux4g-text-neutral-secondary mb-2">
-          {hint}
-        </p>
-      )}
+      <p id="pin-map-hint" className="ux4g-body-s-default ux4g-text-neutral-secondary mb-2">
+        {hint}
+      </p>
       <div
         ref={containerRef}
-        className={`rb-map rb-pinmap w-full ${compact ? "h-56" : "h-72"}`}
+        className="rb-map rb-pinmap h-72 w-full"
         role="region"
         aria-label={
           value
             ? "Mumbai map. Drag the pin or tap the map to mark the problem."
             : "Mumbai map. Tap the map where the problem is."
         }
-        aria-describedby={compact ? undefined : "pin-map-hint"}
+        aria-describedby="pin-map-hint"
       />
     </div>
   );

@@ -6,18 +6,14 @@ import {
 } from "@/lib/types";
 
 /**
- * Hindi and Marathi labels for the report chips, for the voice flow.
+ * Hindi and Marathi labels for the report chips.
  *
- * The voice path is Hindi/Marathi end to end — the person speaks Hindi, STT
- * transcribes Hindi, TTS answers in Hindi — so the chips the model fills must
- * read (and be spoken back) in the same language. `src/lib/types.ts` keeps the
- * English maps; this module adds the other two alongside and never replaces
- * them. English is imported, not re-typed, so the three cannot drift apart.
+ * `src/lib/types.ts` keeps the English maps; this module adds the other two
+ * alongside and never replaces them. English is imported, not re-typed, so the
+ * three cannot drift apart.
  *
- * Native Devanagari only. Romanised Indic input measurably degrades Sarvam TTS
- * output, and these exact strings feed both the screen and the spoken readback.
- *
- * Register is Mumbai street, not municipal circular: "फुटपाथ", not "पदपथ".
+ * Native Devanagari only: these strings feed the report screens and the Check
+ * step. Register is Mumbai street, not municipal circular: "फुटपाथ", not "पदपथ".
  */
 
 export const LABEL_LANGUAGES = ["en", "hi", "mr"] as const;
@@ -79,12 +75,10 @@ export const NOTICED_WINDOW_LABELS_BY_LANGUAGE: Record<
 };
 
 /**
- * Narrow whatever the STT response reported to a language we hold labels for.
- *
- * Sarvam returns a BCP-47-ish tag (`hi-IN`, `mr-IN`, `unknown`), so the region
- * subtag is dropped and the result lowercased. Anything else — `unknown`, a
- * language we have not translated, null — falls back to English rather than
- * throwing or rendering blank.
+ * Narrow a BCP-47-ish language tag (`hi-IN`, `mr-IN`) to a language we hold
+ * labels for: the region subtag is dropped and the result lowercased. Anything
+ * else — `unknown`, a language we have not translated, null — falls back to
+ * English rather than throwing or rendering blank.
  */
 export function toLabelLanguage(code: string | null | undefined): LabelLanguage {
   const base = (code ?? "").trim().toLowerCase().split(/[-_]/)[0];

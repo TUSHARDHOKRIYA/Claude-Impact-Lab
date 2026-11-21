@@ -26,13 +26,11 @@ export default function PrivacyPage() {
       </section>
 
       <section className="ux4g-mt-l">
-        <h2 className="ux4g-title-l-strong">Location and voice inputs</h2>
+        <h2 className="ux4g-title-l-strong">Location input</h2>
         <p className="ux4g-body-m-default ux4g-mt-xs">
           Device geolocation is used only if you tap &ldquo;Use my location&rdquo; to
           place the map pin; your browser&apos;s raw GPS reading is not stored
-          separately from the pin you confirm. When voice reporting is enabled,
-          audio clips are sent to the configured speech-to-text provider to fill
-          form fields and are not stored as audio files.
+          separately from the pin you confirm.
         </p>
       </section>
 

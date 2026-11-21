@@ -69,7 +69,6 @@ export function buildCitizenReport(input: CreateReportInput, locationId: string)
     description: input.description,
     isSample: false,
     createdAt: new Date().toISOString(),
-    voiceTranscript: input.voiceTranscript ?? null,
   };
 }
 
@@ -141,7 +140,6 @@ export function fromReportItem(item: DynamoItem): ReportRecord {
     description: opt(item, "description"),
     isSample: flag(item, "isSample"),
     createdAt: str(item, "createdAt"),
-    voiceTranscript: opt(item, "voiceTranscript"),
   };
 }
 

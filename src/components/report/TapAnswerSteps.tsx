@@ -3,9 +3,7 @@
 import { GovField } from "@/components/gov/GovField";
 import { LocationStep, type MapPin } from "@/components/report/LocationStep";
 import { QuestionStep } from "@/components/report/QuestionStep";
-import { VoiceBadge } from "@/components/report/VoiceBadge";
 import { REPORT_MSG, type DetailsErrors } from "@/components/report/report-form-helpers";
-import type { VoiceField } from "@/components/report/use-report-voice";
 import {
   ACCIDENT_SEEN,
   ACCIDENT_SEEN_LABELS,
@@ -32,8 +30,7 @@ const RECURS_OPTIONS = [
 const ACCIDENT_OPTIONS = ACCIDENT_SEEN.map((value) => ({ value, label: ACCIDENT_SEEN_LABELS[value] }));
 
 /**
- * The tap way to answer: one question per screen, the same fields the voice
- * chat fills. A badge marks anything voice filled until the person edits it.
+ * One question per screen, in order: photo, then the answers, then place.
  */
 export function TapAnswerSteps(props: {
   step: number;
@@ -44,7 +41,6 @@ export function TapAnswerSteps(props: {
   accident: AccidentSeen | "";
   description: string;
   detailsError: DetailsErrors;
-  voiceFilled: ReadonlySet<VoiceField>;
   pin: MapPin | null;
   locationError: string | null;
   onIssueType: (value: IssueType) => void;
@@ -54,8 +50,6 @@ export function TapAnswerSteps(props: {
   onDescription: (value: string) => void;
   onPin: (pin: MapPin | null) => void;
 }) {
-  const voiceBadge = (field: VoiceField) => (props.voiceFilled.has(field) ? <VoiceBadge /> : null);
-
   switch (props.step) {
     case STEP.issue:
       return (
@@ -65,7 +59,6 @@ export function TapAnswerSteps(props: {
           options={ISSUE_OPTIONS}
           value={props.issueType}
           error={props.issueInvalid ? REPORT_MSG.issue : undefined}
-          badge={voiceBadge("issueType")}
           onPick={props.onIssueType}
         />
       );
@@ -77,7 +70,6 @@ export function TapAnswerSteps(props: {
           options={NOTICED_OPTIONS}
           value={props.noticedWindow}
           error={props.detailsError.noticedWindow}
-          badge={voiceBadge("noticedWindow")}
           onPick={props.onNoticedWindow}
         />
       );
@@ -90,7 +82,6 @@ export function TapAnswerSteps(props: {
           options={RECURS_OPTIONS}
           value={props.recurs}
           error={props.detailsError.recurs}
-          badge={voiceBadge("recurs")}
           onPick={props.onRecurs}
         />
       );
@@ -110,7 +101,6 @@ export function TapAnswerSteps(props: {
         <div className="rb-step">
           <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading rb-q">
             Anything else people should know?
-            {voiceBadge("description")}
           </h2>
           <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
             Optional. How deep, how wide, what it blocks. Leave out names and phone numbers: this becomes public.

@@ -8,8 +8,8 @@ import type { PlaceSummary } from "@/lib/types";
 const place: PlaceSummary = {
   location: {
     id: "loc_1",
-    name: "Waste on Rampart Row",
-    slug: "rampart-waste",
+    name: "Pothole on SV Road",
+    slug: "sv-road-pothole",
     issueType: "pothole",
     lat: 18.93,
     lng: 72.83,
@@ -54,7 +54,7 @@ describe("report highlight", () => {
     expect(screen.getByRole("link", { name: "Your report" })).toHaveAttribute("href", "/reports/rpt_fresh");
     expect(screen.getByRole("link", { name: "Open this place" })).toHaveAttribute(
       "href",
-      "/places/rampart-waste?report=rpt_fresh",
+      "/places/sv-road-pothole?report=rpt_fresh",
     );
     expect(screen.queryByRole("link", { name: "Latest report" })).not.toBeInTheDocument();
   });

@@ -3,8 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { MapInsightCounts, PlaceSummary } from "@/lib/types";
 
-vi.mock("@/lib/voice/actions", () => ({ processVoiceTurnAction: vi.fn() }));
-vi.mock("@/lib/voice/speak-action", () => ({ speakPromptAction: vi.fn(async () => null) }));
 vi.mock("@/lib/queries", () => ({
   listMapPoints: vi.fn(),
   listPlaces: vi.fn(),

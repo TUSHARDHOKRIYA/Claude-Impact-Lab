@@ -5,8 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const compressImageFile = vi.hoisted(() => vi.fn());
 const createReportAction = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/voice/actions", () => ({ processVoiceTurnAction: vi.fn() }));
-vi.mock("@/lib/voice/speak-action", () => ({ speakPromptAction: vi.fn(async () => null) }));
 vi.mock("@/lib/photo-compress", () => ({ compressImageFile }));
 vi.mock("@/lib/actions", () => ({ createReportAction }));
 vi.mock("@/components/report/PlacePickerMap", async () => {
@@ -48,14 +46,12 @@ async function continueFromType(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe("ReportForm guided steps", () => {
-  it("opens on the photo step with no voice recorder offered", () => {
+  it("opens on the photo step", () => {
     render(<ReportForm />);
     expect(
       screen.getByRole("heading", { name: /photograph the problem/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/Step 1 of 8/)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Start speaking" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Voice" })).not.toBeInTheDocument();
   });
 
   it("blocks continue without a photo and stays on step 1", async () => {
@@ -168,7 +164,6 @@ describe("ReportForm guided steps", () => {
     expect(data.get("recurs")).toBe("false");
     expect(data.get("accident")).toBe("none");
     expect(data.get("locationConfirmed")).toBe("true");
-    expect(data.get("voiceTranscript")).toBe("");
 
     const submitted = await screen.findByRole("heading", { name: "Thanks for letting us know!" });
     expect(submitted).toHaveFocus();

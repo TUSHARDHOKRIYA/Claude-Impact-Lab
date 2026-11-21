@@ -14,17 +14,17 @@ export function ReportReview({
   accidentError,
   onAccident,
   onEdit,
-  voiceLanguageCode,
+  lang: rawLang,
   locationConfirmed,
 }: {
   answers: ReportAnswers;
   accidentError?: string;
   onAccident: (value: AccidentSeen) => void;
   onEdit: (section: SummarySection) => void;
-  voiceLanguageCode: string;
+  lang: string;
   locationConfirmed: boolean;
 }) {
-  const lang = toLabelLanguage(voiceLanguageCode);
+  const lang = toLabelLanguage(rawLang);
   const copy = REVIEW_COPY[lang];
 
   return (
@@ -41,7 +41,7 @@ export function ReportReview({
           {copy.pinNotConfirmed} {describePlace(answers.lat, answers.lng)}
         </GovAlert>
       ) : null}
-      {/* Voice cannot ask this one, so a voice report answers it here. */}
+      {/* Asked here when the earlier Safety step was skipped. */}
       {answers.accident ? null : (
         <GovChoiceGroup
           className="ux4g-mt-xl"

@@ -1,7 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { GovChoiceGroup, type ChoiceOption } from "@/components/gov/GovChoiceGroup";
 
 /**
@@ -15,7 +13,6 @@ export function QuestionStep<T extends string>({
   options,
   value,
   error,
-  badge,
   onPick,
 }: {
   heading: string;
@@ -24,14 +21,12 @@ export function QuestionStep<T extends string>({
   options: readonly ChoiceOption<T>[];
   value: T | "";
   error?: string;
-  badge?: ReactNode;
   onPick: (value: T) => void;
 }) {
   return (
     <div className="rb-step">
       <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading rb-q">
         {heading}
-        {badge}
       </h2>
       {sub ? <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">{sub}</p> : null}
       <GovChoiceGroup

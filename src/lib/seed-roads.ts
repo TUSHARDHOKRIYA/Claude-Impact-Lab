@@ -22,7 +22,7 @@ export type SeedRow = {
 const PHOTO: Record<IssueType, string> = {
   pothole: "/samples/road.svg",
   waterlogging: "/samples/drainage.svg",
-  open_manhole: "/samples/obstruction.svg",
+  open_manhole: "/samples/manhole.svg",
   choked_drain: "/samples/drainage.svg",
   road_cave_in: "/samples/road.svg",
   broken_paver_blocks: "/samples/paving.svg",

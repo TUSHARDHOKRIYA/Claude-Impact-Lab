@@ -201,25 +201,5 @@ describe("createReportAction", () => {
     expect(stored?.issueType).toBe("pothole");
     expect(stored?.noticedWindow).toBe("this_month");
     expect(stored?.isSample).toBe(false);
-    expect(stored?.voiceTranscript).toBeNull();
-  });
-
-  it("stores a bounded voice transcript on the report", async () => {
-    const data = form({
-      voiceTranscript: "फुटपाथ तुटला आहे near Jehangir",
-    });
-    const result = await createReportAction(data);
-    expect(result.ok).toBe(true);
-    const catalog = await repo.loadCatalog();
-    const stored = await repo.getReport(catalog.reports[0].id);
-    expect(stored?.voiceTranscript).toBe("फुटपाथ तुटला आहे near Jehangir");
-  });
-
-  it("rejects a transcript over the prototype cap", async () => {
-    await expect(
-      createReportAction(form({ voiceTranscript: "x".repeat(4_001) })),
-    ).resolves.toEqual({
-      ok: false, error: "Voice transcript is too long. Continue by typing.",
-    });
   });
 });

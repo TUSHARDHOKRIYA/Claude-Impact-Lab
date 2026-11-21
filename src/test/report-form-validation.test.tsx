@@ -5,8 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const compressImageFile = vi.hoisted(() => vi.fn());
 const createReportAction = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/voice/actions", () => ({ processVoiceTurnAction: vi.fn() }));
-vi.mock("@/lib/voice/speak-action", () => ({ speakPromptAction: vi.fn(async () => null) }));
 vi.mock("@/lib/photo-compress", () => ({ compressImageFile }));
 vi.mock("@/lib/actions", () => ({ createReportAction }));
 vi.mock("@/components/report/PlacePickerMap", async () => {

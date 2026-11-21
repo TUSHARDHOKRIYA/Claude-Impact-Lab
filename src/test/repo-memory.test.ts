@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 import { MemoryRastabaazRepository } from "@/lib/repo/memory";
-import { getReportPage } from "@/lib/queries/reports";
 import type { CreateReportInput } from "@/lib/types";
 import { sampleJpegDataUrl } from "./sample-jpeg";
 
@@ -46,21 +45,6 @@ describe("MemoryRastabaazRepository", () => {
     const catalog = await repo.loadCatalog();
     expect(catalog.reports).toHaveLength(1);
     expect("photo" in catalog.reports[0]).toBe(false);
-  });
-
-  it("stores the voice transcript but strips it from catalog reports", async () => {
-    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
-    const created = await repo.createReport(
-      input({ voiceTranscript: "mixed transcript" }),
-    );
-    expect((await repo.getReport(created.report.id))?.voiceTranscript).toBe(
-      "mixed transcript",
-    );
-    await expect(repo.loadCatalog()).resolves.not.toHaveProperty(
-      "reports.0.voiceTranscript",
-    );
-    const page = await getReportPage(created.report.id, repo);
-    expect(page?.report).not.toHaveProperty("voiceTranscript");
   });
 
   it("seeds once for version 2026-09-08-v1", async () => {

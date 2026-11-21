@@ -50,6 +50,5 @@ export function seedReportUntouched(held: ReportRecord, seeded: ReportRecord): b
 }
 
 export function toListItem(report: ReportRecord): PublicReportRecord {
-  const { voiceTranscript: _private, ...publicReport } = report;
-  return { ...publicReport, photoIsIllustration: report.isSample };
+  return { ...report, photoIsIllustration: report.isSample };
 }

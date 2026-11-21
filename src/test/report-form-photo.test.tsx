@@ -4,9 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const compressImageFile = vi.hoisted(() => vi.fn());
 
-// The form always loads the voice hooks; their server actions cannot load under test.
-vi.mock("@/lib/voice/actions", () => ({ processVoiceTurnAction: vi.fn() }));
-vi.mock("@/lib/voice/speak-action", () => ({ speakPromptAction: vi.fn(async () => null) }));
 vi.mock("@/lib/photo-compress", () => ({
   compressImageFile,
 }));

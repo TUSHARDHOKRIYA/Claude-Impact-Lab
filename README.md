@@ -104,7 +104,7 @@ Copy `.env.example`.
 - `src/lib/assistant/` is the Claude assistant: tools, evidence, response schema and request checks.
 - `src/app/` holds the pages; `src/components/` the report form, map, place, ward, contractor and assistant components.
 - `src/styles/` sits on UX4G 3.3.3 (`ux4g-web-components`). App CSS adds the lane marking, the outcome bar, stacked phone tables and layout.
-- `docs/architecture/` has the system map, data quality report and backlog.
+- `docs/architecture/data-quality-report.md` checks the dataset: row counts, keys, and how well the tables link.
 - `infra/` holds the DynamoDB table and IAM policy templates.
 
 ## Known gaps

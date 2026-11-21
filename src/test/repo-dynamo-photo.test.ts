@@ -60,7 +60,6 @@ const PHOTO_ITEM = { pk: "RPT#rpt_1", sk: "PHOTO", photo: "data:image/jpeg;base6
 const STORED_REPORT = {
   ...REPORT_ITEM,
   photo: "data:image/jpeg;base64,secret",
-  voiceTranscript: "private",
 };
 
 const TABLE_ITEMS: Record<string, unknown>[] = [LOCATION, STORED_REPORT, PHOTO_ITEM];
@@ -143,10 +142,8 @@ describe("Dynamo photo and catalog reads", () => {
     expect(queries.map((input) => input.ExpressionAttributeValues[":type"])).toEqual(["location", "report", "note"]);
     const names = projectedNames(queries[0]);
     expect(names).not.toContain("photo");
-    expect(names).not.toContain("voiceTranscript");
     expect(reportItems).toHaveLength(1);
     expect(reportItems[0]).not.toHaveProperty("photo");
-    expect(reportItems[0]).not.toHaveProperty("voiceTranscript");
     expect(reportItems.some((item) => item.sk === "PHOTO")).toBe(false);
     expect(catalog.reports[0] && "photo" in catalog.reports[0]).toBe(false);
     expect(catalog.reports[0]?.noticedWindow).toBe("this_week");

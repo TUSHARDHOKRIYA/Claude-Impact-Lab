@@ -1,11 +1,4 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  buildCitizenReport,
-  catalogScanInput,
-  fromReportItem,
-  reportListProjection,
-  toReportItem,
-} from "@/lib/repo/mappers";
 import type { CreateReportInput } from "@/lib/types";
 import { sampleJpegDataUrl } from "./sample-jpeg";
 
@@ -112,25 +105,6 @@ describe("DynamoRastabaazRepository", () => {
 
   beforeEach(() => {
     send.mockReset();
-  });
-
-  it("keeps voice transcripts out of list and catalog projections", () => {
-    expect(catalogScanInput().ProjectionExpression).not.toContain(
-      "voiceTranscript",
-    );
-    expect(reportListProjection().ProjectionExpression).not.toContain(
-      "voiceTranscript",
-    );
-  });
-
-  it("round-trips a voice transcript through the full report item", () => {
-    const report = buildCitizenReport(
-      citizenInput({ voiceTranscript: "mixed transcript" }),
-      "loc_1",
-    );
-    const item = toReportItem(report);
-    expect(item.voiceTranscript).toBe("mixed transcript");
-    expect(fromReportItem(item).voiceTranscript).toBe("mixed transcript");
   });
 
   it("listReportsForLocation Query excludes photo at the read boundary", async () => {

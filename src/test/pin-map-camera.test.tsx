@@ -131,7 +131,7 @@ describe("PinMap camera", () => {
     expect(flyTo).toHaveBeenCalledTimes(1);
   });
 
-  it("opens on the pin the form already holds, not the precinct centre", () => {
+  it("opens on the pin the form already holds, not the city centre", () => {
     render(<PinMap value={ELSEWHERE} onChange={vi.fn()} />);
     expect(openedAt?.center).toEqual([ELSEWHERE.lng, ELSEWHERE.lat]);
     expect(markerAt).toEqual({ lng: ELSEWHERE.lng, lat: ELSEWHERE.lat });
@@ -151,7 +151,7 @@ describe("PinMap camera", () => {
     });
   });
 
-  it("flies to a landmark the voice proposed", () => {
+  it("flies to a landmark the person picked", () => {
     const onChange = vi.fn();
     const view = render(<PinMap value={null} onChange={onChange} />);
     view.rerender(<PinMap value={CENTRE} onChange={onChange} />);

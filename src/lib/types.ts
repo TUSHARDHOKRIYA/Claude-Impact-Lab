@@ -114,10 +114,9 @@ export type ReportRecord = {
   description: string | null;
   isSample: boolean;
   createdAt: string;
-  voiceTranscript?: string | null;
 };
 
-export type PublicReportRecord = Omit<ReportRecord, "voiceTranscript"> & {
+export type PublicReportRecord = ReportRecord & {
   /** Drawn stand-in. Only a seeded row has one, so this follows `isSample`. */
   photoIsIllustration: boolean;
 };
@@ -177,7 +176,6 @@ export type CreateReportInput = {
   recurs: boolean;
   accident?: AccidentSeen | null;
   description: string | null;
-  voiceTranscript?: string | null;
 };
 
 export type ReportPageData = {

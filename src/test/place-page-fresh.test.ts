@@ -106,12 +106,12 @@ function fallbackRow(id: string, locationId: string, description: string): Repor
 
 const fallbackLocation: LocationRecord = {
   id: "loc_fallback",
-  name: "Waste on Rampart Row",
-  slug: "fallback-concurrent-waste",
+  name: "Pothole on SV Road",
+  slug: "fallback-concurrent-pothole",
   issueType: "waterlogging",
   lat: 18.93,
   lng: 72.83,
-  street: "Rampart Row",
+  street: "SV Road",
   ward: "A Ward",
   createdAt: "2026-01-01",
 };

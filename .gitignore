@@ -11,9 +11,6 @@ out
 data/*.sqlite*
 .DS_Store
 
-# Voice model bake-off run logs (Phase 3). Local only.
-bakeoff-runs/
-
 # Editor-local settings.
 .cursor/
 

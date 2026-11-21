@@ -20,23 +20,22 @@ describe("the missing-field loop", () => {
   it("asks for the required slots in order and stops when all are filled", () => {
     expect(nextMissing([])).toBe("issue_type");
     expect(nextMissing(["issue_type"])).toBe("noticed_window");
-    expect(nextMissing(["issue_type", "noticed_window", "affects"])).toBe("recurs");
-    expect(nextMissing(["issue_type", "noticed_window", "recurs", "affects"])).toBe("place");
-    expect(nextMissing(["issue_type", "noticed_window", "recurs", "affects", "place"])).toBe("description");
+    expect(nextMissing(["issue_type", "noticed_window"])).toBe("recurs");
+    expect(nextMissing(["issue_type", "noticed_window", "recurs"])).toBe("place");
+    expect(nextMissing(["issue_type", "noticed_window", "recurs", "place"])).toBe("description");
     expect(nextMissing(ASK_SLOTS)).toBeNull();
   });
 
   it("reads filled slots from form state, ignoring an unknown window", () => {
     const values = {
-      issueType: "waste",
+      issueType: "pothole",
       noticedWindow: "tomorrow",
       recurs: "false",
-      affects: ["walking"],
       description: "",
       placeConfirmed: false,
       descriptionDone: false,
     };
-    expect(filledSlots(values)).toEqual(["issue_type", "recurs", "affects"]);
+    expect(filledSlots(values)).toEqual(["issue_type", "recurs"]);
     expect(filledSlots({ ...values, noticedWindow: "today" })).toContain("noticed_window");
     // Place counts only once the person confirmed the pin; "anything else" once answered, even with "no".
     expect(filledSlots({ ...values, placeConfirmed: true })).toContain("place");
@@ -77,7 +76,7 @@ describe("composeReply", () => {
   it("acknowledges what it heard and asks for the next empty slot", () => {
     const { reply, spec } = composeReply({
       speech: clear,
-      fields: { issueType: "waste" },
+      fields: { issueType: "pothole" },
       hasPin: true,
       filled: [],
       lang: "en",
@@ -93,7 +92,7 @@ describe("composeReply", () => {
   it("counts slots the form already has, and says done when nothing is left", () => {
     const { reply } = composeReply({
       speech: clear,
-      fields: { affects: ["walking"] },
+      fields: { recurs: "false" },
       hasPin: false,
       filled: ["issue_type", "noticed_window", "recurs", "place", "description"],
       lang: "mr",
@@ -103,11 +102,11 @@ describe("composeReply", () => {
   });
 
   it("asks where it is next, and to confirm the pin when voice already placed one", () => {
-    const four: AskSlot[] = ["issue_type", "noticed_window", "recurs", "affects"];
-    const where = composeReply({ speech: clear, fields: {}, hasPin: false, filled: four, asked: "affects", lang: "en" });
+    const three: AskSlot[] = ["issue_type", "noticed_window", "recurs"];
+    const where = composeReply({ speech: clear, fields: {}, hasPin: false, filled: three, asked: "recurs", lang: "en" });
     expect(where.reply.ask).toBe("place");
     expect(where.reply.text).toMatch(/Where is it\?/);
-    const pinned = composeReply({ speech: clear, fields: {}, hasPin: true, filled: four, asked: "place", lang: "en" });
+    const pinned = composeReply({ speech: clear, fields: {}, hasPin: true, filled: three, asked: "place", lang: "en" });
     expect(pinned.reply).toEqual({
       text: "Got it. Is the pin in the right spot? Drag it if not, then tap Yes.",
       ask: "place",
@@ -116,20 +115,20 @@ describe("composeReply", () => {
   });
 
   it("asks to confirm, not 'where', when the place was named earlier in the conversation", () => {
-    const four: AskSlot[] = ["issue_type", "noticed_window", "recurs", "affects"];
-    const { reply } = composeReply({ speech: clear, fields: {}, hasPin: false, pinned: true, filled: four, asked: "affects", lang: "en" });
+    const three: AskSlot[] = ["issue_type", "noticed_window", "recurs"];
+    const { reply } = composeReply({ speech: clear, fields: {}, hasPin: false, pinned: true, filled: three, asked: "recurs", lang: "en" });
     expect(reply.ask).toBe("place");
     expect(reply.text).toMatch(/Is the pin in the right spot\?/);
   });
 
   it("points at the map button, instead of asking 'where' again, when they answer the pin check by voice", () => {
-    const four: AskSlot[] = ["issue_type", "noticed_window", "recurs", "affects"];
+    const three: AskSlot[] = ["issue_type", "noticed_window", "recurs"];
     const { reply } = composeReply({
       speech: { ...clear, transcript: "haan sahi hai" },
       fields: {},
       hasPin: false,
       pinned: true,
-      filled: four,
+      filled: three,
       asked: "place",
       lang: "hi",
     });
@@ -143,7 +142,7 @@ describe("composeReply", () => {
       speech: { ...clear, transcript: "nahi, bas itna hi" },
       fields: {},
       hasPin: false,
-      filled: ["issue_type", "noticed_window", "recurs", "affects", "place"],
+      filled: ["issue_type", "noticed_window", "recurs", "place"],
       asked: "description",
       lang: "en",
     });
@@ -161,7 +160,7 @@ describe("composeReply", () => {
   it("repeats a weak transcript back for Yes or No instead of filling", () => {
     const { reply, spec } = composeReply({
       speech: { ...clear, languageProbability: LOW_CONFIDENCE - 0.1 },
-      fields: { issueType: "waste" },
+      fields: { issueType: "pothole" },
       hasPin: false,
       filled: [],
       lang: "hi",

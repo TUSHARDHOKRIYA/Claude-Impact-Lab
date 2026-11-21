@@ -13,14 +13,13 @@ import { readFileSync } from "node:fs";
 const listed: ReportListItem = {
   id: "rpt_desk_1",
   locationId: "loc_desk",
-  issueType: "road",
+  issueType: "pothole",
   lat: 18.9298,
   lng: 72.8324,
   noticedAt: "2026-09-01",
   noticedWindow: "this_week",
   recurs: false,
-  affects: ["walking"],
-  description: "Listed without a photo attribute",
+    description: "Listed without a photo attribute",
   isSample: true,
   photoIsIllustration: true,
   createdAt: "2026-09-01T12:00:00.000Z",
@@ -71,7 +70,7 @@ describe("ReportEditor photo surface", () => {
     expect(screen.getByLabelText("Note")).toBeInTheDocument();
     const save = screen.getByRole("button", { name: "Save changes" });
     expect(save).toHaveAttribute("type", "submit");
-    expect(save.className).toMatch(/ux4g-btn-lg/);
+    expect(save.className).toMatch(/ux4g-btn-l\b/);
     expect(screen.getByText("Check paving")).toBeInTheDocument();
   });
 

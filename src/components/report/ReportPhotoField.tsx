@@ -49,7 +49,7 @@ export function ReportPhotoField({
       {preview ? (
         <figure className="rb-viewfinder rb-viewfinder-filled">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={preview} alt="Your photo of the road problem" />
+          <img src={preview} alt="Preview of the street photo" />
         </figure>
       ) : (
         <button
@@ -62,7 +62,7 @@ export function ReportPhotoField({
         >
           <CameraIcon />
           <span className="ux4g-title-l-strong">{busy ? "Preparing photo…" : "Take a photo"}</span>
-          <span className="ux4g-body-s-default rb-viewfinder-sub">Opens your camera</span>
+          <span className="ux4g-body-s-default rb-viewfinder-sub" aria-hidden="true">Opens your camera</span>
         </button>
       )}
 
@@ -82,7 +82,7 @@ export function ReportPhotoField({
           className="ux4g-btn-text-primary ux4g-btn-l touch-target"
           onClick={() => libraryRef.current?.click()}
         >
-          {preview ? "Choose a different photo" : "Choose from gallery"}
+          {preview ? "Choose a different photo" : "Choose from library"}
         </button>
       </div>
 
@@ -94,7 +94,7 @@ export function ReportPhotoField({
         accept={ACCEPT}
         capture="environment"
         tabIndex={-1}
-        aria-labelledby="report-step-heading"
+        aria-label="A photo of what you can see"
         aria-invalid={error ? true : undefined}
         onChange={(event) => {
           onPhoto(event.target.files?.[0]);
@@ -121,7 +121,7 @@ export function ReportPhotoField({
               <span id="photo-error">{error}</span>
             </GovAlert>
           </div>
-        ) : status && status !== "Photo ready." ? (
+        ) : status ? (
           <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-s">{status}</p>
         ) : null}
       </div>

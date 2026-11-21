@@ -10,13 +10,12 @@ import type { MapReportPoint, ReportListItem, ReportRecord } from "@/lib/types";
 function item(partial: Partial<ReportListItem> & Pick<ReportListItem, "id">): ReportListItem {
   return {
     locationId: "loc_1",
-    issueType: "waste",
+    issueType: "pothole",
     lat: 18.93,
     lng: 72.83,
     noticedAt: "2026-09-01",
     noticedWindow: "this_week",
     recurs: false,
-    affects: ["walking"],
     description: null,
     isSample: false,
     photoIsIllustration: false,
@@ -55,7 +54,7 @@ describe("map time filtering", () => {
   const sixYears = item({ id: "rpt_dated", noticedAt: "2018-01-01", noticedWindow: null });
   const lighting = item({
     id: "rpt_light",
-    issueType: "lighting",
+    issueType: "waterlogging",
     noticedAt: "2026-08-01",
     noticedWindow: "this_month",
   });
@@ -64,7 +63,7 @@ describe("map time filtering", () => {
     locationId: "loc_1",
     lat: 18.93,
     lng: 72.83,
-    issueType: "waste",
+    issueType: "pothole",
     noticedAt: "2026-08-15",
   };
 
@@ -72,13 +71,12 @@ describe("map time filtering", () => {
     const record: ReportRecord = {
       id: "rpt_window",
       locationId: "loc_1",
-      issueType: "waste",
+      issueType: "pothole",
       lat: 18.93,
       lng: 72.83,
       noticedAt: "2026-01-01",
       noticedWindow: "over_six_months",
       recurs: false,
-      affects: ["walking"],
       description: null,
       isSample: false,
       createdAt: "2026-09-01",
@@ -106,7 +104,7 @@ describe("map time filtering", () => {
     expect(ids(year).sort()).toEqual(["rpt_light", "rpt_recent"]);
     const five = await listMapPoints({ since: "2021-09-27" }, r);
     expect(ids(five).sort()).toEqual(["rpt_light", "rpt_recent"]);
-    const wasteYear = await listMapPoints({ issueType: "waste", since: "2025-09-27" }, r);
+    const wasteYear = await listMapPoints({ issueType: "pothole", since: "2025-09-27" }, r);
     expect(ids(wasteYear)).toEqual(["rpt_recent"]);
 
     const points: MapReportPoint[] = [...all, legacy];
@@ -115,8 +113,8 @@ describe("map time filtering", () => {
     );
     expect(ids(filterMapPoints(points, "all", "1y")).sort()).toEqual(["rpt_legacy", "rpt_light", "rpt_recent"]);
     expect(ids(filterMapPoints(points, "all", "5y")).sort()).toEqual(["rpt_legacy", "rpt_light", "rpt_recent"]);
-    expect(ids(filterMapPoints(points, "lighting", "1y"))).toEqual(["rpt_light"]);
-    expect(ids(filterMapPoints(points, "waste", "all")).sort()).toEqual([
+    expect(ids(filterMapPoints(points, "waterlogging", "1y"))).toEqual(["rpt_light"]);
+    expect(ids(filterMapPoints(points, "pothole", "all")).sort()).toEqual([
       "rpt_dated",
       "rpt_legacy",
       "rpt_old_window",

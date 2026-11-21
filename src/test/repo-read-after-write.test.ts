@@ -10,7 +10,7 @@ vi.mock("@/lib/repo/dynamo-client", () => ({
 
 const location = {
   type: "location", id: "loc_1", name: "Pothole on Dr Ambedkar Road",
-  slug: "ambedkar-pothole", issueType: "footpath", lat: 18.9298, lng: 72.8328,
+  slug: "ambedkar-pothole", issueType: "pothole", lat: 18.9298, lng: 72.8328,
   street: "Dr Ambedkar Road", ward: "A Ward", createdAt: "2026-01-01T00:00:00.000Z",
 };
 
@@ -44,9 +44,8 @@ describe("reads immediately after recording", () => {
       return {};
     });
     const result = await new DynamoRastabaazRepository().createReport({
-      issueType: "footpath", lat: location.lat, lng: location.lng,
-      photo: sampleJpegDataUrl(), noticedAt: "2026-09-27", recurs: false,
-      affects: ["walking"], description: "Loose paving",
+      issueType: "pothole", lat: location.lat, lng: location.lng,
+      photo: sampleJpegDataUrl(), noticedAt: "2026-09-27", recurs: false, description: "Loose paving",
     });
     expect(result.report.id).toMatch(/^rpt_/);
     expect(result.connectedCount).toBe(0);

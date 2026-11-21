@@ -17,13 +17,12 @@ let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaa
 
 function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     photo: sampleJpegDataUrl(),
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
     description: null,
     ...partial,
   };
@@ -36,7 +35,7 @@ const WINNER_LOCATION = {
   id: "loc_winner",
   name: "Pothole near Hindmata",
   slug: "hindmata-pothole",
-  issueType: "footpath",
+  issueType: "pothole",
   lat: 18.9298,
   lng: 72.8328,
   street: "Hindmata",

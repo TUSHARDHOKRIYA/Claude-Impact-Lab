@@ -108,6 +108,8 @@ describe("amplify SSR env wiring", () => {
       OPENAI_API_KEY: "openai-key",
       GEMINI_API_KEY: "gemini-key",
       CEREBRAS_API_KEY: "cerebras-key",
+      ANTHROPIC_API_KEY: "anthropic-key",
+      RUPEE_BRIEF_MODEL: "claude-opus-5-5",
       AWS_REGION: "ap-south-1",
       AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE",
       AWS_SECRET_ACCESS_KEY: "wJalrXUtnFEMI/K7MDENG",
@@ -123,6 +125,8 @@ describe("amplify SSR env wiring", () => {
       OPENAI_API_KEY: "openai-key",
       GEMINI_API_KEY: "gemini-key",
       CEREBRAS_API_KEY: "cerebras-key",
+      ANTHROPIC_API_KEY: "anthropic-key",
+      RUPEE_BRIEF_MODEL: "claude-opus-5-5",
     });
     const body = formatDotEnv(values);
     expect(body).toBe(
@@ -136,6 +140,8 @@ describe("amplify SSR env wiring", () => {
         `OPENAI_API_KEY=${quoteDotEnvValue("openai-key")}`,
         `GEMINI_API_KEY=${quoteDotEnvValue("gemini-key")}`,
         `CEREBRAS_API_KEY=${quoteDotEnvValue("cerebras-key")}`,
+        `ANTHROPIC_API_KEY=${quoteDotEnvValue("anthropic-key")}`,
+        `RUPEE_BRIEF_MODEL=${quoteDotEnvValue("claude-opus-5-5")}`,
         "",
       ].join("\n"),
     );
@@ -154,6 +160,8 @@ describe("amplify SSR env wiring", () => {
       OPENAI_API_KEY: "openai-key",
       GEMINI_API_KEY: "gemini-key",
       CEREBRAS_API_KEY: "cerebras-key",
+      ANTHROPIC_API_KEY: "anthropic-key",
+      RUPEE_BRIEF_MODEL: "claude-opus-5-5",
       AWS_REGION: "ap-south-1",
     });
     expect(read(dest)).toBe(body);

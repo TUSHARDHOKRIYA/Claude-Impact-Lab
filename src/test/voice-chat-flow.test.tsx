@@ -25,7 +25,7 @@ vi.mock("@/components/report/PinMap", () => ({
 import { ReportForm } from "@/components/report/ReportForm";
 
 type User = ReturnType<typeof userEvent.setup>;
-const jehangir = LANDMARKS.find((landmark) => landmark.id === "jehangir")!;
+const hindmata = LANDMARKS.find((landmark) => landmark.id === "loc-hindmata") || LANDMARKS[0];
 const hidden = (name: string) => document.querySelector<HTMLInputElement>(`input[name="${name}"]`)!.value;
 const tap = (user: User, name: string) => user.click(screen.getByRole("button", { name }));
 
@@ -70,11 +70,11 @@ describe("the voice-first report page", () => {
     expect(screen.getByText("Namaste!")).toBeInTheDocument();
     expect(screen.getByText(/What is the problem\?/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start speaking" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "What kind of condition is this?" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /What is wrong with the road/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Continue" })).not.toBeInTheDocument();
 
     await tap(user, "Form");
-    expect(screen.getByRole("heading", { name: "What kind of condition is this?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /What is wrong with the road/i })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Start speaking" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Voice" })).toHaveAttribute("aria-pressed", "false");
@@ -84,16 +84,14 @@ describe("the voice-first report page", () => {
     const user = userEvent.setup();
     await toAnswers(user);
 
-    await tap(user, "Waste");
+    await tap(user, "Pothole");
     expect(screen.getByText(/When did you notice it/)).toBeInTheDocument();
     await tap(user, "Today");
     await tap(user, "No, just this once");
-    await tap(user, "Walking");
-    await tap(user, "Done");
     expect(screen.getByText(/Where is it\?/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Yes, this is the spot" })).toBeInTheDocument();
 
-    await tap(user, jehangir.name);
+    await tap(user, hindmata.name);
     expect(screen.getByText(/Is the pin in the right spot\?/)).toBeInTheDocument();
     expect(hidden("locationConfirmed")).toBe("false");
     await tap(user, "Yes, this is the spot");
@@ -103,30 +101,30 @@ describe("the voice-first report page", () => {
     expect(createReportAction).not.toHaveBeenCalled();
 
     await tap(user, "Check the report");
-    expect(screen.getByRole("heading", { name: "Check this record" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Check your report" })).toBeInTheDocument();
     expect(createReportAction).not.toHaveBeenCalled();
-    await tap(user, "Record this condition");
+    await user.click(screen.getByRole("radio", { name: "No" }));
+    await tap(user, "Send report");
     expect(createReportAction).toHaveBeenCalledTimes(1);
     const data = createReportAction.mock.calls[0][0] as FormData;
-    expect(data.get("issueType")).toBe("waste");
+    expect(data.get("issueType")).toBe("pothole");
     expect(data.get("noticedWindow")).toBe("today");
     expect(data.get("recurs")).toBe("false");
-    expect(data.get("affects")).toBe(JSON.stringify(["walking"]));
+    expect(data.get("accident")).toBe("none");
     expect(data.get("locationConfirmed")).toBe("true");
-    expect(Number(data.get("lat"))).toBe(jehangir.lat);
+    expect(Number(data.get("lat"))).toBe(hindmata.lat);
   });
 
   it("lets one spoken sentence fill several answers, then asks only what is left", async () => {
     vi.mocked(processVoiceTurnAction).mockResolvedValue(
       turn({
-        transcript: "Jehangir ke saamne footpath toota hai, aaj dekha, chalne mein dikkat",
+        transcript: "Hindmata ke saamne footpath toota hai, aaj dekha, chalne mein dikkat",
         fields: {
-          issueType: "footpath",
+          issueType: "pothole",
           noticedWindow: "today",
-          affects: ["walking"],
-          description: "Footpath outside Jehangir is broken.",
+          description: "Footpath outside Hindmata is broken.",
         },
-        pinProposal: { landmarkId: "jehangir", label: jehangir.name, lat: jehangir.lat, lng: jehangir.lng },
+        pinProposal: { landmarkId: "hindmata", label: hindmata.name, lat: hindmata.lat, lng: hindmata.lng },
         reply: { text: "Got it. Does it keep coming back after it is cleared?", ask: "recurs", confirm: false },
       }),
     );
@@ -134,7 +132,7 @@ describe("the voice-first report page", () => {
     await toAnswers(user);
 
     await speak(user);
-    expect(await screen.findByText(/Jehangir ke saamne footpath toota hai/)).toBeInTheDocument();
+    expect(await screen.findByText(/Hindmata ke saamne footpath toota hai/)).toBeInTheDocument();
     expect(screen.getByText("Got it. Does it keep coming back after it is cleared?")).toBeInTheDocument();
     const sent = vi.mocked(processVoiceTurnAction).mock.calls[0][0];
     expect(sent.get("asked")).toBe("issue_type");
@@ -142,15 +140,15 @@ describe("the voice-first report page", () => {
     // Place is next, and voice already put the pin down: it asks to confirm, not "where".
     await tap(user, "Yes, it comes back");
     expect(screen.getByText(/Is the pin in the right spot\?/)).toBeInTheDocument();
-    expect(Number(hidden("lat"))).toBe(jehangir.lat);
+    expect(Number(hidden("lat"))).toBe(hindmata.lat);
     await tap(user, "Yes, this is the spot");
     // The description came with the first sentence, so nothing is left to ask.
     expect(screen.getByText(/that is everything/)).toBeInTheDocument();
-    expect(hidden("description")).toBe("Footpath outside Jehangir is broken.");
+    expect(hidden("description")).toBe("Footpath outside Hindmata is broken.");
   });
 
   it("tells the server a pin is down, and never moves a pin the person confirmed", async () => {
-    const museum = LANDMARKS.find((landmark) => landmark.id !== "jehangir")!;
+    const museum = LANDMARKS.find((landmark) => landmark.id !== "hindmata")!;
     vi.mocked(processVoiceTurnAction).mockResolvedValue(
       turn({
         transcript: "raat ko andhera rehta hai, museum ke paas bhi",
@@ -161,7 +159,7 @@ describe("the voice-first report page", () => {
     );
     const user = userEvent.setup();
     await toAnswers(user);
-    for (const answer of ["Waste", "Today", "No, just this once", "Walking", "Done", jehangir.name, "Yes, this is the spot"]) {
+    for (const answer of ["Waterlogging", "Today", "No, just this once", hindmata.name, "Yes, this is the spot"]) {
       await tap(user, answer);
     }
     expect(screen.getByText(/Anything else people should know\?/)).toBeInTheDocument();
@@ -170,7 +168,7 @@ describe("the voice-first report page", () => {
     await screen.findByText(/raat ko andhera/);
     expect(vi.mocked(processVoiceTurnAction).mock.calls[0][0].get("pinned")).toBe("1");
     expect(hidden("locationConfirmed")).toBe("true");
-    expect(Number(hidden("lat"))).toBe(jehangir.lat);
+    expect(Number(hidden("lat"))).toBe(hindmata.lat);
     expect(hidden("description")).toBe("It is dark at night.");
   });
 
@@ -180,13 +178,13 @@ describe("the voice-first report page", () => {
     Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
     const user = userEvent.setup();
     await toAnswers(user);
-    for (const answer of ["Waste", "Today", "No, just this once", "Walking", "Done"]) await tap(user, answer);
+    for (const answer of ["Waterlogging", "Today", "No, just this once"]) await tap(user, answer);
 
     await tap(user, "Use my location");
     expect(Number(hidden("lat"))).toBe(18.9283);
     expect(screen.getByText(/Is the pin in the right spot\?/)).toBeInTheDocument();
 
-    position = { latitude: 19.076, longitude: 72.8777 }; // Bandra, well outside the precinct
+    position = { latitude: 18.52, longitude: 73.85 }; // Pune, outside Mumbai's wards
     await tap(user, "Use my location");
     expect(screen.getByRole("alert")).toHaveTextContent(/outside Mumbai's wards/);
     expect(Number(hidden("lat"))).toBe(18.9283);
@@ -195,22 +193,22 @@ describe("the voice-first report page", () => {
   it("keeps the answers and the conversation across Voice and Form", async () => {
     const user = userEvent.setup();
     await toAnswers(user);
-    await tap(user, "Waste");
+    await tap(user, "Waterlogging");
 
     await tap(user, "Form");
-    expect(screen.getByRole("radio", { name: "Waste" })).toBeChecked();
-    await user.click(screen.getByRole("radio", { name: "Road" }));
+    expect(screen.getByRole("radio", { name: /Waterlogging/ })).toBeChecked();
+    await user.click(screen.getByRole("radio", { name: /Pothole/ }));
 
     await tap(user, "Voice");
     expect(screen.getAllByText("Namaste!")).toHaveLength(1);
     expect(screen.getByText(/When did you notice it/)).toBeInTheDocument();
-    expect(hidden("issueType")).toBe("road");
+    expect(hidden("issueType")).toBe("pothole");
   });
 
   it("goes back from Check to the conversation, and a moved pin must be confirmed again", async () => {
     const user = userEvent.setup();
     await toAnswers(user);
-    for (const answer of ["Waste", "Today", "No, just this once", "Walking", "Done", jehangir.name]) {
+    for (const answer of ["Waterlogging", "Today", "No, just this once", hindmata.name]) {
       await tap(user, answer);
     }
     await tap(user, "drag the pin");

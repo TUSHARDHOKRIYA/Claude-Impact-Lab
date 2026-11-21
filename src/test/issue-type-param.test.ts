@@ -8,30 +8,26 @@ describe("parseIssueType", () => {
       expect(parseIssueType(type)).toBe(type);
     }
     expect(HOME_ISSUE_TYPES).toEqual([
-      "footpath",
-      "lighting",
-      "road",
-      "drainage",
-      "waste",
-      "other",
+      "pothole",
+      "waterlogging",
+      "open_manhole",
+      "road_cave_in",
     ]);
-    expect(parseIssueType("footpath")).toBe("footpath");
-    expect(parseIssueType("parking_and_vehicle_occupation")).toBe(
-      "parking_and_vehicle_occupation",
-    );
+    expect(parseIssueType("pothole")).toBe("pothole");
+    expect(parseIssueType("broken_paver_blocks")).toBe("broken_paver_blocks");
   });
 
   it("ignores missing, blank, and unknown values", () => {
     expect(parseIssueType(undefined)).toBeUndefined();
     expect(parseIssueType("")).toBeUndefined();
     expect(parseIssueType("not-an-issue")).toBeUndefined();
-    expect(parseIssueType("FOOTPATH")).toBeUndefined();
+    expect(parseIssueType("POTHOLE")).toBeUndefined();
     expect(parseIssueType("bmc")).toBeUndefined();
   });
 
   it("uses the first value when Next repeats the query param", () => {
-    expect(parseIssueType(["lighting", "road"])).toBe("lighting");
-    expect(parseIssueType(["nope", "footpath"])).toBeUndefined();
+    expect(parseIssueType(["open_manhole", "pothole"])).toBe("open_manhole");
+    expect(parseIssueType(["nope", "pothole"])).toBeUndefined();
     expect(parseIssueType([])).toBeUndefined();
   });
 });

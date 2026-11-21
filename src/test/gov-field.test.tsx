@@ -18,10 +18,10 @@ describe("GovField", () => {
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input.className).toMatch(/\bux4g-input\b/);
     expect(input.className).toMatch(/touch-target/);
-    expect(input.className).not.toMatch(/ux4g-input-md/);
+    expect(input.className).not.toMatch(/ux4g-input-m/);
     expect(input.className).not.toMatch(/ux4g-input-error/);
     const tree = input.closest(".ux4g-input-container");
-    expect(tree?.className).toMatch(/ux4g-input-md/);
+    expect(tree?.className).toMatch(/ux4g-input-m/);
     expect(tree?.className).toMatch(/ux4g-input-error/);
     expect(tree?.className).not.toMatch(/ux4g-input-default/);
     const alert = screen.getByRole("alert");
@@ -35,10 +35,10 @@ describe("GovField", () => {
     const input = screen.getByLabelText("Street");
     expect(input).not.toHaveAttribute("aria-invalid");
     expect(input.className).toMatch(/\bux4g-input\b/);
-    expect(input.className).not.toMatch(/ux4g-input-md/);
+    expect(input.className).not.toMatch(/ux4g-input-m/);
     const tree = input.closest(".ux4g-input-container");
     expect(tree?.className).toMatch(/ux4g-input-default/);
-    expect(tree?.className).toMatch(/ux4g-input-md/);
+    expect(tree?.className).toMatch(/ux4g-input-m/);
     expect(tree?.className).not.toMatch(/ux4g-input-error/);
     const hint = screen.getByText("WGS84");
     expect(hint).toHaveAttribute("id", `${input.id}-hint`);

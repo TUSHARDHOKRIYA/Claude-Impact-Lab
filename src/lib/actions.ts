@@ -44,6 +44,11 @@ function isIssueType(value: string): value is IssueType {
 export async function createReportAction(
   formData: FormData,
 ): Promise<CreateReportActionResult> {
+  // Reject automated submissions that filled the hidden honeypot field.
+  if (String(formData.get("website") ?? "").trim().length > 0) {
+    return fail("Could not record this report.");
+  }
+
   // Unidentified requests share one bucket instead of skipping the limit.
   const ip = (await clientIp()) ?? "unknown";
   if (!allowRequest(`create:${ip}`, CREATE_LIMIT, CREATE_WINDOW_MS)) {

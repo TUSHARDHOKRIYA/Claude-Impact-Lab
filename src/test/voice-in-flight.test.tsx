@@ -20,7 +20,7 @@ import { ReportForm } from "@/components/report/ReportForm";
 type User = ReturnType<typeof userEvent.setup>;
 const hidden = (name: string) => document.querySelector<HTMLInputElement>(`input[type="hidden"][name="${name}"]`)!.value;
 const tap = (user: User, name: string) => user.click(screen.getByRole("button", { name }));
-const empty: ReportVoiceValues = { issueType: "", noticedWindow: "", recurs: "", affects: [], description: "" };
+const empty: ReportVoiceValues = { issueType: "", noticedWindow: "", recurs: "", description: "" };
 
 beforeEach(() => {
   resetFakeRecorder();
@@ -41,8 +41,7 @@ describe("a voice turn that lands after the form changed", () => {
       issueType: vi.fn(),
       noticedWindow: vi.fn(),
       recurs: vi.fn(),
-      affects: vi.fn(),
-      description: vi.fn(),
+            description: vi.fn(),
       pin: vi.fn(),
     };
     const { result, rerender } = renderHook(({ values }) => useReportVoice(values, write), {
@@ -50,12 +49,12 @@ describe("a voice turn that lands after the form changed", () => {
     });
     // The recorder holds the callback from when the person started speaking.
     const applyFromRecordingStart = result.current.applyResult;
-    rerender({ values: { ...empty, issueType: "road" } });
+    rerender({ values: { ...empty, issueType: "pothole" } });
 
-    act(() => applyFromRecordingStart(turn({ fields: { issueType: "footpath" } })));
+    act(() => applyFromRecordingStart(turn({ fields: { issueType: "waterlogging" } })));
 
     expect(write.issueType).not.toHaveBeenCalled();
-    expect(result.current.conflicts).toEqual([{ field: "issueType", existing: "road", incoming: "footpath" }]);
+    expect(result.current.conflicts).toEqual([{ field: "issueType", existing: "pothole", incoming: "waterlogging" }]);
   });
 });
 
@@ -74,7 +73,7 @@ describe("leaving the chat while a turn is in flight", () => {
     await tap(user, "Start speaking");
     await tap(user, "Stop and send");
     await tap(user, "Form");
-    await act(async () => finish(turn({ fields: { issueType: "waste" }, audio: SPOKEN })));
+    await act(async () => finish(turn({ fields: { issueType: "open_manhole" }, audio: SPOKEN })));
 
     expect(hidden("issueType")).toBe("");
     expect(audio.spoken()).toEqual([]);
@@ -98,7 +97,7 @@ describe("prompts that load out of order", () => {
     await tap(user, "Continue");
 
     // Two quick chips: "When did you notice it?" is requested, then "Does it keep coming back?".
-    await tap(user, "Waste");
+    await tap(user, "Waterlogging");
     await tap(user, "Today");
     expect(pending).toHaveLength(3); // hello, then the two acks
     const [, whenClip, recursClip] = pending;
@@ -124,11 +123,11 @@ describe("coming back to the chat after answering in the form", () => {
     expect(screen.getByText(/What is the problem\?/)).toBeInTheDocument();
 
     await tap(user, "Form");
-    await user.click(screen.getByRole("radio", { name: "Road" }));
+    await user.click(screen.getByRole("radio", { name: /Pothole/ }));
     await tap(user, "Voice");
 
     expect(screen.getByText(/When did you notice it/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Today" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Road" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Pothole" })).not.toBeInTheDocument();
   });
 });

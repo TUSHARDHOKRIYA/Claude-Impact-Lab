@@ -26,7 +26,7 @@ const place: PlaceSummary = {
     id: "loc_1",
     name: "Pothole on Dr Ambedkar Road",
     slug: "ambedkar-pothole",
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     street: "Dr Ambedkar Road",
@@ -43,7 +43,7 @@ const point = {
   locationId: "loc_1",
   lat: 18.9298,
   lng: 72.8328,
-  issueType: "footpath" as const,
+  issueType: "pothole" as const,
   noticedAt: "2022-08-18",
 };
 

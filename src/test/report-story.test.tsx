@@ -9,7 +9,7 @@ const location: LocationRecord = {
   id: "loc_1",
   name: "Pothole on Dr Ambedkar Road",
   slug: "dr-ambedkar-road",
-  issueType: "footpath",
+  issueType: "pothole",
   lat: 18.9298,
   lng: 72.8324,
   street: "Dr Ambedkar Road",
@@ -20,13 +20,12 @@ const location: LocationRecord = {
 const report: PublicReportRecord = {
   id: "rpt_1",
   locationId: "loc_1",
-  issueType: "footpath",
+  issueType: "pothole",
   lat: 18.9298,
   lng: 72.8324,
   noticedAt: "2022-08-01",
   noticedWindow: "this_week",
   recurs: true,
-  affects: ["walking"],
   description: "Broken paving.",
   isSample: true,
   photoIsIllustration: true,
@@ -36,13 +35,12 @@ const report: PublicReportRecord = {
 const listed: ReportListItem = {
   id: "rpt_2",
   locationId: "loc_1",
-  issueType: "footpath",
+  issueType: "pothole",
   lat: 18.9298,
   lng: 72.8324,
   noticedAt: "2023-01-01",
   noticedWindow: null,
   recurs: true,
-  affects: ["walking"],
   description: null,
   isSample: true,
   photoIsIllustration: true,
@@ -93,6 +91,6 @@ describe("ReportStory", () => {
       "href",
       "/places/dr-ambedkar-road?report=rpt_1",
     );
-    expect(screen.getByRole("link", { name: "Footpath" })).toHaveAttribute("href", "/reports/rpt_2");
+    expect(screen.getByRole("link", { name: "Pothole" })).toHaveAttribute("href", "/reports/rpt_2");
   });
 });

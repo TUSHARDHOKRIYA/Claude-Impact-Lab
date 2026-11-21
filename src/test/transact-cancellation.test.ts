@@ -19,13 +19,12 @@ const SPOT = { lat: 18.9298, lng: 72.8328 };
 
 function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "footpath",
+    issueType: "pothole",
     ...SPOT,
     photo: sampleJpegDataUrl(),
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
-    description: null,
+        description: null,
     ...partial,
   };
 }
@@ -34,13 +33,12 @@ function storedReport(): ReportRecord {
   return {
     id: "rpt_1",
     locationId: "loc_old",
-    issueType: "footpath",
+    issueType: "pothole",
     ...SPOT,
     noticedAt: "2026-09-01",
     noticedWindow: null,
     recurs: false,
-    affects: ["walking"],
-    description: null,
+        description: null,
     isSample: false,
     createdAt: "2026-09-01T00:00:00.000Z",
     voiceTranscript: null,
@@ -150,10 +148,10 @@ describe("moving a report to a place that has to be created", () => {
 
     const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
-      issueType: "waste",
+      issueType: "waterlogging",
     });
 
-    expect(moved?.issueType).toBe("waste");
+    expect(moved?.issueType).toBe("waterlogging");
     expect(moved?.locationId).not.toBe("loc_old");
 
     const ops = transacts()[0].TransactItems as {
@@ -164,7 +162,7 @@ describe("moving a report to a place that has to be created", () => {
     expect(ops.map((op) => op.Put?.Item.pk ?? op.Update?.Key.pk)).toEqual([
       moved ? `LOC#${moved.locationId}` : "",
       expect.stringMatching(/^SLUG#/),
-      placeLockKey({ ...SPOT, issueType: "waste" }).pk,
+      placeLockKey({ ...SPOT, issueType: "waterlogging" }).pk,
       "RPT#rpt_1",
     ]);
     expect(ops[3].Update?.ConditionExpression).toBe("attribute_exists(pk)");
@@ -187,7 +185,7 @@ describe("moving a report to a place that has to be created", () => {
 
     const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
-      issueType: "waste",
+      issueType: "waterlogging",
     });
 
     expect(moved).toBeNull();
@@ -206,7 +204,7 @@ describe("moving a report to a place that has to be created", () => {
       id: "loc_winner",
       name: "Waterlogging at Hindmata",
       slug: "hindmata-waterlogging",
-      issueType: "waste",
+      issueType: "waterlogging",
       ...SPOT,
       street: "Hindmata",
       ward: "A Ward",
@@ -230,7 +228,7 @@ describe("moving a report to a place that has to be created", () => {
 
     const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
-      issueType: "waste",
+      issueType: "waterlogging",
     });
 
     expect(moved?.locationId).toBe("loc_winner");
@@ -239,7 +237,7 @@ describe("moving a report to a place that has to be created", () => {
     expect(updates).toHaveLength(1);
     expect(updates[0].ExpressionAttributeValues).toMatchObject({
       ":locationId": "loc_winner",
-      ":issueType": "waste",
+      ":issueType": "waterlogging",
     });
   });
 
@@ -251,7 +249,7 @@ describe("moving a report to a place that has to be created", () => {
       id: "loc_waste",
       name: "Waterlogging at Hindmata",
       slug: "hindmata-waterlogging",
-      issueType: "waste",
+      issueType: "waterlogging",
       ...SPOT,
       street: "Hindmata",
       ward: "A Ward",
@@ -264,7 +262,7 @@ describe("moving a report to a place that has to be created", () => {
 
     const moved = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
-      issueType: "waste",
+      issueType: "waterlogging",
     });
 
     expect(moved?.locationId).toBe("loc_waste");

@@ -18,13 +18,12 @@ let TransactionCanceledException: typeof import("@aws-sdk/client-dynamodb").Tran
 
 function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     photo: sampleJpegDataUrl(),
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
     description: null,
     ...partial,
   };
@@ -37,7 +36,7 @@ const WINNER_LOCATION = {
   id: "loc_winner",
   name: "Pothole near Hindmata",
   slug: "hindmata-pothole",
-  issueType: "footpath",
+  issueType: "pothole",
   lat: 18.9298,
   lng: 72.8328,
   street: "Hindmata",
@@ -80,12 +79,12 @@ describe("the place lock", () => {
   });
 
   it("keys on the geo cell and the problem, not the slug", () => {
-    const key = placeLockKey(input({ issueType: "footpath" }));
-    expect(key.pk).toBe(`PLACE#${clusterKey(18.9298, 72.8328)}#footpath`);
+    const key = placeLockKey(input({ issueType: "pothole" }));
+    expect(key.pk).toBe(`PLACE#${clusterKey(18.9298, 72.8328)}#pothole`);
     expect(key.sk).toBe("LOCK");
 
     // Same spot, different problem: a different lock, so both can be created.
-    expect(placeLockKey(input({ issueType: "waste" })).pk).not.toBe(key.pk);
+    expect(placeLockKey(input({ issueType: "waterlogging" })).pk).not.toBe(key.pk);
     // Same problem, same spot: the same lock, so only one writer wins.
     expect(placeLockKey(input({ lat: 18.92980001 })).pk).toBe(key.pk);
   });

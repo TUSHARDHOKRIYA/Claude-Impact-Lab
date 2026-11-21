@@ -1,87 +1,37 @@
 /* Ward money trail. UX4G draws the cards, tables, tags, list and accordion;
  * this file adds the outcome bar (UX4G has no stacked bar) and page layout. */
 
-.rb-page {
-  padding-top: var(--ux4g-padding-l);
-}
-
-.rb-section {
-  margin-top: var(--ux4g-margin-3xl);
-}
-
-.rb-num {
-  text-align: end;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
+.rb-page { padding-top: var(--ux4g-padding-l); }
+.rb-section { margin-top: var(--ux4g-margin-3xl); }
+.rb-num { text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rb-table tbody tr:last-child > *,
-.rb-outcome-table tbody tr:last-child > * {
-  border-bottom: 0;
-}
-
-.rb-table th[scope="row"] {
+.rb-outcome-table tbody tr:last-child > * { border-bottom: 0; }
+.rb-table th[scope="row"],
+.rb-outcome-table th[scope="row"] {
   color: var(--ux4g-text-neutral-primary);
   font-size: var(--ux4g-fs-14);
   font-weight: var(--ux4g-fw-medium);
   white-space: normal;
 }
-
-.rb-table .rb-worse {
-  color: var(--ux4g-text-error-default);
-  font-weight: var(--ux4g-fw-bold);
-}
+.rb-table .rb-worse { color: var(--ux4g-text-error-default); font-weight: var(--ux4g-fw-bold); }
 
 /* ---- Outcome bar: the one chart. Held, flagged, failed, in that order. ---- */
-.rb-outcome {
-  margin: 0;
-}
-
+.rb-outcome { margin: 0; }
 .rb-outcome-track {
   position: relative;
   height: 1.5rem;
   border-radius: var(--ux4g-radius-xs);
   background: var(--ux4g-bg-neutral-subtle);
 }
-
-.rb-outcome-compact .rb-outcome-track {
-  height: 0.625rem;
-}
-
-.rb-outcome-fill {
-  display: flex;
-  gap: 2px;
-  height: 100%;
-}
-
-.rb-seg {
-  min-width: 2px;
-  height: 100%;
-}
-
-.rb-seg:first-child {
-  border-radius: 4px 0 0 4px;
-}
-
-.rb-seg:last-child {
-  border-radius: 0 4px 4px 0;
-}
-
-.rb-seg:only-child {
-  border-radius: 4px;
-}
-
-.rb-seg-held {
-  background: var(--held);
-}
-
-.rb-seg-flagged {
-  background: var(--flagged);
-}
-
-.rb-seg-failed {
-  background: var(--failed);
-}
+.rb-outcome-compact .rb-outcome-track { height: 0.625rem; }
+.rb-outcome-fill { display: flex; gap: 2px; height: 100%; }
+.rb-seg { min-width: 2px; height: 100%; }
+.rb-seg:first-child { border-radius: 4px 0 0 4px; }
+.rb-seg:last-child { border-radius: 0 4px 4px 0; }
+.rb-seg:only-child { border-radius: 4px; }
+.rb-seg-held { background: var(--held); }
+.rb-seg-flagged { background: var(--flagged); }
+.rb-seg-failed { background: var(--failed); }
 
 .rb-budget-line {
   position: absolute;

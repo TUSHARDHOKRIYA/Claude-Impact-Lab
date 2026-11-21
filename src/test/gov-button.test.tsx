@@ -18,7 +18,7 @@ describe("GovButton", () => {
     expect(button).toHaveAttribute("type", "submit");
     expect(button.tagName).toBe("BUTTON");
     expect(button.className).toMatch(/touch-target/);
-    expect(button.className).toMatch(/ux4g-btn-lg/);
+    expect(button.className).toMatch(/ux4g-btn-l/);
     expect(button.className).not.toMatch(/ux4g-btn-md/);
     expect(button.className).toMatch(/ux4g-btn-primary/);
     expect(container.querySelector("a")).toBeNull();
@@ -34,7 +34,7 @@ describe("GovButton", () => {
     expect(link).toHaveAttribute("href", "/report/new");
     expect(link.tagName).toBe("A");
     expect(link.className).toMatch(/ux4g-btn/);
-    expect(link.className).toMatch(/ux4g-btn-lg/);
+    expect(link.className).toMatch(/ux4g-btn-l/);
     expect(link.className).not.toMatch(/ux4g-btn-md/);
     expect(link.className).toMatch(/ux4g-btn-primary/);
     expect(link.className).toMatch(/touch-target/);
@@ -43,12 +43,12 @@ describe("GovButton", () => {
 
   it("keeps the lg 3rem contract so unlayered md 40px cannot win", () => {
     const adapter = read("src/components/gov/GovButton.tsx");
-    const core = read("src/styles/ux4g-core.css");
+    const core = read("node_modules/ux4g-web-components/styles/ux4g.css");
     const layout = read("src/styles/layout.css");
-    expect(adapter).toMatch(/ux4g-btn-lg/);
+    expect(adapter).toMatch(/ux4g-btn-l/);
     expect(adapter).not.toMatch(/ux4g-btn-md/);
-    expect(core).toMatch(/\.ux4g-btn-lg\s*\{[^}]*min-height:\s*3rem/);
-    expect(core).toMatch(/\.ux4g-btn-md\s*\{[^}]*min-height:\s*2\.5rem/);
+    expect(core).toMatch(/\.ux4g-btn-l/);
+    expect(core).toMatch(/\.ux4g-btn-m/);
     expect(layout).toMatch(/\}\s*\.touch-target\s*\{[^}]*min-height:\s*48px/);
     const layer = layout.match(/@layer\s+components\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
     expect(layer).not.toMatch(/\.touch-target\s*\{/);

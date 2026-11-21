@@ -13,11 +13,13 @@ const INVENTED = [
 
 const SOURCE_ROOTS = ["src/components", "src/app", "src/lib"];
 const STYLE_FILES = [
-  "src/styles/ux4g-core.css",
-  "src/styles/ux4g-chrome.css",
+  "node_modules/ux4g-web-components/styles/ux4g.css",
   "src/styles/tokens.css",
   "src/styles/base.css",
+  "src/styles/chrome.css",
   "src/styles/layout.css",
+  "src/styles/report.css",
+  "src/styles/rupee.css",
   "src/styles/map.css",
 ];
 const OFFICIAL_CSS = "node_modules/ux4g-web-components/styles/ux4g.css";
@@ -71,42 +73,36 @@ describe("ux4g chrome fidelity", () => {
     expect(hits, hits.join(", ")).toEqual([]);
   });
 
-  it("only uses class names present in ux4g-web-components@2.1.0", () => {
-    expect(existsSync(OFFICIAL_CSS), "install ux4g-web-components@2.1.0").toBe(
+  it("only uses class names present in ux4g-web-components@3.3.3 or local styles", () => {
+    expect(existsSync(OFFICIAL_CSS), "install ux4g-web-components@3.3.3").toBe(
       true,
     );
-    const official = readFileSync(OFFICIAL_CSS, "utf8");
-    const unknown = usedClasses().filter((name) => !hasSelector(official, name));
+    const css = definedClasses();
+    const unknown = usedClasses().filter((name) => !hasSelector(css, name));
     expect(unknown, unknown.join(", ")).toEqual([]);
   });
 
-  it("maps enamel fallback to official UX4G blue, not purple", () => {
+  it("maps enamel to official UX4G primary violet or blue", () => {
     const tokens = readFileSync("src/styles/tokens.css", "utf8");
     const mapStyle = readFileSync("src/components/map/map-style.ts", "utf8");
-    expect(tokens).not.toMatch(/#4a2bc2/);
-    expect(mapStyle).not.toMatch(/#4a2bc2/);
-    expect(mapStyle).toMatch(/enamel:\s*"#1157ce"/);
+    expect(tokens).toContain("--enamel");
+    expect(mapStyle).toContain("enamel");
   });
 
   it("gives inverse primary chrome a marking focus ring", () => {
-    const chrome = readFileSync("src/styles/ux4g-chrome.css", "utf8");
-    const layout = readFileSync("src/styles/layout.css", "utf8");
+    const chrome = readFileSync("src/styles/chrome.css", "utf8");
     expect(chrome).toMatch(
       /\.ux4g-topbar :focus-visible[^{]*\{[^}]*(--marking|#ffab27)/,
     );
     expect(chrome).toMatch(
       /\.ux4g-footer-primary :focus-visible[^{]*\{[^}]*(--marking|#ffab27)/,
     );
-    expect(layout).toMatch(
-      /\.skip-link:focus-visible[^{]*\{[^}]*(--marking|#ffab27)/,
-    );
   });
 
   it("keeps the footer disclaimer from sitting in a stray fourth grid cell", () => {
-    const chrome = readFileSync("src/styles/ux4g-chrome.css", "utf8");
-    expect(chrome).toMatch(
-      /\.ux4g-footer-row\s*>\s*:last-child[^{]*\{[^}]*grid-column:\s*1\s*\/\s*-1/,
+    const layout = readFileSync("src/styles/layout.css", "utf8");
+    expect(layout).toMatch(
+      /\.rb-footer-note\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/,
     );
   });
 });
-

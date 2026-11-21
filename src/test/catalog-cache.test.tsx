@@ -80,13 +80,12 @@ describe("shared catalog memoization", () => {
     setRepositoryForTests(repo);
     expect(await listPlaces()).toEqual([]);
     await createReport({
-      issueType: "road",
+      issueType: "pothole",
       lat: 18.92855,
       lng: 72.83135,
       photo: PHOTO,
       noticedAt: "2026-09-01",
       recurs: false,
-      affects: ["driving"],
       description: null,
     });
     const places = await listPlaces();

@@ -10,14 +10,13 @@ import type { CreateReportInput } from "@/lib/types";
 
 function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "road",
+    issueType: "pothole",
     lat: CITY.center.lat,
     lng: CITY.center.lng,
     photo: "data:image/jpeg;base64,/9j/4AAQ",
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
-    description: null,
+        description: null,
     ...overrides,
   };
 }
@@ -44,10 +43,10 @@ describe("a place a move emptied", () => {
   });
 
   it("is not listed and does not count", async () => {
-    const created = await repo.createReport(submission({ issueType: "road" }));
+    const created = await repo.createReport(submission({ issueType: "pothole" }));
     expect(await listPlaces()).toHaveLength(1);
 
-    await repo.updateReport({ id: created.report.id, issueType: "waste" });
+    await repo.updateReport({ id: created.report.id, issueType: "waterlogging" });
 
     const places = await listPlaces();
     expect(places).toHaveLength(1);
@@ -59,17 +58,17 @@ describe("a place a move emptied", () => {
   });
 
   it("is not a page", async () => {
-    const created = await repo.createReport(submission({ issueType: "road" }));
+    const created = await repo.createReport(submission({ issueType: "pothole" }));
     expect(await getPlacePage(created.location.slug)).not.toBeNull();
 
-    await repo.updateReport({ id: created.report.id, issueType: "waste" });
+    await repo.updateReport({ id: created.report.id, issueType: "waterlogging" });
 
     expect(await getPlacePage(created.location.slug)).toBeNull();
   });
 
   it("does not inflate the insight counts", async () => {
-    const created = await repo.createReport(submission({ issueType: "road" }));
-    await repo.updateReport({ id: created.report.id, issueType: "waste" });
+    const created = await repo.createReport(submission({ issueType: "pothole" }));
+    await repo.updateReport({ id: created.report.id, issueType: "waterlogging" });
 
     const insights = await getMapInsights();
     // One live place, not two: the emptied one is nobody's unresolved problem.
@@ -78,10 +77,10 @@ describe("a place a move emptied", () => {
   });
 
   it("comes back the moment someone reports that problem there again", async () => {
-    const created = await repo.createReport(submission({ issueType: "road" }));
-    await repo.updateReport({ id: created.report.id, issueType: "waste" });
+    const created = await repo.createReport(submission({ issueType: "pothole" }));
+    await repo.updateReport({ id: created.report.id, issueType: "waterlogging" });
 
-    const again = await repo.createReport(submission({ issueType: "road" }));
+    const again = await repo.createReport(submission({ issueType: "pothole" }));
 
     // Joined the emptied place rather than minting a second one beside it.
     expect(again.location.id).toBe(created.location.id);

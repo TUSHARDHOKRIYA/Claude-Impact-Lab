@@ -97,10 +97,7 @@ export function ReportDraft({
   }
 
   useLayoutEffect(() => {
-    if (skipHeadingFocus.current) {
-      skipHeadingFocus.current = false;
-      return;
-    }
+    if (skipHeadingFocus.current) { skipHeadingFocus.current = false; return; }
     document.getElementById("report-step-heading")?.focus();
   }, [step]);
   useLayoutEffect(() => {
@@ -109,30 +106,17 @@ export function ReportDraft({
     focusId(FORM_ALERT_ID);
   }, [formError]);
   function changePin(next: { lat: number; lng: number }) {
-    setPin(next);
-    setLocationConfirmed(false);
-    setLocationError(null);
+    setPin(next); setLocationConfirmed(false); setLocationError(null);
   }
-  function confirmPin() {
-    setLocationConfirmed(true);
-    setLocationError(null);
-    setFormError(null);
-  }
-  function switchMode(next: AnswerMode) {
-    if (next === mode) return;
-    setMode(next);
-    goTo(STEP.issue);
-  }
+  function confirmPin() { setLocationConfirmed(true); setLocationError(null); setFormError(null); }
+  function switchMode(next: AnswerMode) { if (next !== mode) { setMode(next); goTo(STEP.issue); } }
   function finishChat() {
     const problem = answersProblem({ issueType, noticedWindow, recurs, pin, locationConfirmed });
-    if (problem) setFormError(problem);
-    else goTo(STEP.review);
+    if (problem) setFormError(problem); else goTo(STEP.review);
   }
   function goTo(next: number) {
     if (pending) return;
-    skipHeadingFocus.current = false;
-    setFormError(null);
-    setStep(next);
+    skipHeadingFocus.current = false; setFormError(null); setStep(next);
   }
   /** Each field shows its own error; the form alert is only for errors with no field to sit under. */
   function onContinue() {

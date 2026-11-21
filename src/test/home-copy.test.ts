@@ -2,12 +2,10 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const HOME_TYPES = [
-  "footpath",
-  "lighting",
-  "road",
-  "drainage",
-  "waste",
-  "other",
+  "pothole",
+  "waterlogging",
+  "open_manhole",
+  "road_cave_in",
 ] as const;
 
 const BROADSHEET = [
@@ -35,9 +33,9 @@ function lines(path: string): number {
 describe("home page copy", () => {
   it("leads with reporting and the complaint disclaimer", () => {
     const source = readFileSync("src/app/page.tsx", "utf8");
-    expect(source).toMatch(/Record a street condition/);
-    expect(source).toMatch(/not a municipal complaint portal/i);
-    expect(source).toMatch(/GovAlert|GovButton/);
+    expect(source).toMatch(/Report a road problem/);
+    expect(source).toMatch(/takes about a minute/i);
+    expect(source).toMatch(/ReportForm/);
     expect(source).not.toMatch(/deva pointer-events-none absolute right-2/);
   });
 
@@ -62,7 +60,7 @@ describe("home page copy", () => {
     const param = read("src/lib/issue-type-param.ts");
     const links = read("src/components/home/HomeIssueLinks.tsx");
     expect(param).toMatch(
-      /HOME_ISSUE_TYPES\s*=\s*\[[^\]]*"footpath"[^\]]*"lighting"[^\]]*"road"[^\]]*"drainage"[^\]]*"waste"[^\]]*"other"/,
+      /HOME_ISSUE_TYPES\s*=\s*\[[^\]]*"pothole"[^\]]*"waterlogging"[^\]]*"open_manhole"[^\]]*"road_cave_in"/,
     );
     expect(links).toMatch(/\/\?type=\$\{type\}/);
     for (const type of HOME_TYPES) {
@@ -79,11 +77,8 @@ describe("report-first public pages", () => {
     expect(home).toMatch(/await searchParams/);
     expect(home).toMatch(/parseIssueType/);
     expect(home).toMatch(/initialIssueType/);
-    expect(home).toMatch(/GovAlert/);
-    expect(home).toMatch(/Record a street condition/);
-    expect(home).toMatch(
-      /You are recording a visible street condition, not filing a BMC complaint\./,
-    );
+    expect(home).toMatch(/ReportForm/);
+    expect(home).toMatch(/Report a road problem/);
     expect(legacy).toMatch(/\/\?type=\$\{encodeURIComponent\(value\)\}/);
     expect(legacy).not.toMatch(/from ["']ux4g-web-components/);
   });
@@ -92,7 +87,7 @@ describe("report-first public pages", () => {
     const source = read("src/app/not-found.tsx");
     expect(source).toMatch(/GovButton/);
     expect(source).toMatch(/Go to the wards/);
-    expect(source).toMatch(/href="\/map"/);
+    expect(source).toMatch(/href="\/wards"/);
     expect(source).not.toMatch(/Return to the map/);
   });
 

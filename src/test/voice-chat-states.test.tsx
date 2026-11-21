@@ -31,7 +31,7 @@ const status = () => screen.getByRole("status");
 
 async function toAnswers(user: User) {
   render(<ReportForm voiceEnabled />);
-  await user.upload(screen.getByLabelText(/photo of what you can see/i), new File(["photo"], "street.jpg", { type: "image/jpeg" }));
+  await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), new File(["photo"], "street.jpg", { type: "image/jpeg" }));
   await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
   await tap(user, "Continue");
 }

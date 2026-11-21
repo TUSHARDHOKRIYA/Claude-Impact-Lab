@@ -1,15 +1,32 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/components/report/PinMap", () => ({
-  default: function PinMapStub() {
-    return <div data-testid="pin-map">pin</div>;
-  },
-}));
+vi.mock("@/components/report/PlacePickerMap", async () => {
+  const { useEffect, useRef } = await import("react");
+  return {
+    MIN_PIN_ZOOM: 14,
+    default: function PlacePickerMapStub({
+      target,
+      onCenter,
+    }: {
+      target: { lat: number; lng: number; seq: number } | null;
+      onCenter: (pin: { lat: number; lng: number } | null) => void;
+    }) {
+      const seen = useRef<number | null>(null);
+      useEffect(() => {
+        if (target && seen.current !== target.seq) {
+          seen.current = target.seq;
+          onCenter({ lat: target.lat, lng: target.lng });
+        }
+      }, [target, onCenter]);
+      return <div data-testid="place-picker-map" />;
+    },
+  };
+});
 
 import { LocationStep } from "@/components/report/LocationStep";
-import { CITY, LANDMARKS } from "@/lib/city";
+import { LANDMARKS } from "@/lib/city";
 
 const CENTER = { lat: 18.9298, lng: 72.8324 };
 const hindmata = LANDMARKS.find((item) => item.id === "loc-hindmata");
@@ -30,187 +47,102 @@ function stubGeoQueue() {
   return pending;
 }
 
-function coords(lat: number, lng: number): GeolocationPosition {
-  return { coords: { latitude: lat, longitude: lng } } as GeolocationPosition;
+function stubGeo(handler: (ok: PositionCallback, err?: PositionErrorCallback) => void) {
+  Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition: handler } });
 }
+
+function coords(lat: number, lng: number): GeolocationPosition {
+  return { coords: { latitude: lat, longitude: lng, accuracy: 12 } } as GeolocationPosition;
+}
+
+const denied = {
+  code: 1,
+  message: "denied",
+  PERMISSION_DENIED: 1,
+  POSITION_UNAVAILABLE: 2,
+  TIMEOUT: 3,
+} as GeolocationPositionError;
 
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
 });
 
 describe("LocationStep", () => {
   it("lets a keyboard user set the pin from a landmark", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
+    render(<LocationStep value={CENTER} onChange={onChange} error={null} />);
+    await user.tab();
+    await user.tab();
     await user.click(screen.getByRole("button", { name: hindmata.name }));
     expect(onChange).toHaveBeenCalledWith({ lat: hindmata.lat, lng: hindmata.lng });
-    expect(screen.getByLabelText("Latitude")).toBeInTheDocument();
-    expect(screen.getByLabelText("Longitude")).toBeInTheDocument();
+    expect(screen.getByLabelText("Search for a building, road, area or station")).toBeInTheDocument();
   });
 
-  it("mounts the map straight away with nothing to open", async () => {
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={vi.fn()}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
-    expect(await screen.findByTestId("pin-map")).toBeInTheDocument();
+  it("mounts the full-bleed map straight away with nothing to open", async () => {
+    render(<LocationStep value={CENTER} onChange={vi.fn()} error={null} />);
+    expect(await screen.findByTestId("place-picker-map")).toBeInTheDocument();
     expect(screen.queryByText("Show map")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Where is it?" })).toBeInTheDocument();
   });
 
-  it("associates geolocation-outside with Use my location, not Latitude", async () => {
+  it("shows matching places from /api/places and flies to a picked hit", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    Object.defineProperty(navigator, "geolocation", {
-      configurable: true,
-      value: {
-        getCurrentPosition: (ok: PositionCallback) => ok(coords(18.52, 73.85)),
-      },
-    });
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({
+          results: [{ id: "p1", name: "Powai Plaza", detail: "Powai", ward: "K Ward", lat: 19.1, lng: 72.9 }],
+        }),
+      })),
     );
+    render(<LocationStep value={null} onChange={onChange} error={null} />);
+    await user.type(screen.getByLabelText("Search for a building, road, area or station"), "Powai Plaza");
+    const hit = await screen.findByRole("button", { name: /Powai Plaza/ }, { timeout: 1500 });
+    await user.click(hit);
+    expect(onChange).toHaveBeenCalledWith({ lat: 19.1, lng: 72.9 });
+  });
+
+  it("associates geolocation-outside with Use my location", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    stubGeo((ok) => ok(coords(18.52, 73.85)));
+    render(<LocationStep value={CENTER} onChange={onChange} error={null} />);
     const locate = screen.getByRole("button", { name: "Use my location" });
     await user.click(locate);
     expect(onChange).not.toHaveBeenCalled();
-    expect(screen.getByRole("alert")).toHaveTextContent("You seem to be outside Mumbai's wards. Search for the area instead.");
-    expect(locate).toHaveAttribute("aria-describedby", "use-location-error");
-    expect(screen.getByLabelText("Latitude")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "You seem to be outside Mumbai's wards. Search for the area instead.",
+    );
+    expect(screen.getByRole("button", { name: "Use my location" })).toBeInTheDocument();
   });
 
   it("surfaces geolocation failure on the locate control", async () => {
     const user = userEvent.setup();
-    Object.defineProperty(navigator, "geolocation", {
-      configurable: true,
-      value: {
-        getCurrentPosition: (_ok: PositionCallback, err?: PositionErrorCallback) => {
-          err?.({
-            code: 1,
-            message: "denied",
-            PERMISSION_DENIED: 1,
-            POSITION_UNAVAILABLE: 2,
-            TIMEOUT: 3,
-          } as GeolocationPositionError);
-        },
-      },
-    });
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={vi.fn()}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
+    stubGeo((_ok, err) => err?.(denied));
+    render(<LocationStep value={CENTER} onChange={vi.fn()} error={null} />);
     await user.click(screen.getByRole("button", { name: "Use my location" }));
     expect(screen.getByRole("alert")).toHaveTextContent("Could not read your location.");
-    expect(screen.getByRole("button", { name: "Use my location" })).toHaveAttribute(
-      "aria-describedby",
-      "use-location-error",
-    );
-    expect(screen.getByLabelText("Latitude")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByRole("button", { name: "Use my location" })).not.toBeDisabled();
   });
 
-  it("marks latitude invalid only while the displayed value is out of bounds", () => {
-    const onChange = vi.fn();
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
-    const lat = screen.getByLabelText("Latitude");
-    fireEvent.change(lat, { target: { value: "19.9" } });
-    fireEvent.blur(lat);
-    expect(onChange).toHaveBeenCalledWith({
-      lat: CITY.bounds.north,
-      lng: CENTER.lng,
-    });
-  });
-
-  it("clamps longitude to city bounds on blur", () => {
-    const onChange = vi.fn();
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
-    const lng = screen.getByLabelText("Longitude");
-    fireEvent.change(lng, { target: { value: "72.5" } });
-    fireEvent.blur(lng);
-    expect(onChange).toHaveBeenCalledWith({
-      lat: CENTER.lat,
-      lng: CITY.bounds.west,
-    });
-  });
-
-  it("rejects a non-numeric latitude and restores the current pin", () => {
-    const onChange = vi.fn();
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
-    const lat = screen.getByLabelText("Latitude");
-    fireEvent.change(lat, { target: { value: "not-a-number" } });
-    fireEvent.blur(lat);
-    expect(onChange).not.toHaveBeenCalled();
-  });
-
-  it("lets a later locate win and ignores a stale success", () => {
+  it("lets a later locate win and ignores a stale success", async () => {
     const onChange = vi.fn();
     const pending = stubGeoQueue();
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
+    render(<LocationStep value={CENTER} onChange={onChange} error={null} />);
     const locate = screen.getByRole("button", { name: "Use my location" });
     act(() => {
       locate.dispatchEvent(new MouseEvent("click", { bubbles: true }));
       locate.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
-    expect(locate).toBeDisabled();
     expect(pending).toHaveLength(2);
     pending[0]?.ok(coords(hindmata.lat, hindmata.lng));
     expect(onChange).not.toHaveBeenCalled();
     pending[1]?.ok(coords(18.9277, 72.83185));
-    expect(onChange).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
     expect(onChange).toHaveBeenCalledWith({ lat: 18.9277, lng: 72.83185 });
   });
 
@@ -218,18 +150,10 @@ describe("LocationStep", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const pending = stubGeoQueue();
-    render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
+    render(<LocationStep value={CENTER} onChange={onChange} error={null} />);
     await user.click(screen.getByRole("button", { name: "Use my location" }));
     await user.click(screen.getByRole("button", { name: hindmata.name }));
-    expect(onChange).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
     pending[0]?.ok(coords(18.9277, 72.83185));
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith({ lat: hindmata.lat, lng: hindmata.lng });
@@ -239,48 +163,25 @@ describe("LocationStep", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const pending = stubGeoQueue();
-    const view = render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={vi.fn()}
-      />,
-    );
+    const view = render(<LocationStep value={CENTER} onChange={onChange} error={null} />);
     await user.click(screen.getByRole("button", { name: "Use my location" }));
     view.unmount();
     pending[0]?.ok(coords(hindmata.lat, hindmata.lng));
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("requires a separate confirmation and lets a later pin change invalidate it", async () => {
+  it("shows the picked spot on the card and refocuses search from Change", async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
-    const onConfirm = vi.fn();
-    const { rerender } = render(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed={false}
-        onConfirm={onConfirm}
-      />,
-    );
-    await user.click(screen.getByRole("button", { name: "Confirm this spot" }));
-    expect(onConfirm).toHaveBeenCalledOnce();
+    render(<LocationStep value={CENTER} onChange={vi.fn()} error={null} />);
+    expect(screen.getByText("Reporting this spot")).toBeInTheDocument();
+    expect(screen.getByText("Your report goes here")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Change" }));
+    expect(screen.getByLabelText("Search for a building, road, area or station")).toHaveFocus();
+  });
 
-    rerender(
-      <LocationStep
-        value={CENTER}
-        onChange={onChange}
-        error={null}
-        confirmed
-        onConfirm={onConfirm}
-      />,
-    );
-    expect(screen.getByText("Pin confirmed")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Hindmata/i }));
-    expect(onChange).toHaveBeenCalled();
+  it("shows the form's location error alongside the map", () => {
+    render(<LocationStep value={null} onChange={vi.fn()} error="Pick a spot on the map." />);
+    expect(screen.getByRole("alert")).toHaveTextContent("Pick a spot on the map.");
+    expect(screen.getByText("No spot picked yet")).toBeInTheDocument();
   });
 });

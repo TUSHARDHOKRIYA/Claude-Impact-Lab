@@ -9,11 +9,10 @@ vi.mock("@/lib/voice/actions", () => ({ processVoiceTurnAction: vi.fn() }));
 vi.mock("@/lib/voice/speak-action", () => ({ speakPromptAction: vi.fn(async () => null) }));
 vi.mock("@/lib/photo-compress", () => ({ compressImageFile }));
 vi.mock("@/lib/actions", () => ({ createReportAction }));
-vi.mock("@/components/report/PinMap", () => ({
-  default: function PinMapStub() {
-    return <div data-testid="pin-map">pin</div>;
-  },
-}));
+vi.mock("@/components/report/PlacePickerMap", async () => {
+  const { PlacePickerMapStub } = await import("@/test/place-picker-map-stub");
+  return { default: PlacePickerMapStub, MIN_PIN_ZOOM: 14 };
+});
 
 import { ReportForm } from "@/components/report/ReportForm";
 import { REPORT_MSG } from "@/components/report/report-form-helpers";
@@ -37,7 +36,7 @@ beforeEach(() => {
 });
 
 async function passPhoto(user: ReturnType<typeof userEvent.setup>) {
-  await user.upload(screen.getByLabelText(/photo of what you can see/i), jpeg());
+  await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), jpeg());
   await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
   await user.click(screen.getByRole("button", { name: "Continue" }));
 }
@@ -54,7 +53,7 @@ describe("ReportForm guided steps", () => {
     expect(
       screen.getByRole("heading", { name: /photograph the problem/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
+    expect(screen.getByText(/Step 1 of 8/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Start speaking" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Voice" })).not.toBeInTheDocument();
   });
@@ -75,7 +74,7 @@ describe("ReportForm guided steps", () => {
     render(<ReportForm initialIssueType="pothole" />);
     await passPhoto(user);
     expect(screen.getByRole("radio", { name: /^pothole/i })).toBeChecked();
-    expect(screen.getByRole("heading", { name: /what is wrong with the road/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /wrong with the road/i })).toBeInTheDocument();
   });
 
   it("blocks continue without a type, marks radios invalid, and stays on the type step", async () => {
@@ -83,7 +82,7 @@ describe("ReportForm guided steps", () => {
     render(<ReportForm />);
     await passPhoto(user);
     await user.click(screen.getByRole("button", { name: "Continue" }));
-    const group = screen.getByRole("group", { name: /what is wrong with the road/i });
+    const group = screen.getByRole("group", { name: /wrong with the road/i });
     expect(group).toHaveAttribute("aria-describedby", "issueType-error");
     expect(group).toHaveAttribute("aria-invalid", "true");
     expect(document.getElementById("issueType-error")).toHaveTextContent(REPORT_MSG.issue);
@@ -115,29 +114,39 @@ describe("ReportForm guided steps", () => {
     render(<ReportForm />);
     await continueFromType(user);
 
-    // Step 3: History
+    // Step 3: Noticed
     await user.click(screen.getByRole("radio", { name: "Today" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    // Step 4: Repeat
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: /fixed before and come back/i })).toHaveFocus();
+    });
     await user.click(screen.getByRole("radio", { name: /no, or i don't know/i }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
-    // Step 4: Risk
+    // Step 5: Safety
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: /have you seen an accident or a fall here/i })).toHaveFocus();
     });
     await user.click(screen.getByRole("radio", { name: "No" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
-    // Step 5: Place
+    // Step 6: Details (optional)
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: /anything else people should know/i })).toHaveFocus();
+    });
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+
+    // Step 7: Place — the footer's Confirm location confirms the pin and moves on.
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Where is it?" })).toHaveFocus();
     });
-    expect(screen.getByTestId("pin-map")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Confirm this spot" })).toBeDisabled();
+    expect(await screen.findByTestId("place-picker-map")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Hindmata" }));
-    await user.click(screen.getByRole("button", { name: "Confirm this spot" }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Confirm location" }));
 
-    // Step 6: Review
+    // Step 8: Review
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: /check your report/i })).toHaveFocus();
     });
@@ -161,9 +170,9 @@ describe("ReportForm guided steps", () => {
     expect(data.get("locationConfirmed")).toBe("true");
     expect(data.get("voiceTranscript")).toBe("");
 
-    const submitted = await screen.findByRole("heading", { name: "Submitted" });
+    const submitted = await screen.findByRole("heading", { name: "Thanks for letting us know!" });
     expect(submitted).toHaveFocus();
-    expect(screen.getByText("Your report is on the map and on the ward record now.")).toBeInTheDocument();
+    expect(screen.getByText(/Your report is on the map and on the ward's record now/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "See it on the map" })).toHaveAttribute(
       "href",
       "/map?report=rpt_new&new=1",

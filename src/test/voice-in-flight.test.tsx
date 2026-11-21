@@ -66,7 +66,7 @@ describe("leaving the chat while a turn is in flight", () => {
     vi.mocked(processVoiceTurnAction).mockImplementation(() => new Promise((resolve) => (finish = resolve)));
     const user = userEvent.setup();
     render(<ReportForm voiceEnabled />);
-    await user.upload(screen.getByLabelText(/photo of what you can see/i), new File(["p"], "s.jpg", { type: "image/jpeg" }));
+    await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), new File(["p"], "s.jpg", { type: "image/jpeg" }));
     await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
     await tap(user, "Continue");
 
@@ -92,7 +92,7 @@ describe("prompts that load out of order", () => {
     vi.mocked(speakPromptAction).mockImplementation(() => new Promise((resolve) => pending.push(resolve)));
     const user = userEvent.setup();
     render(<ReportForm voiceEnabled />);
-    await user.upload(screen.getByLabelText(/photo of what you can see/i), new File(["p"], "s.jpg", { type: "image/jpeg" }));
+    await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), new File(["p"], "s.jpg", { type: "image/jpeg" }));
     await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
     await tap(user, "Continue");
 
@@ -117,7 +117,7 @@ describe("coming back to the chat after answering in the form", () => {
     stubAudio();
     const user = userEvent.setup();
     render(<ReportForm voiceEnabled />);
-    await user.upload(screen.getByLabelText(/photo of what you can see/i), new File(["p"], "s.jpg", { type: "image/jpeg" }));
+    await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), new File(["p"], "s.jpg", { type: "image/jpeg" }));
     await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
     await tap(user, "Continue");
     expect(screen.getByText(/What is the problem\?/)).toBeInTheDocument();

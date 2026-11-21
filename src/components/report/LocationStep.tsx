@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { CloseIcon, LocateIcon, PinIcon, SearchIcon } from "@/components/report/flow-icons";
 import type { FlyTarget, MapPin } from "@/components/report/PlacePickerMap";
-import { LANDMARKS, isInsideCity, searchLocalities, wardAt } from "@/lib/city";
+import { usePlaceSearch } from "@/components/report/use-place-search";
+import { LANDMARKS, isInsideCity, wardAt } from "@/lib/city";
 import { describePlace } from "@/lib/place-name";
 
 export type { MapPin };
@@ -36,11 +37,15 @@ export function LocationStep({
   const [geoError, setGeoError] = useState<string | null>(null);
   const [locating, setLocating] = useState(false);
   const [accuracy, setAccuracy] = useState<number | null>(null);
+  const [picked, setPicked] = useState<{ name: string; lat: number; lng: number } | null>(null);
   const locateGen = useRef(0);
   const searchRef = useRef<HTMLInputElement>(null);
   const seq = useRef(0);
-  const matches = searchLocalities(query);
+  const { rows: matches, loading } = usePlaceSearch(query);
   const ward = value ? wardAt(value.lat, value.lng) : null;
+  // The searched place's name stays on the card until the pin moves off it (~40 m).
+  const near =
+    picked && value && Math.abs(picked.lat - value.lat) < 0.0004 && Math.abs(picked.lng - value.lng) < 0.0004;
 
   useEffect(() => () => void (locateGen.current += 1), []);
 
@@ -105,8 +110,8 @@ export function LocationStep({
               id="place-search"
               type="search"
               autoComplete="off"
-              aria-label="Search for an area, station or junction"
-              placeholder="Search Parel, Kings Circle, हिंदमाता…"
+              aria-label="Search for a building, road, area or station"
+              placeholder="Search a building, road or area"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -117,7 +122,7 @@ export function LocationStep({
             ) : null}
           </div>
           {matches.length ? (
-            <ul className="ux4g-list ux4g-list-default ux4g-list-m rb-search-results" aria-label="Matching areas">
+            <ul className="ux4g-list ux4g-list-default ux4g-list-m rb-search-results" aria-label="Matching places">
               {matches.map((row) => (
                 <li key={row.id} className="ux4g-list-item">
                   <button
@@ -125,18 +130,24 @@ export function LocationStep({
                     className="ux4g-list-item-row touch-target"
                     onClick={() => {
                       flyTo({ lat: row.lat, lng: row.lng });
+                      setPicked(row);
                       setQuery("");
                     }}
                   >
-                    <span className="ux4g-list-item-start ux4g-body-m-strong">{row.name}</span>
-                    <span className="ux4g-list-item-end ux4g-body-s-default">{row.ward} ward</span>
+                    <span className="rb-result">
+                      <PinIcon size={16} />
+                      <span className="min-w-0">
+                        <span className="rb-result-name">{row.name}</span>
+                        <span className="rb-result-detail">{row.detail}</span>
+                      </span>
+                    </span>
                   </button>
                 </li>
               ))}
             </ul>
           ) : query.trim() ? (
-            <p className="rb-search-results rb-search-empty ux4g-body-s-default">
-              No area by that name. Try a nearby station or junction.
+            <p className="rb-search-results rb-search-empty ux4g-body-s-default" aria-live="polite">
+              {loading ? "Searching…" : "Nothing by that name. Try a nearby landmark, road or station."}
             </p>
           ) : (
             <div className="rb-place-chips" aria-label="Common monsoon trouble spots">
@@ -186,7 +197,9 @@ export function LocationStep({
               <div className="rb-place-card-row">
                 <div className="min-w-0">
                   <p className="ux4g-body-s-default ux4g-text-neutral-secondary">Reporting this spot</p>
-                  <p className="ux4g-body-m-strong">{describePlace(value.lat, value.lng)}</p>
+                  <p className="ux4g-body-m-strong">
+                    {near && picked ? `${picked.name}${ward ? `, ${ward} ward` : ""}` : describePlace(value.lat, value.lng)}
+                  </p>
                   {!ward ? (
                     <p className="ux4g-body-s-default ux4g-text-error-default">Outside the ward map</p>
                   ) : accuracy != null ? (

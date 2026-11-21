@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import { FlagList } from "@/components/rupee/FlagList";
 import { NextRupeeList } from "@/components/rupee/NextRupeeList";
 import { OutcomeBar } from "@/components/rupee/OutcomeBar";
 import { SpendCategories } from "@/components/rupee/SpendCategories";
-import { WardBrief, WardBriefLoading } from "@/components/rupee/WardBrief";
-import { WardVoices, WardVoicesLoading } from "@/components/rupee/WardVoices";
+import { ScoreHow } from "@/components/rupee/ScoreHow";
+import { WardVoices } from "@/components/rupee/WardVoices";
 import { getRepository } from "@/lib/repo/context";
 import { formatInr, formatInrShort, getRupee, nextRupee } from "@/lib/rupee";
 import { getScorecards } from "@/lib/rupee/scorecard";
@@ -111,14 +110,23 @@ export default async function WardPage({ params, searchParams }: PageProps) {
         </span>
       </p>
 
-      <div className="ux4g-mt-m">
-        <Suspense fallback={<WardBriefLoading />}>
-          <WardBrief ledger={ledger} scores={rupee.scores} next={next} />
-        </Suspense>
-      </div>
+      <ScoreHow kind="ward" className="ux4g-mt-s" />
+
+      <section className="rb-section rb-section-tight" aria-labelledby="next-heading">
+        <h2 id="next-heading" className="ux4g-title-l-strong">
+          Where the next rupee should go
+        </h2>
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
+          Roads ranked by open complaints, accidents, flooding, traffic, and
+          schools or hospitals on them.
+        </p>
+        <div className="ux4g-mt-s">
+          <NextRupeeList items={next} />
+        </div>
+      </section>
 
       <section
-        className="ux4g-card ux4g-card-solid ux4g-card-vertical ux4g-mt-l"
+        className="ux4g-card ux4g-card-solid ux4g-card-vertical ux4g-mt-3xl"
         aria-labelledby="money-heading"
       >
         <div className="ux4g-card-header">
@@ -214,19 +222,6 @@ export default async function WardPage({ params, searchParams }: PageProps) {
         </div>
       </section>
 
-      <section className="rb-section" aria-labelledby="next-heading">
-        <h2 id="next-heading" className="ux4g-title-l-strong">
-          Where the next rupee should go
-        </h2>
-        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
-          Ranked by open complaints, accidents, flooding, traffic, and schools
-          or hospitals on the road.
-        </p>
-        <div className="ux4g-mt-s">
-          <NextRupeeList items={next} />
-        </div>
-      </section>
-
       <section className="rb-section" aria-labelledby="people-heading">
         <h2 id="people-heading" className="ux4g-title-l-strong">
           What people reported
@@ -240,9 +235,7 @@ export default async function WardPage({ params, searchParams }: PageProps) {
             : "No photo reports filed here yet."}
         </p>
         <div className="ux4g-mt-s">
-          <Suspense fallback={<WardVoicesLoading />}>
-            <WardVoices ds={rupee.ds} ward={ward.code} />
-          </Suspense>
+          <WardVoices ds={rupee.ds} ward={ward.code} />
         </div>
         <div className="rb-actions ux4g-mt-m">
           <Link href="/" className="ux4g-btn-primary ux4g-btn-m touch-target">

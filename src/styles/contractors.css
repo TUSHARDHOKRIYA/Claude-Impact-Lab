@@ -1,0 +1,164 @@
+/* Contractor leaderboard: the same row language as the ward ranking, with the
+ * three part scores as small bars under the name. */
+
+.rb-contractors .rb-how,
+.rb-contractors .rb-crank,
+.rb-contractors .rb-city-facts {
+  max-width: 56rem;
+}
+
+.rb-crank {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.rb-crank-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem 0.875rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1.25rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  color: var(--ux4g-text-neutral-primary);
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  transition: box-shadow 0.15s ease;
+}
+
+.rb-crank-row:hover {
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+}
+
+.rb-crank-row:focus-visible {
+  outline: 3px solid var(--ux4g-bg-primary-strong);
+  outline-offset: 2px;
+}
+
+.rb-crank-main {
+  display: grid;
+  flex: 1;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.rb-crank-name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.375rem;
+}
+
+.rb-crank-parts {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.rb-meter-large {
+  margin-bottom: 0.75rem;
+}
+
+.rb-crank-part {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.rb-crank-part-label {
+  overflow: hidden;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rb-crank-part-label strong {
+  color: var(--ux4g-text-neutral-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-crank-bar {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rb-crank-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ux4g-bg-primary-strong);
+}
+
+/* The 50 mark: "as expected". */
+.rb-crank-bar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--ux4g-text-neutral-primary);
+  opacity: 0.35;
+}
+
+.rb-crank-band {
+  max-width: 5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 0.875rem;
+  text-align: center;
+}
+
+.rb-score-none {
+  background: var(--ux4g-bg-neutral-subtle);
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+.rb-city-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1rem;
+  background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rb-city-facts > div {
+  padding: 0.75rem 1rem;
+}
+
+.rb-city-facts > div + div {
+  border-left: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-city-facts dt {
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1rem;
+}
+
+.rb-city-facts dd {
+  margin-top: 0.25rem;
+  font-size: 1.375rem;
+  font-weight: 800;
+  line-height: 1.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 30rem) {
+  .rb-crank-parts {
+    grid-column: 1 / -1;
+  }
+}

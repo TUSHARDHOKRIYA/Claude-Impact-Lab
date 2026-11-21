@@ -14,10 +14,30 @@ import type {
   PlaceSummary,
   ReportListItem,
   ReportPageData,
+  ReportRecord,
 } from "@/lib/types";
 
 function resolveRepo(repo?: RastabaazRepository): RastabaazRepository {
   return repo ?? getRepository();
+}
+
+/** The map's view of a report. `reportedAt` is the filing time, falling back to the noticed date. */
+function toMapPoint(
+  report: Pick<
+    ReportRecord,
+    "id" | "locationId" | "lat" | "lng" | "issueType" | "noticedAt" | "noticedWindow" | "createdAt"
+  >,
+): MapReportPoint {
+  return {
+    id: report.id,
+    locationId: report.locationId,
+    lat: report.lat,
+    lng: report.lng,
+    issueType: report.issueType,
+    noticedAt: report.noticedAt,
+    noticedWindow: report.noticedWindow,
+    reportedAt: report.createdAt || report.noticedAt,
+  };
 }
 
 export async function listMapPoints(
@@ -35,15 +55,7 @@ export async function listMapPoints(
       return true;
     })
     .sort((a, b) => b.noticedAt.localeCompare(a.noticedAt))
-    .map(({ id, locationId, lat, lng, issueType, noticedAt, noticedWindow }) => ({
-      id,
-      locationId,
-      lat,
-      lng,
-      issueType,
-      noticedAt,
-      noticedWindow,
-    }));
+    .map((report) => toMapPoint(report));
 }
 
 export async function listAllReports(repo?: RastabaazRepository): Promise<ReportListItem[]> {
@@ -113,15 +125,7 @@ export async function readReportPoint(id: string, repo?: RastabaazRepository): P
   if (!isReportId(id)) return null;
   const report = await resolveRepo(repo).getReport(id);
   if (!report) return null;
-  return {
-    id: report.id,
-    locationId: report.locationId,
-    lat: report.lat,
-    lng: report.lng,
-    issueType: report.issueType,
-    noticedAt: report.noticedAt,
-    noticedWindow: report.noticedWindow,
-  };
+  return toMapPoint(report);
 }
 
 export const getReportPage = cache(async function getReportPage(

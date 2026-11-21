@@ -11,6 +11,7 @@ import { STEP, STEP_LABELS, TapAnswerSteps } from "@/components/report/TapAnswer
 import type { ReportAnswers, SummarySection } from "@/components/report/ReportSummary";
 import { VoiceChat } from "@/components/report/VoiceChat";
 import { ReportFormFooter } from "@/components/report/ReportFormFooter";
+import { stepReady } from "@/components/report/step-ready";
 import {
   FORM_ALERT_ID,
   REPORT_MSG,
@@ -107,6 +108,10 @@ export function ReportDraft({
     setLocationConfirmed(false);
     setLocationError(null);
   }
+  function pickAccident(value: AccidentSeen) {
+    setAccident(value);
+    setDetailsError((current) => ({ ...current, accident: undefined }));
+  }
   function confirmPin() { setLocationConfirmed(true); setLocationError(null); setFormError(null); }
   function switchMode(next: AnswerMode) { if (next !== mode) { setMode(next); goTo(STEP.issue); } }
   function finishChat() {
@@ -195,20 +200,9 @@ export function ReportDraft({
   if (submittedId && answers) {
     return <SubmittedPanel reportId={submittedId} answers={answers} lang={convo.lang} onAgain={onAgain} />;
   }
-  const ready =
-    step === STEP.photo
-      ? Boolean(photoState.photo)
-      : step === STEP.issue
-        ? Boolean(issueType)
-        : step === STEP.noticed
-          ? Boolean(noticedWindow)
-          : step === STEP.recurs
-            ? Boolean(recurs)
-            : step === STEP.accident
-              ? Boolean(accident)
-              : step === STEP.place
-                ? pin !== null
-                : true;
+  const ready = stepReady(step, {
+    photo: Boolean(photoState.photo), issueType, noticedWindow, recurs, accident, pin: pin !== null,
+  });
   const continueLabel =
     step === STEP.place ? "Confirm location" : step === STEP.note && !description.trim() ? "Skip" : "Continue";
   return (
@@ -259,10 +253,7 @@ export function ReportDraft({
           onIssueType={edited("issueType", write.issueType)}
           onNoticedWindow={edited("noticedWindow", write.noticedWindow)}
           onRecurs={edited("recurs", write.recurs)}
-          onAccident={(value: AccidentSeen) => {
-            setAccident(value);
-            setDetailsError((current) => ({ ...current, accident: undefined }));
-          }}
+          onAccident={pickAccident}
           onDescription={edited("description", setDescription)}
           onPin={changePin}
         />
@@ -271,10 +262,7 @@ export function ReportDraft({
         <ReportReview
           answers={answers}
           accidentError={detailsError.accident}
-          onAccident={(value: AccidentSeen) => {
-            setAccident(value);
-            setDetailsError((current) => ({ ...current, accident: undefined }));
-          }}
+          onAccident={pickAccident}
           onEdit={(section) => goTo(chatMode ? STEP.issue : EDIT_STEP[section])}
           voiceLanguageCode={convo.lang}
           locationConfirmed={locationConfirmed}

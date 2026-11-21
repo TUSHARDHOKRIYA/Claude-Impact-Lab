@@ -44,20 +44,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe("map time filtering", () => {
-  const recent = item({ id: "rpt_recent", noticedAt: "2026-09-01", noticedWindow: "this_week" });
-  const overSix = item({
-    id: "rpt_old_window",
-    noticedAt: "2026-01-01",
-    noticedWindow: "over_six_months",
-  });
-  const sixYears = item({ id: "rpt_dated", noticedAt: "2018-01-01", noticedWindow: null });
-  const lighting = item({
-    id: "rpt_light",
-    issueType: "waterlogging",
-    noticedAt: "2026-08-01",
-    noticedWindow: "this_month",
-  });
+describe("map issue and reported-date filtering", () => {
   const legacy: MapReportPoint = {
     id: "rpt_legacy",
     locationId: "loc_1",
@@ -65,6 +52,7 @@ describe("map time filtering", () => {
     lng: 72.83,
     issueType: "pothole",
     noticedAt: "2026-08-15",
+    reportedAt: "2026-08-15",
   };
 
   it("carries noticedWindow on listMapPoints and readReportPoint", async () => {
@@ -96,29 +84,25 @@ describe("map time filtering", () => {
     });
   });
 
-  it("keeps over_six_months reports in All time only, on both projection paths", async () => {
-    const r = repo([recent, overSix, sixYears, lighting]);
-    const all = await listMapPoints(undefined, r);
-    expect(ids(all).sort()).toEqual(["rpt_dated", "rpt_light", "rpt_old_window", "rpt_recent"]);
-    const year = await listMapPoints({ since: "2025-09-27" }, r);
-    expect(ids(year).sort()).toEqual(["rpt_light", "rpt_recent"]);
-    const five = await listMapPoints({ since: "2021-09-27" }, r);
-    expect(ids(five).sort()).toEqual(["rpt_light", "rpt_recent"]);
-    const wasteYear = await listMapPoints({ issueType: "pothole", since: "2025-09-27" }, r);
-    expect(ids(wasteYear)).toEqual(["rpt_recent"]);
-
-    const points: MapReportPoint[] = [...all, legacy];
-    expect(ids(filterMapPoints(points, "all", "all")).sort()).toEqual(
-      ["rpt_dated", "rpt_legacy", "rpt_light", "rpt_old_window", "rpt_recent"],
-    );
-    expect(ids(filterMapPoints(points, "all", "1y")).sort()).toEqual(["rpt_legacy", "rpt_light", "rpt_recent"]);
-    expect(ids(filterMapPoints(points, "all", "5y")).sort()).toEqual(["rpt_legacy", "rpt_light", "rpt_recent"]);
-    expect(ids(filterMapPoints(points, "waterlogging", "1y"))).toEqual(["rpt_light"]);
-    expect(ids(filterMapPoints(points, "pothole", "all")).sort()).toEqual([
-      "rpt_dated",
-      "rpt_legacy",
-      "rpt_old_window",
-      "rpt_recent",
+  it("filters map points by issue and reported-date range together", () => {
+    const points: MapReportPoint[] = [
+      { ...legacy, id: "rpt_aug", reportedAt: "2026-08-15" },
+      { ...legacy, id: "rpt_sep", reportedAt: "2026-09-01" },
+      { ...legacy, id: "rpt_jan", reportedAt: "2026-01-01" },
+      { ...legacy, id: "rpt_light", reportedAt: "2026-08-20", issueType: "waterlogging" },
+      { ...legacy, id: "rpt_broken", reportedAt: "garbage" },
+    ];
+    // No bounds keeps every point, including unreadable dates.
+    expect(ids(filterMapPoints(points, "all")).sort()).toEqual([
+      "rpt_aug", "rpt_broken", "rpt_jan", "rpt_light", "rpt_sep",
     ]);
+    expect(ids(filterMapPoints(points, "all", { from: "2026-08-01", to: "2026-08-31" })).sort()).toEqual([
+      "rpt_aug", "rpt_light",
+    ]);
+    expect(ids(filterMapPoints(points, "waterlogging", { from: "2026-08-01", to: null }))).toEqual([
+      "rpt_light",
+    ]);
+    expect(ids(filterMapPoints(points, "pothole", { from: "2026-09-01", to: null }))).toEqual(["rpt_sep"]);
+    expect(ids(filterMapPoints(points, "all", { from: null, to: "2026-01-31" }))).toEqual(["rpt_jan"]);
   });
 });

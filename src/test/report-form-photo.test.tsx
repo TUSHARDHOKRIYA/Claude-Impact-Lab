@@ -78,7 +78,7 @@ describe("ReportForm photo selection", () => {
 
     const user = userEvent.setup();
     render(<ReportForm />);
-    const input = screen.getByLabelText(/A photo of what you can see/i);
+    const input = screen.getByLabelText("Road photo", { selector: "input" });
 
     await user.upload(input, jpeg("first.jpg"));
     expect(screen.getByText("Compressing photo…")).toBeInTheDocument();
@@ -121,7 +121,7 @@ describe("ReportForm photo selection", () => {
 
     const user = userEvent.setup();
     render(<ReportForm />);
-    const input = screen.getByLabelText(/A photo of what you can see/i);
+    const input = screen.getByLabelText("Road photo", { selector: "input" });
 
     await user.upload(input, jpeg("first.jpg"));
     expect(screen.getByText("Compressing photo…")).toBeInTheDocument();
@@ -158,7 +158,7 @@ describe("ReportForm photo selection", () => {
     compressImageFile.mockResolvedValue("data:image/jpeg;base64,JPG");
     const user = userEvent.setup();
     render(<ReportForm />);
-    const input = screen.getByLabelText(/A photo of what you can see/i);
+    const input = screen.getByLabelText("Road photo", { selector: "input" });
     const file = new File([new Uint8Array([0xff, 0xd8, 0xff])], "street.jpg", {
       type: "image/jpg",
     });

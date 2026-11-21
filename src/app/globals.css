@@ -6,8 +6,16 @@
 @import "../styles/base.css";
 @import "../styles/chrome.css";
 @import "../styles/layout.css";
+@import "../styles/nav.css";
 @import "../styles/report.css";
+@import "../styles/place-step.css";
+@import "../styles/report-summary.css";
 @import "../styles/rupee.css";
 @import "../styles/scorecard.css";
+@import "../styles/contractors.css";
 @import "../styles/ledger.css";
+@import "../styles/wards.css";
+@import "../styles/recommend.css";
 @import "../styles/map.css";
+@import "../styles/map-sheet.css";
+@import "../styles/map-date.css";

@@ -1,0 +1,125 @@
+/* "Where the next rupee should go": the fix-first card (the one place the
+ * brand colour fills a card) and the numbered queue behind it. */
+
+.rb-fixfirst {
+  position: relative;
+  padding: 1rem 1.125rem;
+  border-radius: 1rem;
+  background: var(--ux4g-bg-primary-strong);
+  color: #fff;
+}
+
+.rb-fixfirst-kicker {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.rb-fixfirst-road {
+  margin-top: 0.125rem;
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.5rem;
+}
+
+.rb-fixfirst-why {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.rb-fixfirst-how {
+  display: inline-block;
+  margin-top: 0.625rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.rb-next-queue {
+  display: grid;
+  margin-top: 0.5rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1rem;
+  background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rb-next-queue > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+}
+
+.rb-next-queue > li + li {
+  border-top: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-next-no,
+.rb-next-risk {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-next-no {
+  background: var(--ux4g-bg-primary);
+  color: var(--ux4g-text-brand-primary-default);
+}
+
+.rb-next-risk {
+  width: auto;
+  min-width: 2.5rem;
+  padding: 0 0.5rem;
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rb-fixfirst-l {
+  padding: 1.25rem 1.25rem 1.375rem;
+  border-radius: 1.25rem;
+}
+
+.rb-fixfirst-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rb-fixfirst-risk {
+  padding: 0.125rem 0.625rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  font-size: 0.8125rem;
+}
+
+.rb-fixfirst-l .rb-fixfirst-road {
+  font-size: 1.5rem;
+  line-height: 1.875rem;
+}
+
+.rb-fixfirst-reasons {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.625rem 0 0;
+  padding-left: 1.125rem;
+  list-style: disc;
+  font-size: 0.9375rem;
+  opacity: 0.92;
+}
+
+.rb-fixfirst-l .rb-fixfirst-how {
+  display: block;
+  margin-top: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+}
+

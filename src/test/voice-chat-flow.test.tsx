@@ -31,7 +31,7 @@ const tap = (user: User, name: string) => user.click(screen.getByRole("button", 
 
 async function toAnswers(user: User) {
   render(<ReportForm voiceEnabled />);
-  await user.upload(screen.getByLabelText(/photo of what you can see/i), new File(["photo"], "street.jpg", { type: "image/jpeg" }));
+  await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), new File(["photo"], "street.jpg", { type: "image/jpeg" }));
   await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
   await tap(user, "Continue");
 }
@@ -70,11 +70,11 @@ describe("the voice-first report page", () => {
     expect(screen.getByText("Namaste!")).toBeInTheDocument();
     expect(screen.getByText(/What is the problem\?/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start speaking" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: /What is wrong with the road/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /what'?s wrong with the road/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Continue" })).not.toBeInTheDocument();
 
     await tap(user, "Form");
-    expect(screen.getByRole("heading", { name: /What is wrong with the road/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /what'?s wrong with the road/i })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Start speaking" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Voice" })).toHaveAttribute("aria-pressed", "false");

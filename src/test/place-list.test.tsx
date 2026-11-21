@@ -1,5 +1,5 @@
 import { createRef, useState, type RefObject } from "react";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PlaceList } from "@/components/map/PlaceList";
@@ -70,6 +70,7 @@ const point: MapReportPoint = {
   lng: 72.8328,
   issueType: "pothole",
   noticedAt: "2022-08-18",
+  reportedAt: "2022-08-18",
 };
 
 function PreviewHarness() {
@@ -108,26 +109,25 @@ describe("PlaceList", () => {
   it("lists places as links without requiring the map", async () => {
     const user = userEvent.setup();
     render(<PlaceList places={[place]} selectedId={null} onSelect={() => undefined} />);
-    const link = screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i });
+    const link = screen.getByRole("link", { name: /Dr Ambedkar Road/ });
     expect(link).toHaveAttribute("href", "/places/dr-ambedkar-road-parel-pothole");
     expect(link.className).toMatch(/touch-target/);
     await user.tab();
     expect(link).toHaveFocus();
   });
 
-  it("marks the selected row and uses UX4G list classes", async () => {
+  it("marks the selected row and keeps the count and issue tag readable", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     const { container } = render(
       <PlaceList places={[place]} selectedId="loc_1" onSelect={onSelect} />,
     );
-    const list = within(container).getByRole("list");
-    expect(list.className).toMatch(/ux4g-list/);
-    expect(container.querySelector(".ux4g-list-item")).not.toBeNull();
-    const link = within(container).getByRole("link", { name: /Pothole on Dr Ambedkar Road/i });
+    const list = within(container).getByRole("list", { name: "Places in this filter" });
+    expect(list.querySelectorAll("li")).toHaveLength(1);
+    const link = within(container).getByRole("link", { name: /Dr Ambedkar Road/ });
     expect(link).toHaveAttribute("aria-current", "true");
     expect(within(link).getByText("Dr Ambedkar Road")).toBeInTheDocument();
-    expect(within(link).getByText("4 reports")).toBeInTheDocument();
+    expect(within(link).getByText(/4 reports/)).toBeInTheDocument();
     expect(within(link).getByText("Pothole")).toBeInTheDocument();
     await user.click(link);
     expect(onSelect).toHaveBeenCalledWith("loc_1", link);
@@ -177,23 +177,21 @@ describe("PlacePreview", () => {
 describe("MapFilters", () => {
   it("always offers the place list and always renders the map", async () => {
     render(<MapFilters points={[point]} places={[place]} />);
-    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Dr Ambedkar Road/ })).toBeInTheDocument();
     expect(screen.queryByText("Show the map")).not.toBeInTheDocument();
     expect(await screen.findByTestId("rb-map-enhancement")).toBeInTheDocument();
-    expect(screen.getByLabelText("Issue type").tagName).toBe("SELECT");
-    expect(screen.getByRole("radio", { name: "All time" })).toBeChecked();
-    expect(screen.getByRole("radio", { name: "Past year" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Problem type").tagName).toBe("SELECT");
+    expect(screen.getByRole("button", { name: /Date reported: Any date/ })).toBeInTheDocument();
   });
 
   it("leads with the map in the DOM so a phone meets it before the list", async () => {
-    const map = render(<MapFilters points={[point]} places={[place]} />);
-    void map;
+    render(<MapFilters points={[point]} places={[place]} />);
     const canvas = await screen.findByTestId("rb-map-enhancement");
-    const panel = canvas.closest(".rb-map-panel");
-    expect(panel).not.toBeNull();
-    const split = panel?.closest(".rb-map-split");
-    expect(split).not.toBeNull();
-    expect(split?.firstElementChild).toBe(panel);
+    const mapWrap = canvas.closest(".rb-explore-map");
+    const sheet = screen.getByRole("region", { name: "Reported road problems" }).querySelector(".rb-sheet");
+    expect(mapWrap).not.toBeNull();
+    expect(sheet).not.toBeNull();
+    expect(mapWrap!.compareDocumentPosition(sheet!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("mounts the map on a narrow viewport with no toggle to press", async () => {
@@ -203,17 +201,20 @@ describe("MapFilters", () => {
     expect(document.querySelector("details")).toBeNull();
   });
 
-  it("restores focus to the place-list opener when the preview closes", async () => {
+  it("closes the inline preview on Escape and puts focus back on its list row", async () => {
     stubMatchMedia(true);
     const user = userEvent.setup();
     render(<MapFilters points={[point]} places={[place]} />);
     await screen.findByTestId("rb-map-enhancement");
-    const link = screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i });
+    const link = screen.getByRole("link", { name: /Dr Ambedkar Road/ });
     await user.click(link);
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    screen.getByRole("button", { name: /close this place preview/i }).focus();
+    const region = screen.getByRole("region", { name: "Reported road problems" });
+    const selected = region.querySelector(".rb-sheet-selected") as HTMLElement;
+    const dialog = within(selected).getByRole("dialog");
+    within(dialog).getByRole("button", { name: /close this place preview/i }).focus();
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(link).toHaveFocus();
+    expect(within(selected).queryByRole("dialog")).not.toBeInTheDocument();
+    const row = screen.getByRole("link", { name: /Dr Ambedkar Road/ });
+    await waitFor(() => expect(row).toHaveFocus());
   });
 });

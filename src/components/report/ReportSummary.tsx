@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { issueTypeLabel, noticedWindowLabel, type LabelLanguage } from "@/lib/chip-labels";
 import { describePlace } from "@/lib/place-name";
 import { REVIEW_COPY } from "@/lib/review-copy";
-import { ACCIDENT_SEEN_LABELS, type AccidentSeen, type IssueType, type NoticedWindow } from "@/lib/types";
+import type { AccidentSeen, IssueType, NoticedWindow } from "@/lib/types";
 
 export type ReportAnswers = {
   issueType: IssueType;
@@ -21,11 +21,13 @@ export type SummarySection = "problem" | "place" | "answers";
 function Section({
   id,
   title,
+  editLabel,
   onEdit,
   children,
 }: {
   id: string;
   title: string;
+  editLabel: string;
   onEdit?: () => void;
   children: ReactNode;
 }) {
@@ -37,7 +39,8 @@ function Section({
         </h3>
         {onEdit ? (
           <button type="button" className="rb-sum-edit touch-target" onClick={onEdit}>
-            Edit<span className="sr-only"> {title.toLowerCase()}</span>
+            {editLabel}
+            <span className="sr-only"> {title}</span>
           </button>
         ) : null}
       </div>
@@ -74,7 +77,7 @@ export function ReportSummary({
 
   return (
     <div className="rb-sum">
-      <Section id={`${key}-problem`} title="Problem" onEdit={edit("problem")}>
+      <Section id={`${key}-problem`} title={copy.sections.problem} editLabel={copy.edit} onEdit={edit("problem")}>
         {answers.preview ? (
           <div className="rb-sum-row rb-sum-photo">
             <dt className="sr-only">{copy.photo}</dt>
@@ -87,14 +90,14 @@ export function ReportSummary({
         <Row label={copy.fields.issueType}>{issueTypeLabel(lang, answers.issueType)}</Row>
       </Section>
 
-      <Section id={`${key}-place`} title="Place" onEdit={edit("place")}>
+      <Section id={`${key}-place`} title={copy.sections.place} editLabel={copy.edit} onEdit={edit("place")}>
         <Row label={copy.place}>{describePlace(answers.lat, answers.lng)}</Row>
       </Section>
 
-      <Section id={`${key}-answers`} title="Your answers" onEdit={edit("answers")}>
+      <Section id={`${key}-answers`} title={copy.sections.answers} editLabel={copy.edit} onEdit={edit("answers")}>
         <Row label={copy.fields.noticedAt}>{noticedWindowLabel(lang, answers.noticedWindow)}</Row>
         <Row label={copy.fields.recurs}>{answers.recurs === "true" ? copy.recursYes : copy.recursNo}</Row>
-        {answers.accident ? <Row label="Accident or fall seen">{ACCIDENT_SEEN_LABELS[answers.accident]}</Row> : null}
+        {answers.accident ? <Row label={copy.accident}>{copy.accidentAnswers[answers.accident]}</Row> : null}
         {answers.description.trim() ? (
           <div className="rb-sum-row">
             <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">{copy.fields.description}</dt>

@@ -138,6 +138,8 @@ export type MapReportPoint = {
   issueType: IssueType;
   noticedAt: string;
   noticedWindow?: NoticedWindow | null;
+  /** When the report was filed (ISO instant, or a date on seed rows). The map's date filter uses this. */
+  reportedAt: string;
 };
 
 export type PlaceSummary = {

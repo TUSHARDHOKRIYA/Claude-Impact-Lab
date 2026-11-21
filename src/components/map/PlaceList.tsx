@@ -36,6 +36,7 @@ export function PlaceList({
             <Link
               href={`/places/${place.location.slug}`}
               aria-current={selected ? "true" : undefined}
+              data-location-id={place.location.id}
               onClick={(event) => {
                 // On a phone the row opens the preview first; the preview links on to the place.
                 event.preventDefault();

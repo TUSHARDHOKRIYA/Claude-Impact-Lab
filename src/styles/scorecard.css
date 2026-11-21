@@ -213,3 +213,36 @@
   gap: var(--ux4g-gap-column-2xs);
   white-space: normal;
 }
+
+/* ---- Contractor scorecards. ---- */
+.rb-score-grid {
+  display: grid;
+  gap: var(--ux4g-gap-row-m);
+}
+
+@media (min-width: 48rem) {
+  .rb-score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rb-score-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ux4g-gap-column-s);
+}
+
+.rb-score-flags {
+  padding-left: var(--ux4g-padding-l);
+  list-style: disc;
+}
+
+/* UX4G leaves these two unset: a vertical card stacks, an outline card sits on white. */
+.ux4g-card-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.ux4g-card-outline {
+  background: var(--ux4g-bg-neutral-elevated);
+}

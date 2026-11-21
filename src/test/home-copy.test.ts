@@ -31,10 +31,10 @@ function lines(path: string): number {
 }
 
 describe("home page copy", () => {
-  it("leads with reporting and the complaint disclaimer", () => {
+  it("leads with the report form and the reporting title", () => {
     const source = readFileSync("src/app/page.tsx", "utf8");
     expect(source).toMatch(/Report a road problem/);
-    expect(source).toMatch(/takes about a minute/i);
+    expect(source).toMatch(/Photograph a pothole/);
     expect(source).toMatch(/ReportForm/);
     expect(source).not.toMatch(/deva pointer-events-none absolute right-2/);
   });
@@ -46,7 +46,6 @@ describe("home page copy", () => {
     expect(home).toMatch(/parseIssueType/);
     expect(home).not.toMatch(/MapFilters|HomeIssueLinks|#records/);
     expect(map).toMatch(/Map of reports/);
-    expect(map).toMatch(/InsightStrip/);
     expect(map).toMatch(/MapFilters/);
     expect(map).toMatch(/dynamic = "force-dynamic"/);
     expect(map).toMatch(/Promise\.all/);

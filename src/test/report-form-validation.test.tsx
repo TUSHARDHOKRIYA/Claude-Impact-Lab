@@ -9,11 +9,10 @@ vi.mock("@/lib/voice/actions", () => ({ processVoiceTurnAction: vi.fn() }));
 vi.mock("@/lib/voice/speak-action", () => ({ speakPromptAction: vi.fn(async () => null) }));
 vi.mock("@/lib/photo-compress", () => ({ compressImageFile }));
 vi.mock("@/lib/actions", () => ({ createReportAction }));
-vi.mock("@/components/report/PinMap", () => ({
-  default: function PinMapStub() {
-    return <div data-testid="pin-map">pin</div>;
-  },
-}));
+vi.mock("@/components/report/PlacePickerMap", async () => {
+  const { PlacePickerMapStub } = await import("@/test/place-picker-map-stub");
+  return { default: PlacePickerMapStub, MIN_PIN_ZOOM: 14 };
+});
 
 import { ReportForm } from "@/components/report/ReportForm";
 import { REPORT_MSG } from "@/components/report/report-form-helpers";
@@ -41,7 +40,7 @@ beforeEach(() => {
 
 /** Photo is step 1, so every walk starts by clearing it. */
 async function passPhoto(user: ReturnType<typeof userEvent.setup>) {
-  await user.upload(screen.getByLabelText(/photo of what you can see/i), jpeg());
+  await user.upload(screen.getByLabelText("Road photo", { selector: "input" }), jpeg());
   await waitFor(() => expect(screen.getByText("Photo ready.")).toBeInTheDocument());
   await user.click(screen.getByRole("button", { name: "Continue" }));
 }
@@ -52,26 +51,31 @@ async function goToHistory(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole("button", { name: "Continue" }));
 }
 
-async function fillHistory(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(screen.getByRole("radio", { name: "Today" }));
-  await user.click(screen.getByRole("radio", { name: /no, or i don't know/i }));
-}
-
 async function goToPlace(user: ReturnType<typeof userEvent.setup>) {
   await goToHistory(user);
-  await fillHistory(user);
+  // One question per screen: noticed, repeat, safety, then the optional note.
+  await user.click(screen.getByRole("radio", { name: "Today" }));
+  await user.click(screen.getByRole("button", { name: "Continue" }));
+  await waitFor(() => expect(screen.getByRole("heading", { name: /fixed before and come back/i })).toBeInTheDocument());
+  await user.click(screen.getByRole("radio", { name: /no, or i don't know/i }));
   await user.click(screen.getByRole("button", { name: "Continue" }));
   await waitFor(() => expect(screen.getByRole("heading", { name: /have you seen an accident or a fall here/i })).toBeInTheDocument());
   await user.click(screen.getByRole("radio", { name: "No" }));
   await user.click(screen.getByRole("button", { name: "Continue" }));
+  await waitFor(() => expect(screen.getByRole("heading", { name: /anything else people should know/i })).toBeInTheDocument());
+  await user.click(screen.getByRole("button", { name: "Skip" }));
 }
 
 async function goToReview(user: ReturnType<typeof userEvent.setup>) {
   await goToPlace(user);
   await waitFor(() => expect(screen.getByRole("heading", { name: "Where is it?" })).toBeInTheDocument());
   await user.click(screen.getByRole("button", { name: "Hindmata" }));
-  await user.click(screen.getByRole("button", { name: "Confirm this spot" }));
-  await user.click(screen.getByRole("button", { name: "Continue" }));
+  // Confirm location confirms the pin and advances to Check in one tap.
+  await user.click(screen.getByRole("button", { name: "Confirm location" }));
+}
+
+function confirmedField(): HTMLInputElement {
+  return document.querySelector('input[name="locationConfirmed"]') as HTMLInputElement;
 }
 
 describe("ReportForm details and submit gating", () => {
@@ -95,14 +99,13 @@ describe("ReportForm details and submit gating", () => {
     const user = userEvent.setup();
     render(<ReportForm />);
     await goToHistory(user);
-    await user.click(screen.getByRole("radio", { name: /no, or i don't know/i }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(screen.getByRole("radio", { name: "Today" })).toHaveFocus();
     expect(screen.getByRole("heading", { name: /when did you first notice it/i })).toBeInTheDocument();
     await user.click(screen.getByRole("radio", { name: "This week" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: /have you seen an accident or a fall here/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /fixed before and come back/i })).toBeInTheDocument();
     });
   });
 
@@ -132,7 +135,7 @@ describe("ReportForm details and submit gating", () => {
     });
     expect(screen.getByRole("heading", { name: /check your report/i })).toBeInTheDocument();
     expect(screen.getByText("Pothole")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Submitted" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Thanks for letting us know!" })).not.toBeInTheDocument();
   });
 
   it("focuses the form alert for a non-field action error", async () => {
@@ -180,30 +183,31 @@ describe("ReportForm details and submit gating", () => {
     await goToPlace(user);
     await user.click(screen.getByRole("button", { name: "Hindmata" }));
     await user.click(screen.getByRole("button", { name: "Use my location" }));
-    await user.click(screen.getByRole("button", { name: "Confirm this spot" }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Confirm location" }));
     await waitFor(() => expect(screen.getByRole("heading", { name: /check your report/i })).toBeInTheDocument());
     pending[0]?.({
       coords: { latitude: hindmata.lat, longitude: hindmata.lng },
     } as GeolocationPosition);
     await user.click(screen.getByRole("button", { name: "Back" }));
-    expect(screen.getByText("Hindmata, G/S ward")).toBeInTheDocument();
+    expect(screen.getByText("Reporting this spot")).toBeInTheDocument();
   });
 
-  it("blocks Continue when an interaction changes a confirmed pin", async () => {
+  it("invalidates a confirmed pin when the pin moves, until it is confirmed again", async () => {
     const user = userEvent.setup();
     render(<ReportForm />);
     await goToPlace(user);
     await user.click(screen.getByRole("button", { name: "Hindmata" }));
-    await user.click(screen.getByRole("button", { name: "Confirm this spot" }));
-    expect(screen.getByRole("button", { name: "Pin confirmed" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Confirm location" }));
+    await waitFor(() => expect(screen.getByRole("heading", { name: /check your report/i })).toBeInTheDocument());
+    expect(confirmedField()).toHaveValue("true");
 
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Where is it?" })).toBeInTheDocument());
     await user.click(screen.getByRole("button", { name: "Sion" }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(confirmedField()).toHaveValue("false");
 
-    expect(screen.getByRole("heading", { name: "Where is it?" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Confirm this spot" })).toBeInTheDocument();
-    expect(screen.getAllByText(REPORT_MSG.pin)).toHaveLength(1);
-    expect(document.getElementById("report-form-alert")).toHaveTextContent(REPORT_MSG.pin);
+    await user.click(screen.getByRole("button", { name: "Confirm location" }));
+    await waitFor(() => expect(screen.getByRole("heading", { name: /check your report/i })).toBeInTheDocument());
+    expect(confirmedField()).toHaveValue("true");
   });
 });

@@ -90,6 +90,19 @@ export default async function ContractorPage({ params, searchParams }: Props) {
         </div>
       </section>
 
+      <div className="rb-pdf-actions">
+        <a
+          href={`${basePath}/scorecard.pdf`}
+          download
+          className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target rb-btn-icon"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+          </svg>
+          Download scorecard (PDF)
+        </a>
+      </div>
+
       <section className="rb-section" aria-labelledby="summary-heading">
         <h2 id="summary-heading" className="ux4g-title-l-strong">
           In plain words

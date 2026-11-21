@@ -98,6 +98,7 @@ const point = {
   lng: 72.8328,
   issueType: "pothole" as const,
   noticedAt: "2022-08-18",
+  reportedAt: "2022-08-18",
 };
 
 function stubMap(places: PlaceSummary[] = [place]) {
@@ -112,7 +113,7 @@ describe("home report-first experience", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Report a road problem" }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/takes about a minute/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /photograph the problem/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeInTheDocument();
     expect(screen.queryByText(/Dispatch/)).not.toBeInTheDocument();
     expect(document.querySelector(".ledger, .plate, .stamp, .display")).toBeNull();
@@ -124,8 +125,9 @@ describe("map page", () => {
     stubMap();
     render(await MapPage({ searchParams: Promise.resolve({}) }));
     expect(screen.getByRole("heading", { level: 1, name: "Map of reports" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Counts from the stored records" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Most reported first" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Reported road problems" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Dr Ambedkar Road/ })).toBeInTheDocument();
     expect(screen.queryByText(/Submitted\. Your report is highlighted/)).not.toBeInTheDocument();
   });
 
@@ -135,7 +137,8 @@ describe("map page", () => {
     expect(screen.getByText("Submitted. Your report is highlighted on the map.")).toBeInTheDocument();
     expect(readReportPlace).not.toHaveBeenCalled();
     expect(screen.getByText("highlight rpt_1")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("heading", { name: "Dr Ambedkar Road" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Your report" })).toHaveAttribute("href", "/reports/rpt_1");
   });
 
   it("keeps the highlight without the banner when new is absent", async () => {
@@ -143,7 +146,8 @@ describe("map page", () => {
     render(await MapPage({ searchParams: Promise.resolve({ report: "rpt_1" }) }));
     expect(screen.queryByText(/Submitted\. Your report is highlighted/)).not.toBeInTheDocument();
     expect(screen.getByText("highlight rpt_1")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("heading", { name: "Dr Ambedkar Road" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Your report" })).toHaveAttribute("href", "/reports/rpt_1");
   });
 
   it("shows a report the catalog has not caught up to, even with no place row", async () => {
@@ -157,6 +161,7 @@ describe("map page", () => {
       lng: 72.83,
       issueType: "waterlogging",
       noticedAt: "2026-09-27",
+      reportedAt: "2026-09-27",
     });
     vi.mocked(readReportPlace).mockResolvedValue({
       ...place,
@@ -164,7 +169,7 @@ describe("map page", () => {
     });
     render(await MapPage({ searchParams: Promise.resolve({ report: "rpt_fresh", new: "1" }) }));
     expect(readReportPlace).toHaveBeenCalledWith("rpt_fresh");
-    expect(screen.getByRole("link", { name: /Waste near Max Mueller Bhavan/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("link", { name: "Your report" })).toHaveAttribute("href", "/reports/rpt_fresh");
     expect(screen.getByText("Submitted. Your report is highlighted on the map.")).toBeInTheDocument();
     expect(screen.getByText("points rpt_fresh")).toBeInTheDocument();
     expect(screen.getByText("highlight rpt_fresh")).toBeInTheDocument();
@@ -177,7 +182,8 @@ describe("map page", () => {
     render(await MapPage({ searchParams: Promise.resolve({ report: "rpt_1" }) }));
     expect(readReportPlace).toHaveBeenCalledWith("rpt_1");
     expect(readReportPoint).not.toHaveBeenCalled();
-    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("heading", { name: "Dr Ambedkar Road" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Your report" })).toHaveAttribute("href", "/reports/rpt_1");
   });
   it("rebuilds a joined place so the new report is counted", async () => {
     stubMap();
@@ -188,13 +194,15 @@ describe("map page", () => {
       lng: 72.8328,
       issueType: "pothole",
       noticedAt: "2026-09-27",
+      reportedAt: "2026-09-27",
     });
     vi.mocked(readReportPlace).mockResolvedValue({ ...place, reportCount: 5, recurring: true });
     render(await MapPage({ searchParams: Promise.resolve({ report: "rpt_fresh" }) }));
     expect(readReportPlace).toHaveBeenCalledWith("rpt_fresh");
-    expect(screen.getByText("5 reports")).toBeInTheDocument();
-    expect(screen.queryByText("4 reports")).not.toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
+    const preview = within(screen.getByRole("dialog"));
+    expect(preview.getByText("5")).toBeInTheDocument();
+    expect(preview.getByText(/reports · recurring/)).toBeInTheDocument();
+    expect(screen.queryByText("4")).not.toBeInTheDocument();
   });
 
   it("shows the map alone when the report id is unknown", async () => {

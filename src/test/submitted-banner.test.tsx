@@ -18,6 +18,7 @@ vi.mock("@/components/map/CityMap", () => ({
 import MapPage from "@/app/map/page";
 import { MapFilters } from "@/components/map/MapFilters";
 import { SubmittedPanel } from "@/components/report/SubmittedPanel";
+import type { ReportAnswers } from "@/components/report/ReportSummary";
 import { listMapPoints, listPlaces } from "@/lib/queries";
 import { SUBMITTED_BANNER } from "@/lib/review-copy";
 
@@ -45,6 +46,18 @@ const point = {
   lng: 72.8328,
   issueType: "pothole" as const,
   noticedAt: "2022-08-18",
+  reportedAt: "2022-08-18",
+};
+
+const answers: ReportAnswers = {
+  issueType: "pothole",
+  preview: "data:image/jpeg;base64,AAAA",
+  lat: 18.9298,
+  lng: 72.8328,
+  noticedWindow: "this_week",
+  recurs: "false",
+  accident: "",
+  description: "",
 };
 
 afterEach(() => {
@@ -61,17 +74,19 @@ async function renderMap(search: { report?: string; new?: string; lang?: string 
 
 describe("submitted map link", () => {
   it("adds lang only for Hindi and Marathi", () => {
-    const { rerender } = render(<SubmittedPanel reportId="rpt_1" lang="en" onAgain={() => undefined} />);
+    const { rerender } = render(
+      <SubmittedPanel reportId="rpt_1" answers={answers} lang="en" onAgain={() => undefined} />,
+    );
     expect(screen.getByRole("link", { name: "See it on the map" })).toHaveAttribute(
       "href",
       "/map?report=rpt_1&new=1",
     );
-    rerender(<SubmittedPanel reportId="rpt_1" lang="hi-IN" onAgain={() => undefined} />);
+    rerender(<SubmittedPanel reportId="rpt_1" answers={answers} lang="hi-IN" onAgain={() => undefined} />);
     expect(screen.getByRole("link", { name: "नक्शे पर देखें" })).toHaveAttribute(
       "href",
       "/map?report=rpt_1&new=1&lang=hi",
     );
-    rerender(<SubmittedPanel reportId="rpt_1" lang="mr" onAgain={() => undefined} />);
+    rerender(<SubmittedPanel reportId="rpt_1" answers={answers} lang="mr" onAgain={() => undefined} />);
     expect(screen.getByRole("link", { name: "नकाशावर पहा" })).toHaveAttribute(
       "href",
       "/map?report=rpt_1&new=1&lang=mr",

@@ -2,10 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronIcon, ListIcon, MapIcon } from "@/components/map/map-icons";
 import { PlaceList } from "@/components/map/PlaceList";
 import { PlacePreview } from "@/components/map/PlacePreview";
+import { ReportedDateFilter, type DateRange } from "@/components/map/ReportedDateFilter";
 import { CloseIcon, SearchIcon } from "@/components/report/flow-icons";
-import { kolkataTodayStamp } from "@/lib/noticed-date";
+import { filterByReportedDate, reportedDateBounds } from "@/lib/map-date-filter";
 import {
   ISSUE_TYPE_LABELS,
   ISSUE_TYPES,
@@ -14,7 +16,6 @@ import {
   type PlaceSummary,
 } from "@/lib/types";
 
-export type TimeWindow = "all" | "1y" | "5y";
 export type IssueFilter = IssueType | "all";
 
 /**
@@ -37,12 +38,6 @@ const CityMap = dynamic(
   },
 );
 
-const TIME_OPTIONS: { value: TimeWindow; label: string }[] = [
-  { value: "all", label: "Any time" },
-  { value: "1y", label: "Past year" },
-  { value: "5y", label: "Past five years" },
-];
-
 type View = "map" | "list";
 
 function matchesQuery(place: PlaceSummary, query: string): boolean {
@@ -52,79 +47,13 @@ function matchesQuery(place: PlaceSummary, query: string): boolean {
   return [name, street, ward].some((field) => field.toLowerCase().includes(q));
 }
 
-function ListIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" />
-    </svg>
-  );
-}
-
-function MapIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2Z M9 4v14M15 6v14" />
-    </svg>
-  );
-}
-
-function ChevronIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="16"
-      height="16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}
-
-function sinceFor(time: TimeWindow, now = new Date()): string | null {
-  if (time === "all") return null;
-  const today = kolkataTodayStamp(now);
-  const year = Number(today.slice(0, 4)) - (time === "1y" ? 1 : 5);
-  return `${String(year).padStart(4, "0")}${today.slice(4)}`;
-}
-
 export function filterMapPoints(
   points: MapReportPoint[],
   issue: IssueFilter,
-  time: TimeWindow,
+  range: DateRange = { from: null, to: null },
 ): MapReportPoint[] {
-  const since = sinceFor(time);
-  return points.filter((point) => {
-    if (issue !== "all" && point.issueType !== issue) return false;
-    if (since) {
-      if (point.noticedWindow === "over_six_months") return false;
-      if (point.noticedAt < since) return false;
-    }
-    return true;
-  });
+  const byIssue = issue === "all" ? points : points.filter((point) => point.issueType === issue);
+  return filterByReportedDate(byIssue, range.from, range.to);
 }
 
 /**
@@ -154,7 +83,8 @@ export function MapFilters({
   notice?: string;
 }) {
   const [issue, setIssue] = useState<IssueFilter>("all");
-  const [time, setTime] = useState<TimeWindow>("all");
+  const [range, setRange] = useState<DateRange>({ from: null, to: null });
+  const bounds = useMemo(() => reportedDateBounds(points), [points]);
   const [query, setQuery] = useState("");
   const [view, setView] = useState<View>("map");
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -177,21 +107,21 @@ export function MapFilters({
 
   const visiblePlaces = useMemo(() => {
     const ids = new Set(
-      filterMapPoints(points, issue, time).map((point) => point.locationId),
+      filterMapPoints(points, issue, range).map((point) => point.locationId),
     );
     return places
       .filter(
         (place) => ids.has(place.location.id) && matchesQuery(place, query),
       )
       .sort((a, b) => b.reportCount - a.reportCount);
-  }, [points, places, issue, time, query]);
+  }, [points, places, issue, range, query]);
 
   const filtered = useMemo(() => {
     const ids = new Set(visiblePlaces.map((place) => place.location.id));
-    return filterMapPoints(points, issue, time).filter((point) =>
+    return filterMapPoints(points, issue, range).filter((point) =>
       ids.has(point.locationId),
     );
-  }, [points, issue, time, visiblePlaces]);
+  }, [points, issue, range, visiblePlaces]);
 
   const selected = visiblePlaces.find(
     (place) => place.location.id === selectedId,
@@ -271,26 +201,7 @@ export function MapFilters({
             </select>
             <ChevronIcon />
           </label>
-          <label
-            className={
-              time === "all"
-                ? "rb-select-chip"
-                : "rb-select-chip rb-select-chip-on"
-            }
-          >
-            <span className="sr-only">Time noticed</span>
-            <select
-              value={time}
-              onChange={(event) => setTime(event.target.value as TimeWindow)}
-            >
-              {TIME_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <ChevronIcon />
-          </label>
+          <ReportedDateFilter bounds={bounds} value={range} onChange={setRange} />
           <div className="rb-view-toggle" role="group" aria-label="Show">
             <button
               type="button"
@@ -337,7 +248,17 @@ export function MapFilters({
             <PlacePreview
               inline
               place={selected}
-              onClose={() => setSelectedId(null)}
+              onClose={() => {
+                const id = selected.location.id;
+                setSelectedId(null);
+                // Opened from the list, the opener row unmounted with it: focus its replacement.
+                if (openerRef.current?.isConnected) return;
+                requestAnimationFrame(() => {
+                  const rows = document.querySelectorAll<HTMLElement>(".rb-sheet [data-location-id]");
+                  const row = [...rows].find((el) => el.dataset.locationId === id);
+                  (row ?? document.querySelector<HTMLElement>(".rb-sheet-handle"))?.focus();
+                });
+              }}
               openerRef={openerRef}
               yourReportId={
                 highlightReportId &&
@@ -358,12 +279,6 @@ export function MapFilters({
                 {filtered.length} {filtered.length === 1 ? "report" : "reports"}
               </p>
             </div>
-            {time !== "all" ? (
-              <p className="rb-sheet-note ux4g-body-s-default ux4g-text-neutral-secondary">
-                Reports marked “More than six months ago” have no exact date, so
-                they only show under Any time.
-              </p>
-            ) : null}
             <div className="rb-sheet-body">
               <PlaceList
                 places={visiblePlaces}

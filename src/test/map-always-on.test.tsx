@@ -45,6 +45,7 @@ const point: MapReportPoint = {
   lng: 72.8328,
   issueType: "pothole",
   noticedAt: "2022-08-18",
+  reportedAt: "2022-08-18",
 };
 
 afterEach(() => {

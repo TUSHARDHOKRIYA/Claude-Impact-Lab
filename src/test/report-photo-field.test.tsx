@@ -15,7 +15,7 @@ describe("ReportPhotoField", () => {
         onPhoto={vi.fn()}
       />,
     );
-    const input = screen.getByLabelText(/photo of what you can see/i);
+    const input = screen.getByLabelText("Road photo", { selector: "input" });
     expect(input).toHaveAttribute("capture", "environment");
     expect(input).toHaveAttribute("accept", "image/jpeg,image/jpg,image/png,image/webp");
     expect(screen.getByRole("alert")).toHaveTextContent(
@@ -34,7 +34,7 @@ describe("ReportPhotoField", () => {
         onPhoto={onPhoto}
       />,
     );
-    const library = screen.getByRole("button", { name: /choose from library/i });
+    const library = screen.getByRole("button", { name: /from gallery/i });
     expect(library.className).toMatch(/touch-target|ux4g-btn/);
     const hidden = document.getElementById("photo-library") as HTMLInputElement;
     expect(hidden).toHaveAttribute("tabIndex", "-1");

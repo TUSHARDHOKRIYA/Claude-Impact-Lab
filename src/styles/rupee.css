@@ -22,6 +22,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--ux4g-margin-2xs);
+  padding-left: 0.875rem;
+  border-left: 3px solid var(--ux4g-border-color-neutral-subtle);
 }
 
 .rb-num {
@@ -211,26 +213,8 @@
   border-top: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
 }
 
-.rb-next {
-  display: grid;
-  gap: var(--ux4g-gap-row-s);
-}
-
-.rb-next-body {
-  padding-top: 0;
-}
-
-.rb-next-body > .ux4g-tag-tonal-primary + .rb-next-reasons {
-  margin-top: var(--ux4g-margin-xs);
-}
-
-.rb-next-reasons {
-  padding-left: var(--ux4g-padding-l);
-  list-style: disc;
-}
-
-.rb-next-fix {
-  border-top: var(--ux4g-border-width-sm) solid var(--ux4g-border-color-neutral-subtle);
+.rb-section-tight {
+  margin-top: var(--ux4g-margin-xl);
 }
 
 .rb-actions {
@@ -243,37 +227,4 @@
   display: flex;
   justify-content: space-between;
   gap: var(--ux4g-gap-column-m);
-}
-
-/* ---- Contractor scorecards. ---- */
-.rb-score-grid {
-  display: grid;
-  gap: var(--ux4g-gap-row-m);
-}
-
-@media (min-width: 48rem) {
-  .rb-score-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.rb-score-facts {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--ux4g-gap-column-s);
-}
-
-.rb-score-flags {
-  padding-left: var(--ux4g-padding-l);
-  list-style: disc;
-}
-
-/* UX4G leaves these two unset: a vertical card stacks, an outline card sits on white. */
-.ux4g-card-vertical {
-  display: flex;
-  flex-direction: column;
-}
-
-.ux4g-card-outline {
-  background: var(--ux4g-bg-neutral-elevated);
 }

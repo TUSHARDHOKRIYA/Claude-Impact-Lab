@@ -3,11 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import {
+  AskTabIcon,
+  ContractorsTabIcon,
+  MapTabIcon,
+  ReportTabIcon,
+  WardsTabIcon,
+} from "@/components/site/nav-icons";
+
 const NAV = [
-  { href: "/", label: "Report" },
-  { href: "/map", label: "Map" },
-  { href: "/wards", label: "Wards" },
-  { href: "/contractors", label: "Contractors" },
+  { href: "/", label: "Report", Icon: ReportTabIcon },
+  { href: "/map", label: "Map", Icon: MapTabIcon },
+  { href: "/wards", label: "Wards", Icon: WardsTabIcon },
+  { href: "/contractors", label: "Contractors", Icon: ContractorsTabIcon },
+  { href: "/assistant", label: "Ask", Icon: AskTabIcon },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
@@ -15,7 +24,10 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** UX4G navbar, with the road's lane marking along its lower edge. */
+/**
+ * UX4G navbar, with the road's lane marking along its lower edge. On phones
+ * the same list becomes a tab bar fixed to the bottom of the screen.
+ */
 export function SiteHeader() {
   const pathname = usePathname() ?? "/";
 
@@ -30,14 +42,15 @@ export function SiteHeader() {
             </span>
           </Link>
           <ul className="ux4g-navbar-links rb-nav">
-            {NAV.map((item) => (
-              <li key={item.href}>
+            {NAV.map(({ href, label, Icon }) => (
+              <li key={href}>
                 <Link
-                  href={item.href}
-                  aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                  href={href}
+                  aria-current={isActive(pathname, href) ? "page" : undefined}
                   className="ux4g-text-link-neutral-m rb-nav-link touch-target"
                 >
-                  {item.label}
+                  <Icon className="rb-nav-icon" />
+                  <span>{label}</span>
                 </Link>
               </li>
             ))}

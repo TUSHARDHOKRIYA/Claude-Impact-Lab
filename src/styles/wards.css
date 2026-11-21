@@ -1,0 +1,259 @@
+/* Ward ranking: rows that open in place, the fix-first card, and the score explainer. */
+
+/* ---- Ranked wards. ---- */
+.rb-rank {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.rb-rank-item {
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1.25rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  transition: box-shadow 0.15s ease;
+}
+
+.rb-rank-item[open] {
+  border-color: var(--ux4g-border-color-primary-subtle, #cfc3f5);
+  box-shadow: 0 6px 20px rgb(60 30 140 / 0.1);
+}
+
+.rb-rank-row {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 4.75rem;
+  padding: 0.75rem 0.875rem 0.75rem 1rem;
+  border-radius: 1.25rem;
+  color: var(--ux4g-text-neutral-primary);
+}
+
+.rb-rank-row::-webkit-details-marker {
+  display: none;
+}
+
+.rb-rank-item:not([open]):hover {
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+}
+
+.rb-rank-row:focus-visible {
+  outline: 3px solid var(--ux4g-bg-primary-strong);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-rank-item,
+  .rb-rank-chev {
+    transition: none;
+  }
+}
+
+.rb-rank-no {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-subtle);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-rank-no[data-top="true"] {
+  background: var(--lane);
+  color: var(--asphalt);
+}
+
+.rb-rank-main {
+  display: grid;
+  flex: 1;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.rb-rank-title {
+  overflow: hidden;
+  font-size: 1rem;
+  line-height: 1.375rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rb-rank-name {
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.875rem;
+}
+
+.rb-rank-sub {
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+}
+
+.rb-rank-score {
+  display: grid;
+  justify-items: center;
+  flex: none;
+  min-width: 3.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.875rem;
+}
+
+.rb-rank-score-n {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-rank-score-w {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.rb-score-good {
+  background: #e3f4ec;
+  color: var(--held);
+}
+
+.rb-score-fair {
+  background: #fdf3d8;
+  color: #7a5600;
+}
+
+.rb-score-poor {
+  background: #fbe5e3;
+  color: var(--failed);
+}
+
+
+.rb-rank-chev {
+  flex: none;
+  color: var(--ux4g-text-neutral-secondary);
+  transition: transform 0.2s ease;
+}
+
+.rb-rank-item[open] .rb-rank-chev {
+  transform: rotate(180deg);
+}
+
+/* ---- What opens under a row. ---- */
+.rb-rank-panel {
+  display: grid;
+  gap: 0.875rem;
+  padding: 0.25rem 1rem 1rem;
+}
+
+.rb-rank-parts {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.875rem 0 0;
+  list-style: none;
+  border-top: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-rank-parts li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto 3rem;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+}
+
+.rb-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+}
+
+.rb-rank-part-pct {
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+.rb-rank-budget {
+  margin-top: 0.5rem;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+}
+
+.rb-rank-open {
+  justify-self: start;
+}
+
+/* ---- "How the score works". ---- */
+.rb-how {
+  max-width: 40rem;
+  border-radius: 0.875rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-how > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ux4g-text-brand-primary-default);
+}
+
+.rb-how > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rb-how > summary::before {
+  content: "?";
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: var(--ux4g-bg-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.rb-how ul {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0 1rem 1rem 2.25rem;
+  list-style: disc;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+/* ---- Wards page: city summary beside the ranking on wide screens. ---- */
+.rb-wards-list {
+  margin-top: var(--ux4g-margin-2xl);
+}
+
+@media (min-width: 64rem) {
+  .rb-wards-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .rb-wards-city {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .rb-wards-list {
+    margin-top: 0;
+  }
+}

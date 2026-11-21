@@ -1,4 +1,5 @@
 import type { LabelLanguage } from "@/lib/chip-labels";
+import { ACCIDENT_SEEN_LABELS, type AccidentSeen } from "@/lib/types";
 import { VOICE_COPY } from "@/lib/voice/voice-copy";
 
 /**
@@ -17,6 +18,11 @@ export type ReviewCopy = {
   place: string;
   recursYes: string;
   recursNo: string;
+  /** Section titles on the Check screen and receipt, the Edit button, and the accident row. */
+  sections: { problem: string; place: string; answers: string };
+  edit: string;
+  accident: string;
+  accidentAnswers: Record<AccidentSeen, string>;
   fields: (typeof VOICE_COPY)[LabelLanguage]["fields"];
 };
 
@@ -72,6 +78,10 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
     place: "Place",
     recursYes: "Yes, it was fixed and came back",
     recursNo: "No, or not known",
+    sections: { problem: "Problem", place: "Place", answers: "Your answers" },
+    edit: "Edit",
+    accident: "Accident or fall seen",
+    accidentAnswers: ACCIDENT_SEEN_LABELS,
     fields: VOICE_COPY.en.fields,
   },
   hi: {
@@ -87,6 +97,15 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
     place: "जगह",
     recursYes: VOICE_COPY.hi.recursYes,
     recursNo: VOICE_COPY.hi.recursNo,
+    sections: { problem: "समस्या", place: "जगह", answers: "आपके जवाब" },
+    edit: "बदलें",
+    accident: "दुर्घटना या गिरना देखा",
+    accidentAnswers: {
+      injury: "हाँ, किसी को चोट लगी",
+      near_miss: "हाँ, कोई गिरा या बाल-बाल बचा",
+      none: "नहीं",
+      not_sure: "पता नहीं",
+    },
     fields: VOICE_COPY.hi.fields,
   },
   mr: {
@@ -102,6 +121,15 @@ export const REVIEW_COPY: Record<LabelLanguage, ReviewCopy> = {
     place: "ठिकाण",
     recursYes: VOICE_COPY.mr.recursYes,
     recursNo: VOICE_COPY.mr.recursNo,
+    sections: { problem: "समस्या", place: "ठिकाण", answers: "तुमची उत्तरं" },
+    edit: "बदला",
+    accident: "अपघात किंवा पडणं पाहिलं",
+    accidentAnswers: {
+      injury: "हो, कोणाला लागलं",
+      near_miss: "हो, कोणी पडलं किंवा थोडक्यात वाचलं",
+      none: "नाही",
+      not_sure: "माहीत नाही",
+    },
     fields: VOICE_COPY.mr.fields,
   },
 };

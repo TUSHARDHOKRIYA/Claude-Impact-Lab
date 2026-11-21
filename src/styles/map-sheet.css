@@ -1,0 +1,264 @@
+/* Map explorer, part two: the results sheet, the place preview inside it and
+ * the wide-screen side panel. */
+
+/* The results panel: peeks up over the map, or covers it in list view. */
+.rb-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  height: 42%;
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 -4px 20px rgb(0 0 0 / 0.14);
+  transition: height 0.25s ease;
+}
+
+.rb-sheet[data-selected="true"] {
+  height: auto;
+  max-height: 75%;
+}
+
+.rb-sheet[data-view="list"] {
+  height: calc(100% - 7.75rem);
+}
+
+/* An open place always sizes to its content, whichever view was on. */
+.rb-sheet[data-view][data-selected="true"] {
+  height: auto;
+  max-height: 75%;
+}
+
+.rb-preview-head {
+  display: flex;
+  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.rb-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+
+.rb-preview-actions .ux4g-btn {
+  flex: 1 1 12rem;
+  justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-sheet {
+    transition: none;
+  }
+}
+
+.rb-sheet-handle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  height: 1.5rem;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.rb-sheet-handle span {
+  width: 2.5rem;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ux4g-border-color-neutral-default);
+}
+
+.rb-sheet-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 var(--gutter) 0.5rem;
+}
+
+.rb-sheet-note {
+  padding: 0 var(--gutter) 0.5rem;
+}
+
+.rb-sheet-selected {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--gutter) calc(1rem + env(safe-area-inset-bottom));
+}
+
+/* Inside the panel the preview is the panel: no second card around it. */
+.rb-sheet-preview {
+  border: 0;
+  box-shadow: none;
+  background: none;
+  padding: 0;
+}
+
+.rb-sheet-preview .ux4g-card-body {
+  padding: 0;
+}
+
+.rb-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.rb-rows {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.rb-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 4rem;
+  padding: 0.625rem var(--gutter);
+  color: var(--ux4g-text-neutral-primary);
+  text-decoration: none;
+}
+
+.rb-rows li + li .rb-row {
+  border-top: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-row:hover,
+.rb-row[aria-current="true"] {
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rb-row-count {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px var(--lane);
+}
+
+.rb-band-low {
+  background: var(--enamel);
+}
+
+.rb-band-mid {
+  background: var(--asphalt);
+}
+
+.rb-band-high {
+  background: var(--failed);
+}
+
+.rb-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rb-row-title {
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.375rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rb-row-sub {
+  overflow: hidden;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rb-row-tag {
+  flex: none;
+  max-width: 7.5rem;
+  padding: 0.25rem 0.5rem;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: var(--ux4g-bg-neutral-subtle);
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rb-rows-empty {
+  padding: 1rem var(--gutter);
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+/* Wide screens: the panel docks to the left as a full-height list. */
+@media (min-width: 64rem) {
+  .rb-explore-top {
+    left: calc(26rem + 1.5rem);
+    right: 1.5rem;
+    max-width: 40rem;
+  }
+
+  .rb-view-toggle {
+    display: none;
+  }
+
+  .rb-sheet,
+  .rb-sheet[data-view="list"],
+  .rb-sheet[data-selected="true"] {
+    top: 0.75rem;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    right: auto;
+    width: 26rem;
+    height: auto;
+    border-radius: 1rem;
+  }
+
+  .rb-sheet-handle {
+    display: none;
+  }
+
+  .rb-sheet-head,
+  .rb-sheet-selected {
+    padding-top: 1rem;
+  }
+
+  .rb-sheet[data-selected="true"] {
+    bottom: auto;
+    max-height: calc(100% - 1.5rem);
+  }
+}
+
+.rb-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.5rem -0.5rem -0.5rem 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ux4g-text-neutral-secondary);
+  cursor: pointer;
+}
+
+.rb-icon-btn:hover {
+  background: var(--ux4g-bg-neutral-subtle);
+}

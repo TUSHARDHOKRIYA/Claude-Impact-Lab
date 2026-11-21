@@ -169,22 +169,6 @@
   color: var(--ux4g-text-neutral-primary);
 }
 
-.rb-nav {
-  display: flex;
-  gap: var(--ux4g-gap-column-2xs);
-}
-
-.rb-nav-link {
-  padding-inline: var(--ux4g-padding-s);
-  border-radius: var(--ux4g-radius-sm);
-}
-
-.rb-nav-link[aria-current="page"] {
-  color: var(--ux4g-text-brand-primary-default);
-  background: var(--ux4g-bg-primary);
-  font-weight: var(--ux4g-fw-bold);
-}
-
 /* The road's centre line: the one decorative device on the site. */
 .rb-lane {
   height: 6px;

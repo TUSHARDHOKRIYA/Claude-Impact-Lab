@@ -10,16 +10,19 @@ afterEach(cleanup);
 function review(voiceLanguageCode: string, description = "") {
   return render(
     <ReportReview
-      issueType="pothole"
-      preview=""
-      lat={18.9277}
-      lng={72.83185}
-      noticedWindow="today"
-      recurs="true"
-      description={description}
+      answers={{
+        issueType: "pothole",
+        preview: "",
+        lat: 18.9277,
+        lng: 72.83185,
+        noticedWindow: "today",
+        recurs: "true",
+        accident: "none",
+        description,
+      }}
       voiceLanguageCode={voiceLanguageCode}
-      accident="none"
       onAccident={() => {}}
+      onEdit={() => {}}
       locationConfirmed
     />,
   );
@@ -32,7 +35,9 @@ describe("the Check step speaks one language", () => {
     expect(screen.getByText("प्रकार")).toBeInTheDocument();
     expect(screen.getByText("गड्ढा")).toBeInTheDocument();
     expect(screen.getByText("हाँ, बार-बार होता है")).toBeInTheDocument();
-    for (const english of ["Type", "Noticed", "Recurs", "Place", "Check this record"]) {
+    expect(screen.getByRole("heading", { name: "जगह" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /बदलें/ }).length).toBeGreaterThan(0);
+    for (const english of ["Type", "Noticed", "Recurs", "Check this record", "Problem", "Place", "Your answers", "Edit"]) {
       expect(container.textContent).not.toContain(english);
     }
   });

@@ -69,6 +69,7 @@ async function goToPlace(user: ReturnType<typeof userEvent.setup>) {
 async function goToReview(user: ReturnType<typeof userEvent.setup>) {
   await goToPlace(user);
   await waitFor(() => expect(screen.getByRole("heading", { name: "Where is it?" })).toBeInTheDocument());
+  expect(await screen.findByTestId("place-picker-map")).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Hindmata" }));
   // Confirm location confirms the pin and advances to Check in one tap.
   await user.click(screen.getByRole("button", { name: "Confirm location" }));

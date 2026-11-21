@@ -1,6 +1,7 @@
 import type { ComplaintIntelligenceEngine } from "@/lib/matching/engine";
 import type { Dataset } from "@/lib/rupee/load";
 import { maskPII } from "../security";
+import { executeAnalyticsTool } from "./analytics";
 
 export type ToolContext = {
   engine: ComplaintIntelligenceEngine;
@@ -20,6 +21,8 @@ export function executeAssistantTool(
   ctx: ToolContext,
 ): ToolExecutionResult {
   const { engine, dataset } = ctx;
+  const analytics = executeAnalyticsTool(toolName, args);
+  if (analytics) return analytics;
 
   switch (toolName) {
     case "get_complaint": {

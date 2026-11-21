@@ -51,6 +51,7 @@ export function ReportDraft({
   const [issueInvalid, setIssueInvalid] = useState(false);
   const [pin, setPin] = useState<{ lat: number; lng: number } | null>(null);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [roadTrail, setRoadTrail] = useState<import("@/lib/rupee/road-trail").RoadTrailSummary | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const photoState = useReportPhoto(() => setFormError(null));
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -172,6 +173,7 @@ export function ReportDraft({
       try {
         const result = await createReportAction(data);
         if (result?.ok) {
+          setRoadTrail(result.roadTrail ?? null);
           setSubmittedId(result.reportId);
           return;
         }
@@ -187,7 +189,7 @@ export function ReportDraft({
   }
   const busy = pending || photoState.busy;
   if (submittedId) {
-    return <SubmittedPanel reportId={submittedId} lang={convo.lang} onAgain={onAgain} />;
+    return <SubmittedPanel reportId={submittedId} roadTrail={roadTrail} lang={convo.lang} onAgain={onAgain} />;
   }
   return (
     <form className="rb-report" data-step={submittedId ? "done" : step} noValidate onSubmit={onSubmit}>

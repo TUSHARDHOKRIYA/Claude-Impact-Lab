@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { BudgetSimulator } from "@/components/rupee/BudgetSimulator";
 import { FlagList } from "@/components/rupee/FlagList";
-import { NextRupeeList } from "@/components/rupee/NextRupeeList";
+import { OfficerActions } from "@/components/rupee/OfficerActions";
 import { OutcomeBar } from "@/components/rupee/OutcomeBar";
 import { BandBadge } from "@/components/rupee/ScoreMeter";
 import { WardBrief, WardBriefLoading } from "@/components/rupee/WardBrief";
@@ -73,7 +74,7 @@ export default async function WardPage({ params }: Params) {
   if (!ledger) notFound();
 
   const { ward, outcome, complaints, context } = ledger;
-  const next = nextRupee(rupee.ds, rupee.flags, ward.code, 5);
+  const next = nextRupee(rupee.ds, rupee.flags, ward.code, 8);
   const scoreById = new Map(rupee.scores.map((score) => [score.contractor.id, score]));
   const cardById = new Map(getScorecards().cards.map((card) => [card.id, card]));
   const citizen = await citizenReportCount(ward.code);
@@ -207,6 +208,7 @@ export default async function WardPage({ params }: Params) {
         </p>
         <div className="ux4g-mt-s">
           <FlagList flags={ledger.flags} />
+          <OfficerActions wardCode={ward.code} wardName={ward.name} flags={ledger.flags} next={next} />
         </div>
       </section>
 
@@ -215,10 +217,10 @@ export default async function WardPage({ params }: Params) {
           Where the next rupee should go
         </h2>
         <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
-          Ranked by open complaints, accidents, flooding, traffic, and schools or hospitals on the road.
+          Ranked by open complaints, accidents, flooding, traffic, and schools or hospitals on the road. Adjust the tranche budget to separate ₹0 DLP recoveries from paid work.
         </p>
         <div className="ux4g-mt-s">
-          <NextRupeeList items={next} />
+          <BudgetSimulator wardCode={ward.code} wardBudgetInr={ledger.budgetInr} items={next} />
         </div>
       </section>
 

@@ -12,10 +12,10 @@ type ChatMessage = {
 };
 
 const SUGGESTED_QUESTIONS = [
-  "What happened to my complaint?",
-  "Who was assigned the repair and how much was billed?",
-  "Did the repair hold up?",
-  "Why is my complaint still pending?",
+  "Which contractor is the best?",
+  "Which ward has the most money to explain?",
+  "Where should the next rupee go in F/S ward?",
+  "What happened to complaint BMC25-000013?",
 ];
 
 export function AssistantChat({ initialComplaintId }: { initialComplaintId?: string }) {

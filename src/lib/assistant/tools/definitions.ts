@@ -94,4 +94,56 @@ export const ASSISTANT_TOOLS: Tool[] = [
       required: ["issue_status"],
     },
   },
+  {
+    name: "get_contractor_rankings",
+    description:
+      "Rank all BMC road contractors from best to worst using stress-adjusted durability, rate-card billing ratio, SLA speed, repeat repairs, and audit flags. Use this whenever asked which contractor is best, worst, or how contractors compare.",
+    input_schema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "get_ward_summary",
+    description:
+      "Get citywide monsoon road spend overview across all 24 Mumbai wards (if ward_code omitted) or detailed spend, budget, failure rate, top contractors, and complaints for a specific ward (e.g. F/S, K/W, A, G/N).",
+    input_schema: {
+      type: "object",
+      properties: {
+        ward_code: {
+          type: "string",
+          description: "Optional BMC ward code like F/S, K/W, A, G/N. Omit for citywide overview.",
+        },
+      },
+    },
+  },
+  {
+    name: "get_audit_flags",
+    description:
+      "Retrieve flagged BMC work orders (over_rate, double_billed, paid_under_dlp, phantom_completion), optionally filtered by ward_code, contractor_id, or flag kind.",
+    input_schema: {
+      type: "object",
+      properties: {
+        ward_code: { type: "string", description: "Optional ward code filter (e.g. F/S)." },
+        contractor_id: { type: "string", description: "Optional contractor ID filter (e.g. CT05)." },
+        kind: {
+          type: "string",
+          description: "Optional flag kind: over_rate, double_billed, paid_under_dlp, or phantom_completion.",
+        },
+        limit: { type: "number", description: "Max rows to return (default 8, max 15)." },
+      },
+    },
+  },
+  {
+    name: "get_next_rupee_plan",
+    description:
+      "Get the ranked priority roads where the next rupee should go in a specific Mumbai ward, including risk scores, reasons, DLP zero-cost recovery flags, and estimated repair costs.",
+    input_schema: {
+      type: "object",
+      properties: {
+        ward_code: { type: "string", description: "BMC ward code (e.g. F/S, K/W, G/N)." },
+      },
+      required: ["ward_code"],
+    },
+  },
 ];

@@ -239,6 +239,7 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
           className="w-full"
           variant={confirmed ? "secondary" : "primary"}
           disabled={!value}
+          aria-pressed={confirmed}
           onClick={onConfirm}
         >
           {confirmed ? "Pin confirmed" : "Confirm this spot"}

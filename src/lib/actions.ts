@@ -15,10 +15,11 @@ import {
   type IssueType,
   type NoticedWindow,
 } from "@/lib/types";
+import { getRoadTrail, type RoadTrailSummary } from "@/lib/rupee/road-trail";
 import { MAX_VOICE_TRANSCRIPT_CHARS } from "@/lib/voice/contracts";
 
 export type CreateReportActionResult =
-  | { ok: true; reportId: string }
+  | { ok: true; reportId: string; roadTrail?: RoadTrailSummary | null }
   | { ok: false; error: string };
 
 function fail(error: string): CreateReportActionResult {
@@ -108,7 +109,9 @@ export async function createReportAction(
       description,
       voiceTranscript: voiceTranscript || null,
     });
-    return { ok: true, reportId: created.report.id };
+    let roadTrail: RoadTrailSummary | null = null;
+    try { roadTrail = getRoadTrail(created.location.roadId); } catch { /* dataset optional in isolated tests */ }
+    return { ok: true, reportId: created.report.id, ...(roadTrail ? { roadTrail } : {}) };
   } catch (error) {
     if (error instanceof ReportValidationError || error instanceof ItemTooLargeError) {
       return fail(error.message);

@@ -3,10 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ReportStory } from "@/components/report/ReportStory";
+import { RoadTrailCard } from "@/components/report/RoadTrailCard";
 import { ShareBar } from "@/components/share/ShareBar";
 import { getReportPage } from "@/lib/queries";
 import { reportHeadline } from "@/lib/place-name";
 import { reportAside } from "@/lib/report-copy";
+import { getRoadTrail } from "@/lib/rupee/road-trail";
 import { ISSUE_TYPE_LABELS } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -45,6 +47,7 @@ export default async function ReportPage({ params }: PageProps) {
   const issue = ISSUE_TYPE_LABELS[data.report.issueType];
   const shareTitle = reportHeadline(issue, data.location.street);
   const shareText = `${shareTitle}. ${reportAside(data.report, data.location)}`;
+  const trail = getRoadTrail(data.location.roadId);
 
   return (
     <article className="shell max-w-[52rem] min-w-0 py-8 sm:py-10">
@@ -56,6 +59,7 @@ export default async function ReportPage({ params }: PageProps) {
         similar={data.similar}
         connectedCount={data.connectedCount}
       />
+      {trail ? <RoadTrailCard trail={trail} reportId={data.report.id} /> : null}
       <div className="my-6 p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <p className="ux4g-body-m-strong text-slate-900">Have questions about this repair?</p>

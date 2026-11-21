@@ -3,15 +3,19 @@
 import { useLayoutEffect } from "react";
 
 import { GovButton } from "@/components/gov/GovButton";
+import { RoadTrailCard } from "@/components/report/RoadTrailCard";
 import { toLabelLanguage } from "@/lib/chip-labels";
 import { SUBMITTED_COPY } from "@/lib/review-copy";
+import type { RoadTrailSummary } from "@/lib/rupee/road-trail";
 
 export function SubmittedPanel({
   reportId,
+  roadTrail,
   lang,
   onAgain,
 }: {
   reportId: string;
+  roadTrail?: RoadTrailSummary | null;
   lang: string;
   onAgain: () => void;
 }) {
@@ -31,6 +35,7 @@ export function SubmittedPanel({
         {copy.heading}
       </h2>
       <p className="ux4g-text mt-4">{copy.body}</p>
+      {roadTrail ? <RoadTrailCard trail={roadTrail} reportId={reportId} /> : null}
       <div className="mt-8 flex flex-col gap-2">
         <GovButton href={mapHref}>{copy.map}</GovButton>
         <GovButton href={`/reports/${reportId}`} variant="secondary">

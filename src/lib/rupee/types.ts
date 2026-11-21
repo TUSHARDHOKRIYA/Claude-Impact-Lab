@@ -64,7 +64,11 @@ export type Contractor = {
   activeWards: string[];
 };
 
-export type AuditFlagKind = "over_rate" | "double_billed" | "paid_under_dlp";
+export type AuditFlagKind =
+  | "over_rate"
+  | "double_billed"
+  | "paid_under_dlp"
+  | "phantom_completion";
 
 export type AuditFlag = {
   kind: AuditFlagKind;

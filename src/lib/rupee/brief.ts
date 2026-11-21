@@ -7,7 +7,7 @@ import type { ContractorScore, NextRupeeItem, WardLedger } from "./types";
 
 export type WardBrief = { text: string; source: "claude" | "template" };
 
-const MODEL = process.env.RUPEE_BRIEF_MODEL ?? "claude-opus-5-5";
+const MODEL = process.env.RUPEE_BRIEF_MODEL ?? "claude-haiku-4-5";
 
 const SYSTEM = `You write the one-paragraph money summary at the top of a Mumbai ward's road-repair record.
 Readers are citizens and their corporator, reading on a phone. Write 90 to 130 words of plain English.
@@ -73,22 +73,18 @@ function templateBrief(ledger: WardLedger, next: NextRupeeItem[]): string {
 }
 
 function hasCredentials(): boolean {
+  if (process.env.VITEST) return false;
   return Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 }
 
 async function askClaude(facts: string): Promise<string | null> {
   const client = new Anthropic();
-  const response = await client.beta.messages.create({
+  const response = await client.messages.create({
     model: MODEL,
-    max_tokens: 2000,
-    // Short, factual summary of numbers already computed: low effort is enough.
-    output_config: { effort: "low" },
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
+    max_tokens: 400,
     system: SYSTEM,
     messages: [{ role: "user", content: facts }],
   });
-  if (response.stop_reason === "refusal") return null;
   const text = response.content
     .flatMap((block) => (block.type === "text" ? [block.text] : []))
     .join("")

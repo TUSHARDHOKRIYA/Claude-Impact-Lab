@@ -6,6 +6,8 @@ import { placeTitle } from "@/components/map/place-title";
 import { PlaceHeader } from "@/components/place/PlaceHeader";
 import { PlaceTimeline } from "@/components/place/PlaceTimeline";
 import { getPlacePage } from "@/lib/queries";
+import { getRupee } from "@/lib/rupee";
+import { wardSlug } from "@/lib/rupee/slug";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +36,10 @@ export default async function PlacePage({ params, searchParams }: PageProps) {
   const report = firstParam((await searchParams).report);
   const data = await getPlacePage(slug, undefined, report);
   if (!data) notFound();
+  const hasLedger = getRupee().ledgers.some((row) => row.ward.code === data.location.ward);
 
   return (
-    <article className="shell py-6 sm:py-10">
+    <article className="shell rb-place-page py-6 sm:py-10">
       <nav aria-label="Breadcrumb" className="mb-4">
         <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-2 p-0">
           <li>
@@ -59,9 +62,13 @@ export default async function PlacePage({ params, searchParams }: PageProps) {
         </ol>
       </nav>
 
-      <PlaceHeader location={data.location} place={data.place} />
+      <PlaceHeader
+        location={data.location}
+        place={data.place}
+        wardHref={hasLedger ? `/wards/${wardSlug(data.location.ward)}` : undefined}
+      />
 
-      <div className="ux4g-mt-xl">
+      <div className="ux4g-mt-2xl">
         <PlaceTimeline history={data.history} />
       </div>
     </article>

@@ -1,0 +1,171 @@
+/* Place page and report page: compact report rows, month groups, the photo. */
+
+.rb-place-page,
+.rb-report-page {
+  max-width: 52rem;
+}
+
+/* ---- Report rows: day | words | chevron. The whole row opens the report. ---- */
+.rb-rrows {
+  margin-top: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1rem;
+  background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rb-rrows > li + li {
+  border-top: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-rrow {
+  display: grid;
+  grid-template-columns: 3.75rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem 0.75rem 1rem;
+  color: var(--ux4g-text-neutral-primary);
+  text-decoration: none;
+}
+
+a.rb-rrow:hover {
+  background: var(--enamel-soft);
+}
+
+a.rb-rrow:focus-visible {
+  outline: 2px solid var(--enamel);
+  outline-offset: -2px;
+}
+
+.rb-rrow-day {
+  padding-top: 0.0625rem;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rb-rrow-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.375rem;
+  overflow-wrap: anywhere;
+}
+
+.rb-rrow > svg {
+  margin-top: 0.125rem;
+  color: var(--ux4g-text-neutral-tertiary);
+}
+
+a.rb-rrow:hover > svg {
+  color: var(--enamel);
+}
+
+/* ---- Month groups on the place page. ---- */
+.rb-month {
+  margin-top: 1.25rem;
+}
+
+.rb-month-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.rb-month-head > span {
+  min-width: 1.5rem;
+  padding: 0 0.4375rem;
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-subtle, rgba(0, 0, 0, 0.06));
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  text-align: center;
+}
+
+.rb-more {
+  margin-top: 1.25rem;
+}
+
+.rb-more > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.rb-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rb-more[open] > summary {
+  display: none;
+}
+
+/* ---- Report page. ---- */
+.rb-report-words {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--enamel);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: var(--enamel-soft);
+  font-size: 1.0625rem;
+  line-height: 1.625rem;
+  overflow-wrap: anywhere;
+}
+
+.rb-report-photo {
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1rem;
+  background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rb-report-photo > img {
+  display: block;
+  width: 100%;
+  max-height: 26rem;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.rb-report-photo > figcaption {
+  padding: 0.625rem 1rem;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.rb-report-place {
+  margin-top: 2rem;
+}
+
+.rb-ask-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 2rem 0 1.5rem;
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1rem;
+  background: var(--enamel-soft);
+}
+
+@media (min-width: 40rem) {
+  .rb-ask-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .rb-ask-card > a {
+    flex: none;
+  }
+}

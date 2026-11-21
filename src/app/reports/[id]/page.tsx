@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const data = await loadReportPage(id);
   if (!data) return { title: "Report" };
   const issue = ISSUE_TYPE_LABELS[data.report.issueType];
-  const title = reportHeadline(issue, data.location.street);
+  const title = reportHeadline(issue, data.location.street, data.location.name);
   const description = reportAside(data.report, data.location);
   const images = data.report.photoIsIllustration
     ? ["/opengraph-image"]
@@ -45,12 +45,12 @@ export default async function ReportPage({ params }: PageProps) {
   if (!data) notFound();
 
   const issue = ISSUE_TYPE_LABELS[data.report.issueType];
-  const shareTitle = reportHeadline(issue, data.location.street);
+  const shareTitle = reportHeadline(issue, data.location.street, data.location.name);
   const shareText = `${shareTitle}. ${reportAside(data.report, data.location)}`;
   const trail = getRoadTrail(data.location.roadId);
 
   return (
-    <article className="shell max-w-[52rem] min-w-0 py-8 sm:py-10">
+    <article className="shell rb-report-page min-w-0 py-6 sm:py-10">
       <ReportStory
         report={data.report}
         location={data.location}
@@ -60,21 +60,24 @@ export default async function ReportPage({ params }: PageProps) {
         connectedCount={data.connectedCount}
       />
       {trail ? <RoadTrailCard trail={trail} reportId={data.report.id} /> : null}
-      <div className="my-6 p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <aside className="rb-ask-card" aria-labelledby="ask-heading">
         <div>
-          <p className="ux4g-body-m-strong text-slate-900">Have questions about this repair?</p>
-          <p className="ux4g-body-s-default text-slate-600">
-            Ask the Citizen Accountability Assistant about work orders, contractor billing, or repair outcomes.
+          <h2 id="ask-heading" className="ux4g-body-m-strong">
+            Who fixed this road, and what was paid?
+          </h2>
+          <p className="ux4g-body-s-default ux4g-text-neutral-secondary">
+            Ask about the work orders, contractor bills and repairs behind this report.
           </p>
         </div>
         <Link
           href={`/assistant?reportId=${encodeURIComponent(data.report.id)}`}
-          className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary whitespace-nowrap"
+          className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target"
         >
-          Ask Claude &rarr;
+          Ask about this road
         </Link>
-      </div>
+      </aside>
       <ShareBar path={`/reports/${data.report.id}`} title={shareTitle} text={shareText} />
+      <p className="ux4g-body-s-default ux4g-text-neutral-tertiary ux4g-mt-xl break-all">Report ID {data.report.id}</p>
     </article>
   );
 }

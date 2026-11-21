@@ -20,7 +20,9 @@ const NAV = [
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/") return pathname === "/" || pathname.startsWith("/report");
+  if (href === "/") return pathname === "/" || pathname === "/report" || pathname.startsWith("/report/");
+  // A public report or a place is something you reach from the map.
+  if (href === "/map" && /^\/(reports|places)\//.test(pathname)) return true;
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

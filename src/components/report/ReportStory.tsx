@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { GovBadge } from "@/components/gov/GovBadge";
-import { noticedWhen } from "@/lib/noticed-label";
+import { ReportRows } from "@/components/place/ReportRows";
 import { reportHeadline } from "@/lib/place-name";
 import { reportAside } from "@/lib/report-copy";
 import {
@@ -15,6 +15,9 @@ import {
 
 const LINK = "ux4g-text-link-m touch-target inline-flex items-center";
 
+/** Other reports at the same place shown here; the place page has the rest. */
+const NEARBY = 5;
+
 type ReportStoryProps = {
   report: PublicReportRecord;
   location: LocationRecord;
@@ -24,29 +27,20 @@ type ReportStoryProps = {
   connectedCount: number;
 };
 
-function connectedLine(count: number): string {
-  if (count <= 0) return "This is the first report connected to this location.";
-  if (count === 1) return "1 other report is connected to this location.";
-  return `${count} other reports are connected to this location.`;
-}
-
-export function ReportStory({
-  report,
-  location,
-  place,
-  history,
-  similar,
-  connectedCount,
-}: ReportStoryProps) {
+/**
+ * One report: what was seen and where, the photo, then the place it belongs
+ * to with its latest other reports. The full list lives on the place page.
+ */
+export function ReportStory({ report, location, place, history, connectedCount }: ReportStoryProps) {
   const issue = ISSUE_TYPE_LABELS[report.issueType];
-  const headline = reportHeadline(issue, location.street);
+  const headline = reportHeadline(issue, location.street, location.name);
   const placeHref = `/places/${location.slug}?report=${report.id}`;
-  const others = similar.filter((item) => item.id !== report.id);
+  const others = history.filter((event) => event.id !== `report-${report.id}`).slice(0, NEARBY);
 
   return (
     <div className="min-w-0">
-      <nav aria-label="Breadcrumb" className="mb-6 min-w-0">
-        <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-2 p-0">
+      <nav aria-label="Breadcrumb" className="mb-4 min-w-0">
+        <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-x-2 p-0">
           <li>
             <Link href="/map" className={LINK}>
               Map
@@ -67,96 +61,45 @@ export function ReportStory({
             {issue}
           </li>
         </ol>
-        <p className="ux4g-text ux4g-text-neutral-tertiary mt-2 min-w-0 break-all">{report.id}</p>
       </nav>
 
-      <p className="ux4g-card-sub-title">Street report</p>
-      <h1 className="ux4g-heading-xl-strong mt-2 break-words">{headline}</h1>
-      <p className="ux4g-text mt-4">
+      <p className="rb-place-tags">
+        <GovBadge tone="info">{issue}</GovBadge>
+        {place.recurring ? <GovBadge tone="error">Keeps coming back</GovBadge> : null}
+      </p>
+      <h1 className="ux4g-heading-xl-strong ux4g-mt-xs break-words">{headline}</h1>
+      <p className="ux4g-body-l-default ux4g-text-neutral-secondary mt-2">
         {reportAside(report, location)}
         {report.recurs ? " People have noticed this more than once." : null}
       </p>
 
-      <figure className="ux4g-card ux4g-card-outline ux4g-card-vertical mt-8 min-w-0 overflow-hidden">
+      {report.description ? <blockquote className="rb-report-words">{report.description}</blockquote> : null}
+
+      <figure className="rb-report-photo">
         {/* The photo is a separate request so this page's payload stays small. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`/reports/${report.id}/photo`}
-          alt={headline}
-          className="aspect-[4/3] h-auto w-full max-w-full object-cover"
-        />
-        <figcaption className="ux4g-card-footer flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-          <span className="ux4g-text min-w-0 break-words">
-            {location.street}, {location.ward}
-            {report.photoIsIllustration
-              ? ". Illustration. No photo was supplied with this report."
-              : ""}
-          </span>
-          <GovBadge tone="success">Street report</GovBadge>
+        <img src={`/reports/${report.id}/photo`} alt={headline} />
+        <figcaption>
+          {location.street}, {location.ward}
+          {report.photoIsIllustration ? ". Illustration. No photo was supplied with this report." : ""}
         </figcaption>
       </figure>
 
-      <p className="ux4g-text mt-8">
-        {place.reportCount === 1 ? "1 report" : `${place.reportCount} reports`}
-        {place.recurring ? " · reported more than once" : ""} at this place.
-      </p>
-      <p className="ux4g-text mt-3">{connectedLine(connectedCount)}</p>
-
-      {report.description ? <p className="ux4g-text mt-4 break-words">{report.description}</p> : null}
-
-      <section className="mt-10 min-w-0" aria-labelledby="place-history-heading">
-        <h2 id="place-history-heading" className="ux4g-heading-xs-strong">
-          Place history
+      <section className="rb-report-place" aria-labelledby="place-history-heading">
+        <h2 id="place-history-heading" className="ux4g-heading-s-strong">
+          At this place
         </h2>
-        {history.length === 0 ? (
-          <p className="ux4g-text ux4g-text-neutral-secondary mt-3">This is the first mark on the place record.</p>
-        ) : (
-          <ol className="mt-3 flex flex-col gap-3">
-            {history.slice(0, 10).map((event) => (
-              <li key={event.id} className="min-w-0 break-words">
-                <time dateTime={event.at} className="ux4g-text ux4g-text-neutral-secondary">
-                  {noticedWhen({ noticedAt: event.at, noticedWindow: event.noticedWindow, createdAt: event.createdAt })}
-                </time>
-                <span className="mt-1 flex flex-wrap items-center gap-2">
-                  <GovBadge tone="neutral">Street report</GovBadge>
-                  {event.href ? (
-                    <Link href={event.href} className={LINK}>
-                      {event.title}
-                    </Link>
-                  ) : (
-                    <span className="ux4g-text">{event.title}</span>
-                  )}
-                </span>
-              </li>
-            ))}
-          </ol>
-        )}
-        <p className="mt-3">
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary">
+          {connectedCount <= 0
+            ? "This is the first report here."
+            : `${place.reportCount} reports here${place.recurring ? ", and it keeps coming back" : ""}. The latest:`}
+        </p>
+        {others.length ? <ReportRows events={others} /> : null}
+        <p className="ux4g-mt-s">
           <Link href={placeHref} className={LINK}>
-            Open the full record for {location.name}
+            See every report at {location.name}
           </Link>
         </p>
-      </section>
-
-      <section className="mt-10 min-w-0" aria-labelledby="similar-heading">
-        <h2 id="similar-heading" className="ux4g-heading-xs-strong">
-          Similar reports
-        </h2>
-        {others.length === 0 ? (
-          <p className="ux4g-text ux4g-text-neutral-secondary mt-3">No similar reports sit beside this one yet.</p>
-        ) : (
-          <ul className="mt-3 flex flex-col gap-3">
-            {others.map((item) => (
-              <li key={item.id} className="flex min-w-0 flex-wrap items-center gap-2">
-                <Link href={`/reports/${item.id}`} className={LINK}>
-                  {ISSUE_TYPE_LABELS[item.issueType]}
-                </Link>
-                <GovBadge tone="success">Street report</GovBadge>
-                <span className="ux4g-text ux4g-text-neutral-secondary">{noticedWhen(item)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
       </section>
     </div>
   );

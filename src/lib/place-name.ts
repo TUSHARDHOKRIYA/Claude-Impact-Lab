@@ -89,8 +89,10 @@ export function describePlace(lat: number, lng: number): string {
   return parts.length ? parts.join(", ") : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 }
 
-export function reportHeadline(issueLabel: string, street: string): string {
-  return hasNamedStreet(street) ? `${issueLabel} on ${street}` : `${issueLabel} in ${CITY_NAME}`;
+export function reportHeadline(issueLabel: string, street: string, placeName?: string): string {
+  if (hasNamedStreet(street)) return `${issueLabel} on ${street}`;
+  // "Pothole near Parel" says more than "Pothole in Mumbai".
+  return placeName?.trim() || `${issueLabel} in ${CITY_NAME}`;
 }
 
 /** Stored places are kept as written. Kept for the read path's contract. */

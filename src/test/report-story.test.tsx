@@ -67,7 +67,10 @@ describe("ReportStory", () => {
         report={report}
         location={location}
         place={place}
-        history={[]}
+        history={[
+          { id: "report-rpt_2", at: "2023-01-01", kind: "report", title: "Street report", body: "Kerb broken again.", href: "/reports/rpt_2", noticedWindow: null, createdAt: "2023-01-01T00:00:00.000Z" },
+          { id: "report-rpt_1", at: "2022-08-01", kind: "report", title: "Street report", body: "Broken paving.", href: "/reports/rpt_1", noticedWindow: "this_week", createdAt: "2022-08-01T00:00:00.000Z" },
+        ]}
         similar={[listed]}
         connectedCount={1}
       />,
@@ -78,7 +81,6 @@ describe("ReportStory", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Pothole on Dr Ambedkar Road");
     expect(screen.getByText(/Noticed in the week up to 1 August 2022/)).toBeInTheDocument();
     expect(screen.getByText(/Illustration\. No photo was supplied with this report\./)).toBeInTheDocument();
-    expect(screen.getAllByText("Street report").length).toBeGreaterThan(0);
     expect(screen.queryByText(/Sample/)).not.toBeInTheDocument();
     expect(screen.getAllByText(/Illustration\. No photo was supplied with this report\./)).toHaveLength(1);
     expect(screen.getAllByText(location.name).length).toBeGreaterThan(0);
@@ -87,10 +89,11 @@ describe("ReportStory", () => {
       "href",
       "/places/dr-ambedkar-road?report=rpt_1",
     );
-    expect(screen.getByRole("link", { name: `Open the full record for ${location.name}` })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: `See every report at ${location.name}` })).toHaveAttribute(
       "href",
       "/places/dr-ambedkar-road?report=rpt_1",
     );
-    expect(screen.getByRole("link", { name: "Pothole" })).toHaveAttribute("href", "/reports/rpt_2");
+    expect(screen.getByRole("link", { name: /Kerb broken again/ })).toHaveAttribute("href", "/reports/rpt_2");
+    expect(screen.queryByRole("link", { name: /Broken paving/ })).not.toBeInTheDocument();
   });
 });

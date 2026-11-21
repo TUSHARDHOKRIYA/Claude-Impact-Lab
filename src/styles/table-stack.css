@@ -103,10 +103,6 @@
     min-height: 0;
   }
 
-  .rb-stack tr > td.rb-notes {
-    display: flex;
-  }
-
   .rb-stack tr > td.rb-notes:empty {
     display: none;
   }

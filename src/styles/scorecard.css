@@ -207,7 +207,7 @@
   flex-wrap: wrap;
 }
 
-.rb-notes {
+.rb-notes-in {
   display: flex;
   flex-wrap: wrap;
   gap: var(--ux4g-gap-column-2xs);

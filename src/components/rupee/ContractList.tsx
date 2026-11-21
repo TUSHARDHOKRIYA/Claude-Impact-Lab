@@ -99,11 +99,15 @@ export function ContractList({
                 <td data-label="Billed" className="rb-num rb-half">{formatInr(order.costInr)}</td>
                 <td data-label="Rate card" className="rb-num rb-half">{formatInr(Math.round(order.expectedCostInr))}</td>
                 <td className="rb-notes rb-full">
-                  {marks(order).map((mark) => (
-                    <GovBadge key={mark.text} tone={mark.tone} small>
-                      {mark.text}
-                    </GovBadge>
-                  ))}
+                  {marks(order).length ? (
+                    <span className="rb-notes-in">
+                      {marks(order).map((mark) => (
+                        <GovBadge key={mark.text} tone={mark.tone} small>
+                          {mark.text}
+                        </GovBadge>
+                      ))}
+                    </span>
+                  ) : null}
                 </td>
               </tr>
             ))}

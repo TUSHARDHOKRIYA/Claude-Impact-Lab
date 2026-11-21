@@ -54,20 +54,11 @@ export default async function AssistantPage({ searchParams }: PageProps) {
     (params.reportId && !params.reportId.startsWith("rpt_") ? params.reportId : "");
 
   return (
-    <main className="shell max-w-[52rem] min-w-0 py-6 sm:py-12">
-      <header className="mb-6 sm:mb-8">
-        <h1 className="ux4g-display-xs-strong text-slate-900 mb-2">Citizen Accountability Assistant</h1>
-        <p className="ux4g-body-m-default text-slate-600">
-          Find out what happened to road repair money in Mumbai. Check whether your complaint led to an official work
-          order, who was hired, what was billed, and whether the repair lasted.
-        </p>
-      </header>
-
-      {trail ? <RoadTrailCard trail={trail} /> : null}
-
-      <section className="sm:bg-white sm:rounded-2xl sm:border sm:border-slate-200 sm:p-8 sm:shadow-sm">
-        <AssistantChat initialComplaintId={initialId} />
-      </section>
+    <main className="shell rb-chat-page min-w-0">
+      <AssistantChat
+        initialComplaintId={initialId}
+        context={trail ? <RoadTrailCard trail={trail} /> : undefined}
+      />
     </main>
   );
 }

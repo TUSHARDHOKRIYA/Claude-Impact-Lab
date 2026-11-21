@@ -1,0 +1,215 @@
+/* Ask: an empty state with one composer card, then a conversation with
+ * questions as bubbles, answers as plain text and the composer docked. */
+
+.rb-chat-page {
+  padding-top: 1.5rem;
+}
+
+.rb-chat {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+/* ---- Empty state ---- */
+.rb-chat-empty {
+  padding-top: 1.5rem;
+}
+
+@media (min-width: 48rem) {
+  .rb-chat-empty {
+    padding-top: 9vh;
+  }
+}
+
+.rb-chat-title {
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.rb-chat-sub {
+  max-width: 36rem;
+  margin-top: 0.5rem;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.625rem;
+}
+
+.rb-chat-context {
+  margin-top: 1.25rem;
+}
+
+.rb-chat-context > * {
+  margin: 0;
+}
+
+.rb-chat-empty .rb-composer {
+  margin-top: 1.5rem;
+}
+
+.rb-chat-starters {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 40rem) {
+  .rb-chat-starters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rb-chat-starters button {
+  display: grid;
+  align-content: start;
+  gap: 0.125rem;
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 0.875rem;
+  background: transparent;
+  text-align: start;
+}
+
+.rb-chat-starters button:hover {
+  border-color: var(--enamel);
+  background: var(--enamel-soft);
+}
+
+.rb-chat-starter-q {
+  color: var(--ux4g-text-neutral-primary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.rb-chat-starter-hint {
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+}
+
+/* Phones: the questions alone, so all four fit above the tab bar. */
+@media (max-width: 39.99rem) {
+  .rb-chat-starter-hint {
+    display: none;
+  }
+
+  .rb-chat-starters button {
+    padding: 0.625rem 0.875rem;
+  }
+}
+
+/* ---- Composer: the one card ---- */
+.rb-composer {
+  padding: 0.75rem 0.75rem 0.625rem 1rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 1.25rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 6px 24px rgb(29 39 45 / 0.08);
+}
+
+.rb-composer:focus-within {
+  border-color: var(--enamel);
+}
+
+.rb-composer textarea {
+  display: block;
+  width: 100%;
+  min-height: 3.25rem;
+  max-height: 10rem;
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--ux4g-text-neutral-primary);
+  font: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.5rem;
+  resize: none;
+  field-sizing: content;
+}
+
+.rb-composer textarea:focus {
+  outline: none;
+}
+
+.rb-composer-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.375rem;
+}
+
+.rb-composer-chip,
+.rb-composer-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 999px;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.rb-composer-id input {
+  width: 8.5rem;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ux4g-text-neutral-primary);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-composer-id input:focus {
+  outline: none;
+}
+
+.rb-composer-langs {
+  display: inline-flex;
+  margin-left: auto;
+  padding: 0.1875rem;
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-subtle, rgb(0 0 0 / 0.05));
+}
+
+.rb-composer-langs button {
+  min-width: 2.5rem;
+  height: 1.875rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.rb-composer-langs button[aria-pressed="true"] {
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  color: var(--ux4g-text-neutral-primary);
+}
+
+.rb-composer-send {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: var(--enamel);
+  color: #fff;
+}
+
+.rb-composer-send:disabled {
+  background: var(--ux4g-bg-neutral-subtle, #e5e5e5);
+  color: var(--ux4g-text-neutral-tertiary, #a1a1a1);
+}
+
+.rb-composer :focus-visible {
+  outline: 2px solid var(--enamel);
+  outline-offset: 2px;
+}

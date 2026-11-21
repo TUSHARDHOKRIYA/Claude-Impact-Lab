@@ -49,7 +49,7 @@ describe("SiteFooter", () => {
     expect(footer?.className).toMatch(/ux4g-footer-dark/);
     expect(document.querySelector(".ux4g-footer-content")).toBeNull();
     const map = screen.getByRole("link", { name: /map of reports/i });
-    expect(map.className).toMatch(/ux4g-text-link-neutral-m/);
+    expect(map.className).toMatch(/ux4g-text-link-neutral-s/);
     expect(map.className).toMatch(/touch-target/);
   });
 });

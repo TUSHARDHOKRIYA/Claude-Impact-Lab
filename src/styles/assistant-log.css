@@ -1,0 +1,244 @@
+/* The conversation: questions, answers, the wait, and the docked composer. */
+
+.rb-chat-live {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 7rem - var(--tabbar-h));
+}
+
+.rb-chat-log {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.rb-chat-q {
+  justify-self: end;
+  max-width: min(85%, 34rem);
+  padding: 0.625rem 1rem;
+  border-radius: 1.25rem 1.25rem 0.375rem 1.25rem;
+  background: var(--enamel-soft);
+  color: var(--ux4g-text-neutral-primary);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.rb-chat-answer {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.rb-chat-who {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.rb-chat-mark {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  background: var(--asphalt);
+  color: var(--lane);
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.rb-chat-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.rb-chat-facts > li {
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 999px;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.rb-chat-facts > li[data-tone="good"] {
+  border-color: transparent;
+  background: #e3f4ec;
+  color: var(--held);
+}
+
+.rb-chat-facts > li[data-tone="warn"] {
+  border-color: transparent;
+  background: #fdf3d8;
+  color: #7a5600;
+}
+
+.rb-chat-text {
+  font-size: 1.0625rem;
+  line-height: 1.75rem;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.rb-chat-next {
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--enamel);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: var(--ux4g-bg-neutral-elevated);
+  font-size: 0.9375rem;
+  line-height: 1.5rem;
+}
+
+.rb-chat-next-label {
+  margin-bottom: 0.125rem;
+  color: var(--enamel);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.rb-chat-sources > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.rb-chat-sources > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rb-chat-sources > summary::after {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  margin: -0.1875rem 0 0 0.125rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.rb-chat-sources[open] > summary::after {
+  margin-top: 0.1875rem;
+  transform: rotate(225deg);
+}
+
+.rb-chat-sources ul {
+  display: grid;
+  gap: 0.375rem;
+  padding: 0.25rem 0 0 1rem;
+  border-left: 2px solid var(--ux4g-border-color-neutral-subtle);
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.rb-chat-wait {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--ux4g-text-neutral-secondary);
+  font-size: 0.9375rem;
+}
+
+.rb-chat-dots {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.rb-chat-dots > span {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 999px;
+  background: var(--enamel);
+  animation: rb-chat-dot 1.1s ease-in-out infinite;
+}
+
+.rb-chat-dots > span:nth-child(2) { animation-delay: 0.15s; }
+.rb-chat-dots > span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes rb-chat-dot {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-chat-dots > span { animation: none; opacity: 0.6; }
+}
+
+.rb-chat-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #f1c2bd;
+  border-radius: 0.875rem;
+  background: #fbe5e3;
+  color: var(--failed);
+  font-size: 0.9375rem;
+}
+
+/* Docked composer: sticks above the phone tab bar, fades the log under it. */
+.rb-chat-dock {
+  position: sticky;
+  bottom: var(--tabbar-h);
+  z-index: 5;
+  padding: 0.75rem 0;
+  background: linear-gradient(to bottom, transparent, var(--paper) 0.75rem);
+}
+
+.rb-composer-compact textarea {
+  min-height: 1.75rem;
+}
+
+.rb-composer-compact .rb-composer-bar {
+  margin-top: 0.25rem;
+}
+
+/* Scrolling to the newest message stops above the docked composer. */
+.rb-chat-end {
+  scroll-margin-bottom: calc(var(--tabbar-h) + 9rem);
+}
+
+@media (max-width: 39.99rem) {
+  .rb-chat-facts {
+    flex-wrap: nowrap;
+    margin-right: -1rem;
+    padding-right: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .rb-chat-facts > li {
+    flex: none;
+  }
+
+  .rb-chat-text {
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  .rb-composer-compact {
+    padding: 0.5rem 0.5rem 0.5rem 0.875rem;
+  }
+
+  .rb-composer-compact .rb-composer-chip,
+  .rb-composer-compact .rb-composer-id {
+    height: 2rem;
+  }
+}

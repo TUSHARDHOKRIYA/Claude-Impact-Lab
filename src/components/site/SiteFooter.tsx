@@ -5,6 +5,8 @@ const LINKS = [
   { href: "/map", label: "Map of reports" },
   { href: "/wards", label: "Ward money trail" },
   { href: "/contractors", label: "Contractor scorecards" },
+  { href: "/privacy", label: "Privacy policy" },
+  { href: "/terms", label: "Terms & conditions" },
 ] as const;
 
 /** UX4G dark footer. */

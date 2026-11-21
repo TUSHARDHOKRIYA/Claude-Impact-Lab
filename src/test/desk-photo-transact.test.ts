@@ -19,14 +19,13 @@ function stored(): ReportRecord {
   return {
     id: "rpt_1",
     locationId: "loc_old",
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     noticedAt: "2026-09-01",
     noticedWindow: null,
     recurs: false,
-    affects: ["walking"],
-    description: null,
+        description: null,
     isSample: false,
     createdAt: "2026-09-01T00:00:00.000Z",
     voiceTranscript: null,
@@ -87,10 +86,10 @@ describe("desk photo replacement", () => {
   it("writes a photo and an issue-type move in one transact", async () => {
     const updated = await new DynamoRastabaazRepository().updateReport({
       id: "rpt_1",
-      issueType: "waste",
+      issueType: "waterlogging",
       photo: PHOTO,
     });
-    expect(updated?.issueType).toBe("waste");
+    expect(updated?.issueType).toBe("waterlogging");
     expect(transacts()).toHaveLength(1);
     const ops = transacts()[0]?.TransactItems ?? [];
     expect(ops.some((op) => op.Put?.Item.type === "location")).toBe(true);

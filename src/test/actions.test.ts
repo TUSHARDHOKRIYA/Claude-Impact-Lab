@@ -33,14 +33,14 @@ function jpegDataUrl(): string {
 function form(overrides: Record<string, string> = {}): FormData {
   const data = new FormData();
   const fields = {
-    issueType: "road",
+    issueType: "pothole",
     lat: "18.9298",
     lng: "72.8324",
     locationConfirmed: "true",
     photo: jpegDataUrl(),
     noticedWindow: "this_month",
     recurs: "false",
-    affects: JSON.stringify(["walking"]),
+    accident: "none",
     ...overrides,
   };
   for (const [key, value] of Object.entries(fields)) data.set(key, value);
@@ -62,7 +62,7 @@ describe("createReportAction", () => {
   });
 
   it("rejects an invalid issue type", async () => {
-    await expect(createReportAction(form({ issueType: "pothole" }))).resolves.toEqual({
+    await expect(createReportAction(form({ issueType: "invalid_type" }))).resolves.toEqual({
       ok: false, error: "Choose an issue type.",
     });
   });
@@ -143,27 +143,19 @@ describe("createReportAction", () => {
 
   it("rejects an invalid recurs value", async () => {
     await expect(createReportAction(form({ recurs: "yes" }))).resolves.toEqual({
-      ok: false, error: "Say whether this condition recurs.",
+      ok: false, error: "Say whether it has been fixed before and come back.",
     });
   });
 
-  it("rejects empty affects", async () => {
-    await expect(createReportAction(form({ affects: "[]" }))).resolves.toEqual({
-      ok: false, error: "Select what this condition affects.",
+  it("rejects a missing accident value", async () => {
+    await expect(createReportAction(form({ accident: "" }))).resolves.toEqual({
+      ok: false, error: "Say whether you have seen an accident here.",
     });
   });
 
-  it("rejects malformed affects", async () => {
-    await expect(createReportAction(form({ affects: "walking" }))).resolves.toEqual({
-      ok: false, error: "Select what this condition affects.",
-    });
-  });
-
-  it("rejects unknown affects values", async () => {
-    await expect(
-      createReportAction(form({ affects: JSON.stringify(["walking", "flying"]) })),
-    ).resolves.toEqual({
-      ok: false, error: "Select what this condition affects.",
+  it("rejects an unknown accident value", async () => {
+    await expect(createReportAction(form({ accident: "flying" }))).resolves.toEqual({
+      ok: false, error: "Say whether you have seen an accident here.",
     });
   });
 
@@ -190,7 +182,7 @@ describe("createReportAction", () => {
       throw new Error("The security token included in the request is invalid.");
     };
     await expect(createReportAction(form())).resolves.toEqual({
-      ok: false, error: "Could not record this condition.",
+      ok: false, error: "Could not record this report.",
     });
   });
 
@@ -206,7 +198,7 @@ describe("createReportAction", () => {
     const stored = await repo.getReport(catalog.reports[0].id);
     expect(await repo.getReportPhoto(catalog.reports[0].id)).toBe(photo);
     expect(stored).not.toHaveProperty("photo");
-    expect(stored?.issueType).toBe("road");
+    expect(stored?.issueType).toBe("pothole");
     expect(stored?.noticedWindow).toBe("this_month");
     expect(stored?.isSample).toBe(false);
     expect(stored?.voiceTranscript).toBeNull();

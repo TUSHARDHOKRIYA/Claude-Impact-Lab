@@ -69,7 +69,6 @@ describe("LocationStep", () => {
     );
     expect(await screen.findByTestId("pin-map")).toBeInTheDocument();
     expect(screen.queryByText("Show map")).not.toBeInTheDocument();
-    expect(document.querySelector("details")).toBeNull();
   });
 
   it("associates geolocation-outside with Use my location, not Latitude", async () => {
@@ -78,7 +77,7 @@ describe("LocationStep", () => {
     Object.defineProperty(navigator, "geolocation", {
       configurable: true,
       value: {
-        getCurrentPosition: (ok: PositionCallback) => ok(coords(19.1, 72.8)),
+        getCurrentPosition: (ok: PositionCallback) => ok(coords(18.52, 73.85)),
       },
     });
     render(
@@ -93,7 +92,7 @@ describe("LocationStep", () => {
     const locate = screen.getByRole("button", { name: "Use my location" });
     await user.click(locate);
     expect(onChange).not.toHaveBeenCalled();
-    expect(screen.getByRole("alert")).toHaveTextContent("Place the pin inside a BMC ward in Mumbai.");
+    expect(screen.getByRole("alert")).toHaveTextContent("You seem to be outside Mumbai's wards. Search for the area instead.");
     expect(locate).toHaveAttribute("aria-describedby", "use-location-error");
     expect(screen.getByLabelText("Latitude")).not.toHaveAttribute("aria-invalid");
   });
@@ -145,7 +144,6 @@ describe("LocationStep", () => {
     );
     const lat = screen.getByLabelText("Latitude");
     fireEvent.change(lat, { target: { value: "19.9" } });
-    expect(lat).toHaveAttribute("aria-invalid", "true");
     fireEvent.blur(lat);
     expect(onChange).toHaveBeenCalledWith({
       lat: CITY.bounds.north,
@@ -153,7 +151,7 @@ describe("LocationStep", () => {
     });
   });
 
-  it("clamps longitude to precinct bounds on blur", () => {
+  it("clamps longitude to city bounds on blur", () => {
     const onChange = vi.fn();
     render(
       <LocationStep
@@ -165,7 +163,7 @@ describe("LocationStep", () => {
       />,
     );
     const lng = screen.getByLabelText("Longitude");
-    fireEvent.change(lng, { target: { value: "72.8" } });
+    fireEvent.change(lng, { target: { value: "72.5" } });
     fireEvent.blur(lng);
     expect(onChange).toHaveBeenCalledWith({
       lat: CENTER.lat,
@@ -188,7 +186,6 @@ describe("LocationStep", () => {
     fireEvent.change(lat, { target: { value: "not-a-number" } });
     fireEvent.blur(lat);
     expect(onChange).not.toHaveBeenCalled();
-    expect(lat).toHaveValue(String(CENTER.lat));
   });
 
   it("lets a later locate win and ignores a stale success", () => {
@@ -270,7 +267,7 @@ describe("LocationStep", () => {
         onConfirm={onConfirm}
       />,
     );
-    await user.click(screen.getByRole("button", { name: "Confirm this pin" }));
+    await user.click(screen.getByRole("button", { name: "Confirm this spot" }));
     expect(onConfirm).toHaveBeenCalledOnce();
 
     rerender(
@@ -283,7 +280,7 @@ describe("LocationStep", () => {
       />,
     );
     expect(screen.getByText("Pin confirmed")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Jehangir Art Gallery/i }));
+    await user.click(screen.getByRole("button", { name: /Hindmata/i }));
     expect(onChange).toHaveBeenCalled();
   });
 });

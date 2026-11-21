@@ -137,7 +137,7 @@ describe("the fixture run loop", () => {
     expect(run.score?.wrong).toBe(0);
     expect(run.score?.missed).toBe(0);
     const body = JSON.parse(String(seen[0].body)) as { tools: unknown[]; tool_choice: string };
-    expect(body.tools).toHaveLength(6);
+    expect(body.tools).toHaveLength(5);
     expect(body.tool_choice).toBe("auto");
   });
 
@@ -189,7 +189,7 @@ describe("the fixture run loop", () => {
     expect(run.ok).toBe(true);
     expect(run.toolCalls).toEqual([]);
     expect(run.assistantText).toEqual(["Thik hai."]);
-    expect(run.score?.missed).toBe(5);
+    expect(run.score?.missed).toBe(4);
   });
 
   it("captures an HTTP failure as an error row instead of throwing", async () => {

@@ -71,7 +71,6 @@ Resources:
               - noticedAt
               - noticedWindow
               - recurs
-              - affects
               - description
               - isSample
               - reportId

@@ -19,15 +19,12 @@ function call(name: string, args: Record<string, unknown>): RawToolCall {
 
 describe("tool call validation", () => {
   it("accepts the calls the app accepts", () => {
-    expect(validateToolCall(call("save_issue_type", { issue_type: "drainage" })).ok).toBe(true);
+    expect(validateToolCall(call("save_issue_type", { issue_type: "pothole" })).ok).toBe(true);
     expect(validateToolCall(call("save_noticed_window", { noticed_window: "today" })).ok).toBe(true);
     expect(validateToolCall(call("save_recurs", { recurs: "false" })).ok).toBe(true);
-    expect(
-      validateToolCall(call("save_affects", { affects: ["walking", "wheeling"] })).ok,
-    ).toBe(true);
     expect(validateToolCall(call("save_description", { description: "" })).ok).toBe(true);
-    expect(validateToolCall(call("propose_pin", { landmark_id: "jehangir" })).ok).toBe(true);
-    expect(validateToolCall(call("propose_pin", { landmark_id: "rhythm-house" })).ok).toBe(true);
+    expect(validateToolCall(call("propose_pin", { landmark_id: "loc-hindmata" })).ok).toBe(true);
+    expect(validateToolCall(call("propose_pin", { landmark_id: "loc-sion" })).ok).toBe(true);
   });
 
   it("rejects exactly what the form and server action reject", () => {
@@ -37,11 +34,8 @@ describe("tool call validation", () => {
       call("save_noticed_window", { noticed_window: "2027-01-01" }),
       call("save_noticed_window", { noticed_window: "next_year" }),
       call("save_recurs", { recurs: true }),
-      call("save_affects", { affects: [] }),
-      call("save_affects", { affects: ["night safety"] }),
-      call("save_affects", { affects: ["walking", "walking"] }),
-      // Not a known area id: a pin may never land there.
-      call("propose_pin", { landmark_id: "regal-cinema" }),
+      // Not a known locality id: a pin may never land there.
+      call("propose_pin", { landmark_id: "non-existent-locality" }),
       call("save_issue_type", {}),
       { name: "submit", argumentsJson: "{}" },
       { name: "save_issue_type", argumentsJson: "not json" },
@@ -75,7 +69,7 @@ describe("scoring against ground truth", () => {
       expect(score.invalidCalls, `${fixture.id}: ${JSON.stringify(score.invalidCalls)}`).toEqual([]);
       expect(score.wrong, `${fixture.id}`).toBe(0);
       expect(score.missed, `${fixture.id}`).toBe(0);
-      expect(score.correct).toBe(6);
+      expect(score.correct).toBe(5);
     }
   });
 
@@ -83,7 +77,7 @@ describe("scoring against ground truth", () => {
     const fixture = fixtureById("pothole-do-din");
     const score = scoreFixture(fixture, []);
     expect(score.toolCalls).toBe(0);
-    expect(score.missed).toBe(5);
+    expect(score.missed).toBe(4);
     expect(score.correct).toBe(1); // the pin: no landmark named, so silence is right
     expect(score.wrong).toBe(0);
   });
@@ -91,27 +85,25 @@ describe("scoring against ground truth", () => {
   it("catches a sloppy model: bad enums, relative dates and an invented submit tool", () => {
     const fixture = fixtureById("pothole-do-din");
     const score = scoreFixture(fixture, sloppyModelCalls(fixture));
-    expect(score.invalidCalls.length).toBeGreaterThanOrEqual(5);
+    expect(score.invalidCalls.length).toBeGreaterThanOrEqual(4);
     expect(score.invalidCalls.map((entry) => entry.name)).toContain("submit_report");
     expect(score.wrong).toBeGreaterThan(0);
   });
 
   it("counts a filled slot the transcript never stated as hallucinated, not correct", () => {
-    const fixture = fixtureById("no-date-no-recurrence");
+    const fixture = fixtureById("manhole-school");
     const calls = [
       ...groundTruthCalls(fixture),
-      call("save_noticed_window", { noticed_window: "today" }),
       call("save_recurs", { recurs: "true" }),
     ];
     const score = scoreFixture(fixture, calls);
     const verdicts = Object.fromEntries(score.slots.map((slot) => [slot.slot, slot.verdict]));
-    expect(verdicts.noticed_window).toBe("hallucinated");
     expect(verdicts.recurs).toBe("hallucinated");
-    expect(score.wrong).toBe(2);
+    expect(score.wrong).toBe(1);
   });
 
   it("marks duration read as recurrence wrong, not correct", () => {
-    const fixture = fixtureById("duration-not-recurrence");
+    const fixture = fixtureById("pothole-do-din");
     const score = scoreFixture(fixture, [call("save_recurs", { recurs: "true" })]);
     const recurs = score.slots.find((slot) => slot.slot === "recurs");
     expect(recurs?.verdict).toBe("wrong");
@@ -119,22 +111,24 @@ describe("scoring against ground truth", () => {
   });
 
   it("accepts either category where the two genuinely overlap", () => {
-    const fixture = fixtureById("drain-garbage-overlap");
-    for (const value of ["drainage", "waste"]) {
+    const fixture: VoiceFixture = {
+      id: "mock-overlap",
+      probes: "overlap",
+      transcript: "Road problem",
+      expected: {
+        issue_type: ["pothole", "road_cave_in"],
+        noticed_window: null,
+        recurs: null,
+        description: null,
+        pin: null,
+      },
+    };
+    for (const value of ["pothole", "road_cave_in"]) {
       const score = scoreFixture(fixture, [call("save_issue_type", { issue_type: value })]);
       expect(score.slots.find((slot) => slot.slot === "issue_type")?.verdict).toBe("correct");
     }
-    const wrong = scoreFixture(fixture, [call("save_issue_type", { issue_type: "road" })]);
+    const wrong = scoreFixture(fixture, [call("save_issue_type", { issue_type: "open_manhole" })]);
     expect(wrong.slots.find((slot) => slot.slot === "issue_type")?.verdict).toBe("wrong");
-  });
-
-  it("requires the whole affects set, not a subset, and ignores order", () => {
-    const fixture = fixtureById("multi-affects-one-sentence");
-    const full = ["safety_at_night", "driving", "wheeling", "walking"];
-    const shuffled = scoreFixture(fixture, [call("save_affects", { affects: full })]);
-    expect(shuffled.slots.find((slot) => slot.slot === "affects")?.verdict).toBe("correct");
-    const partial = scoreFixture(fixture, [call("save_affects", { affects: ["walking"] })]);
-    expect(partial.slots.find((slot) => slot.slot === "affects")?.verdict).toBe("wrong");
   });
 
   it("lets a later call overwrite an earlier one, as the React setter would", () => {
@@ -142,8 +136,8 @@ describe("scoring against ground truth", () => {
     const score = scoreFixture(
       fixture,
       [
-        call("save_issue_type", { issue_type: "waste" }),
-        call("save_issue_type", { issue_type: "road" }),
+        call("save_issue_type", { issue_type: "waterlogging" }),
+        call("save_issue_type", { issue_type: "pothole" }),
       ],
       NOW,
     );

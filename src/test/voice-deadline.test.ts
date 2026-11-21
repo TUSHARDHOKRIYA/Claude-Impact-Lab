@@ -42,7 +42,7 @@ function toolResponse(): Response {
                 type: "function",
                 function: {
                   name: "save_issue_type",
-                  arguments: JSON.stringify({ issue_type: "waste" }),
+                  arguments: JSON.stringify({ issue_type: "pothole" }),
                 },
               },
             ],
@@ -126,7 +126,7 @@ describe("voice turn deadline", () => {
     const result = await processVoiceTurnAction(clip());
 
     expect(chats).toBe(3);
-    expect(result).toMatchObject({ ok: true, fields: { issueType: "waste" } });
+    expect(result).toMatchObject({ ok: true, fields: { issueType: "pothole" } });
   });
 
   it("returns the turn with no audio when text-to-speech never answers", async () => {

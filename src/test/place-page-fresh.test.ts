@@ -19,14 +19,13 @@ function deferred<T>() {
 
 function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "road",
+    issueType: "pothole",
     lat: CITY.center.lat,
     lng: CITY.center.lng,
     photo: "data:image/jpeg;base64,/9j/4AAQ",
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
-    description: "Loose stones",
+        description: "Loose stones",
     ...overrides,
   };
 }
@@ -67,8 +66,8 @@ describe("getPlacePage just after a report is recorded", () => {
   });
 
   it("drops a catalog fallback row whose report has moved", async () => {
-    const created = await repo.createReport(submission({ issueType: "road" }));
-    await repo.updateReport({ id: created.report.id, issueType: "waste" });
+    const created = await repo.createReport(submission({ issueType: "pothole" }));
+    await repo.updateReport({ id: created.report.id, issueType: "waterlogging" });
     const moved = await repo.getReport(created.report.id);
     expect(moved?.locationId === created.location.id).toBe(false);
     vi.spyOn(repo, "listReportsForLocation").mockResolvedValue([]);
@@ -93,13 +92,12 @@ function fallbackRow(id: string, locationId: string, description: string): Repor
   return {
     id,
     locationId,
-    issueType: "waste",
+    issueType: "waterlogging",
     lat: 18.93,
     lng: 72.83,
     noticedAt: "2026-09-01",
     noticedWindow: null,
     recurs: false,
-    affects: [],
     description,
     isSample: false,
     createdAt: "2026-09-01",
@@ -110,7 +108,7 @@ const fallbackLocation: LocationRecord = {
   id: "loc_fallback",
   name: "Waste on Rampart Row",
   slug: "fallback-concurrent-waste",
-  issueType: "waste",
+  issueType: "waterlogging",
   lat: 18.93,
   lng: 72.83,
   street: "Rampart Row",

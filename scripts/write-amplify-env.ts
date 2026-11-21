@@ -11,6 +11,8 @@ const OPTIONAL_KEYS = [
   "OPENAI_API_KEY",
   "GEMINI_API_KEY",
   "CEREBRAS_API_KEY",
+  "ANTHROPIC_API_KEY",
+  "RUPEE_BRIEF_MODEL",
 ] as const;
 const KEYS = [...REQUIRED_KEYS, ...OPTIONAL_KEYS] as const;
 const FORBIDDEN_CHARS = /[\0\r\n]/;

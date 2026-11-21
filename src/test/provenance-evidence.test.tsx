@@ -9,9 +9,9 @@ import type { LocationRecord, ReportListItem } from "@/lib/types";
 
 const location: LocationRecord = {
   id: "loc_1",
-  name: "Footpath near Jehangir Art Gallery",
-  slug: "footpath-near-jehangir",
-  issueType: "footpath",
+  name: "Pothole near Hindmata",
+  slug: "pothole-near-hindmata",
+  issueType: "pothole",
   lat: 18.92714,
   lng: 72.8316,
   street: "Mahatma Gandhi Road",
@@ -23,13 +23,12 @@ function report(partial: Partial<ReportListItem> = {}): ReportListItem {
   return {
     id: "rpt_1",
     locationId: location.id,
-    issueType: "footpath",
+    issueType: "pothole",
     lat: location.lat,
     lng: location.lng,
     noticedAt: "2026-09-18",
     noticedWindow: "this_week",
     recurs: false,
-    affects: ["walking"],
     description: "Broken paving.",
     isSample: false,
     photoIsIllustration: false,

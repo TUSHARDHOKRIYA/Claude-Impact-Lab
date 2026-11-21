@@ -26,7 +26,7 @@ const place: PlaceSummary = {
     id: "loc_1",
     name: "Pothole on Dr Ambedkar Road, Parel",
     slug: "dr-ambedkar-road-parel-pothole",
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     street: "Dr Ambedkar Road",
@@ -43,7 +43,7 @@ const point: MapReportPoint = {
   locationId: "loc_1",
   lat: 18.9298,
   lng: 72.8328,
-  issueType: "footpath",
+  issueType: "pothole",
   noticedAt: "2022-08-18",
 };
 

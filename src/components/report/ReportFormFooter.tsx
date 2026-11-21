@@ -36,6 +36,16 @@ export function ReportFormFooter(props: ReportFormFooterProps) {
       <input type="hidden" name="description" value={props.description} />
       <input type="hidden" name="locationConfirmed" value={props.locationConfirmed} />
       <input type="hidden" name="voiceTranscript" value={props.voiceTranscript} />
+      {/* Spam honeypot: hidden from humans and screen readers; bots that auto-fill it are rejected server-side. */}
+      <input
+        type="text"
+        name="website"
+        defaultValue=""
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+      />
       {props.formError ? (
         <div className="mt-6">
           <GovAlert variant="error" id={FORM_ALERT_ID} tabIndex={-1}>

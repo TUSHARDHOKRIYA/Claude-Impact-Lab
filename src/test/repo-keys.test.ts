@@ -7,7 +7,7 @@ describe("dynamo keys", () => {
     expect(reportPk("rpt_1")).toBe("RPT#rpt_1");
     expect(slugLockPk("dr-ambedkar")).toBe("SLUG#dr-ambedkar");
     expect(geoPk("18.92980:72.83280")).toBe("GEO#18.92980:72.83280");
-    expect(SEED_VERSION).toBe("2026-09-27-v5");
+    expect(SEED_VERSION).toBe("rasta-v1");
   });
 
   it("maps a 5x5 neighbourhood to GEO partition keys", () => {

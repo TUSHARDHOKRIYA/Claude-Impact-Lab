@@ -16,14 +16,13 @@ const REPORT_ITEM = {
   type: "report",
   id: "rpt_1",
   locationId: "loc_1",
-  issueType: "road",
+  issueType: "pothole",
   lat: 18.93,
   lng: 72.83,
   noticedAt: "2026-01-01",
   noticedWindow: "this_week",
   recurs: false,
-  affects: ["walking"],
-  description: null,
+    description: null,
   isSample: false,
   createdAt: "2026-01-01T00:00:00.000Z",
 };
@@ -33,7 +32,7 @@ const LOCATION = {
   id: "loc_1",
   name: "Pothole on Dr Ambedkar Road",
   slug: "ambedkar-pothole",
-  issueType: "footpath",
+  issueType: "waterlogging",
   lat: 18.9298,
   lng: 72.8328,
   street: "Dr Ambedkar Road",
@@ -46,14 +45,13 @@ let ScanCommand: typeof import("@aws-sdk/lib-dynamodb").ScanCommand;
 
 function citizenInput(): CreateReportInput {
   return {
-    issueType: "footpath",
+    issueType: "waterlogging",
     lat: 18.9298,
     lng: 72.8328,
     photo: sampleJpegDataUrl(),
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
-    description: "Loose stones",
+        description: "Loose stones",
   };
 }
 

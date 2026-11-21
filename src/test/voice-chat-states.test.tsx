@@ -84,10 +84,10 @@ describe("the dock", () => {
     stubAudio();
     const user = userEvent.setup();
     await toAnswers(user);
-    await tap(user, "Waste");
+    await tap(user, "Waterlogging");
     await tap(user, "Start speaking");
     expect(await screen.findByRole("alert")).toHaveTextContent(/permission was denied.*switch to Form.*answers are safe/i);
-    expect(hidden("issueType")).toBe("waste");
+    expect(hidden("issueType")).toBe("waterlogging");
   });
 
   it("reads the greeting aloud, and Replay says the current question again", async () => {
@@ -99,7 +99,7 @@ describe("the dock", () => {
 
     await tap(user, "Replay");
     expect(speakPromptAction).toHaveBeenCalledTimes(2);
-    await tap(user, "Waste");
+    await tap(user, "Waterlogging");
     expect(speakPromptAction).toHaveBeenLastCalledWith("noticed_window", "ack", "en");
   });
 
@@ -120,7 +120,7 @@ describe("checking what voice heard", () => {
     installMicrophone();
     stubAudio();
     const weak = turn({
-      fields: { issueType: "waste" },
+      fields: { issueType: "waterlogging" },
       reply: { text: "I heard “pothole near Hindmata”. Is that right?", ask: null, confirm: true },
     });
     vi.mocked(processVoiceTurnAction).mockResolvedValue(weak);
@@ -136,27 +136,27 @@ describe("checking what voice heard", () => {
     await speak(user);
     await screen.findAllByText(/Is that right\?/);
     await tap(user, "Yes");
-    expect(hidden("issueType")).toBe("waste");
+    expect(hidden("issueType")).toBe("waterlogging");
     expect(screen.getByText(/When did you notice it/)).toBeInTheDocument();
   });
 
   it("asks before voice overwrites something the person chose", async () => {
     installMicrophone();
     stubAudio();
-    vi.mocked(processVoiceTurnAction).mockResolvedValue(turn({ fields: { issueType: "footpath" } }));
+    vi.mocked(processVoiceTurnAction).mockResolvedValue(turn({ fields: { issueType: "open_manhole" } }));
     const user = userEvent.setup();
     await toAnswers(user);
     await tap(user, "Form");
-    await user.click(screen.getByRole("radio", { name: "Road" }));
+    await user.click(screen.getByRole("radio", { name: /Pothole/ }));
     await tap(user, "Voice");
 
     await speak(user);
     const card = await screen.findByRole("group", { name: "Voice heard something different: Type" });
-    expect(card).toHaveTextContent(/Yours:\s*Road/);
-    expect(card).toHaveTextContent(/Voice:\s*Footpath/);
-    expect(hidden("issueType")).toBe("road");
+    expect(card).toHaveTextContent(/Yours:\s*Pothole/);
+    expect(card).toHaveTextContent(/Voice:\s*Open or broken manhole/);
+    expect(hidden("issueType")).toBe("pothole");
     await tap(user, "Use voice");
-    expect(hidden("issueType")).toBe("footpath");
+    expect(hidden("issueType")).toBe("open_manhole");
   });
 });
 
@@ -168,7 +168,7 @@ describe("language", () => {
     await toAnswers(user);
     await user.selectOptions(screen.getByRole("combobox", { name: "Language" }), "hi");
     expect(screen.getByRole("button", { name: "बोलना शुरू करें" })).toBeInTheDocument();
-    await tap(user, "कचरा");
+    await tap(user, "गड्ढा");
     expect(screen.getByText(/आपने यह कब देखा/)).toBeInTheDocument();
   });
 });

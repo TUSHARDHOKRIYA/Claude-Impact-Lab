@@ -27,7 +27,6 @@ const REPORT_LIST_ATTRS = [
   "noticedAt",
   "noticedWindow",
   "recurs",
-  "affects",
   "description",
   "isSample",
   "createdAt",
@@ -39,14 +38,13 @@ const REPORT_ITEM = {
   type: "report",
   id: "rpt_1",
   locationId: "loc_1",
-  issueType: "road",
+  issueType: "pothole",
   lat: 18.93,
   lng: 72.83,
   noticedAt: "2026-01-01",
   noticedWindow: "this_week",
   recurs: false,
-  affects: ["walking"],
-  description: null,
+    description: null,
   isSample: false,
   createdAt: "2026-01-01T00:00:00.000Z",
 };
@@ -76,14 +74,13 @@ function jpegDataUrl(): string {
 
 function citizenInput(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "footpath",
+    issueType: "waterlogging",
     lat: 18.9298,
     lng: 72.8328,
     photo: jpegDataUrl(),
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
-    description: "Loose stones",
+        description: "Loose stones",
     ...partial,
   };
 }
@@ -174,8 +171,20 @@ describe("DynamoRastabaazRepository", () => {
   });
 
   it("retires a seed report with a conditional delete, and not at all once it has notes", async () => {
-    const { RETIRED_HEATMAP_REPORTS } = await import("@/lib/seed-heatmap");
-    const [retired] = RETIRED_HEATMAP_REPORTS;
+    const retired = {
+      id: "rpt_seed_retired",
+      locationId: "loc_1",
+      issueType: "pothole" as const,
+      lat: 18.9,
+      lng: 72.8,
+      noticedAt: "2025-01-01",
+      noticedWindow: null,
+      recurs: false,
+      description: "Seeded pothole",
+      isSample: true,
+      createdAt: "2025-01-01T00:00:00Z",
+      photo: "/samples/road.svg",
+    };
     send
       .mockResolvedValueOnce({ Count: 0 })
       .mockResolvedValueOnce({ Item: { photo: retired.photo } })

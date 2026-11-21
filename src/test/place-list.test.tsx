@@ -51,7 +51,7 @@ const place: PlaceSummary = {
     id: "loc_1",
     name: "Pothole on Dr Ambedkar Road, Parel",
     slug: "dr-ambedkar-road-parel-pothole",
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     street: "Dr Ambedkar Road",
@@ -68,7 +68,7 @@ const point: MapReportPoint = {
   locationId: "loc_1",
   lat: 18.9298,
   lng: 72.8328,
-  issueType: "footpath",
+  issueType: "pothole",
   noticedAt: "2022-08-18",
 };
 
@@ -128,7 +128,7 @@ describe("PlaceList", () => {
     expect(link).toHaveAttribute("aria-current", "true");
     expect(within(link).getByText("Dr Ambedkar Road")).toBeInTheDocument();
     expect(within(link).getByText("4 reports")).toBeInTheDocument();
-    expect(within(link).getByText("Footpath")).toBeInTheDocument();
+    expect(within(link).getByText("Pothole")).toBeInTheDocument();
     await user.click(link);
     expect(onSelect).toHaveBeenCalledWith("loc_1", link);
   });
@@ -144,8 +144,8 @@ describe("PlacePreview", () => {
     expect(dialog.className).toMatch(/ux4g-card/);
     const close = screen.getByRole("button", { name: /close this place preview/i });
     expect(close.className).toMatch(/touch-target|ux4g-btn/);
-    expect(screen.getByText("Footpath").className).toMatch(/ux4g-tag-text-info/);
-    expect(screen.getByText("Footpath").className).not.toMatch(/ux4g-badge/);
+    expect(screen.getByText("Pothole").className).toMatch(/ux4g-tag-tonal-info/);
+    expect(screen.getByText("Pothole").className).not.toMatch(/ux4g-badge/);
     await user.keyboard("{Escape}");
     expect(onClose).toHaveBeenCalled();
   });

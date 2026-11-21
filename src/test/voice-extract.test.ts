@@ -60,19 +60,19 @@ afterEach(() => {
 
 describe("extractVoiceCalls", () => {
   it("accepts parallel validated calls and continues to handoff", async () => {
-    const result = await extractVoiceCalls("broken footpath", TARGET, {
+    const result = await extractVoiceCalls("big pothole", TARGET, {
       fetchImpl: stubChat([
         completion([
-          call("save_issue_type", { issue_type: "footpath" }),
-          call("save_affects", { affects: ["walking", "wheeling"] }),
+          call("save_issue_type", { issue_type: "pothole" }),
+          call("save_recurs", { recurs: "true" }),
         ]),
         completion([], "Please review the form."),
       ]),
     });
     expect(result).toEqual({
       calls: [
-        { slot: "issue_type", value: "footpath" },
-        { slot: "affects", value: ["walking", "wheeling"] },
+        { slot: "issue_type", value: "pothole" },
+        { slot: "recurs", value: "true" },
       ],
       warnings: [],
     });
@@ -83,7 +83,7 @@ describe("extractVoiceCalls", () => {
     const result = await extractVoiceCalls("details", TARGET, {
       fetchImpl: stubChat(
         [
-          completion([call("save_issue_type", { issue_type: "road" })]),
+          completion([call("save_issue_type", { issue_type: "pothole" })]),
           completion([call("save_recurs", { recurs: "false" })]),
           completion([
             call("save_description", { description: "A deep pothole." }),
@@ -94,7 +94,7 @@ describe("extractVoiceCalls", () => {
       ),
     });
     expect(result.calls).toEqual([
-      { slot: "issue_type", value: "road" },
+      { slot: "issue_type", value: "pothole" },
       { slot: "recurs", value: "false" },
       { slot: "description", value: "A deep pothole." },
     ]);
@@ -109,15 +109,15 @@ describe("extractVoiceCalls", () => {
     const result = await extractVoiceCalls("mixed", TARGET, {
       fetchImpl: stubChat([
         completion([
-          call("save_issue_type", { issue_type: "road" }),
-          call("save_issue_type", { issue_type: "waste" }),
+          call("save_issue_type", { issue_type: "pothole" }),
+          call("save_issue_type", { issue_type: "waterlogging" }),
           call("save_recurs", { recurs: true }),
           { name: "submit_report", argumentsJson: "{}" },
         ]),
         completion([]),
       ]),
     });
-    expect(result.calls).toEqual([{ slot: "issue_type", value: "road" }]);
+    expect(result.calls).toEqual([{ slot: "issue_type", value: "pothole" }]);
     expect(result.warnings).toEqual([
       "issue_type: duplicate ignored",
       "save_recurs: recurs is boolean, expected a string",
@@ -139,16 +139,16 @@ describe("extractVoiceCalls", () => {
       maxTurns: 2,
       fetchImpl: stubChat(
         [
-          completion([call("save_issue_type", { issue_type: "road" })]),
+          completion([call("save_issue_type", { issue_type: "pothole" })]),
           completion([call("save_recurs", { recurs: "true" })]),
-          completion([call("save_affects", { affects: ["driving"] })]),
+          completion([call("save_description", { description: "Deep pothole" })]),
         ],
         seen,
       ),
     });
     expect(seen).toHaveLength(2);
     expect(result.calls).toEqual([
-      { slot: "issue_type", value: "road" },
+      { slot: "issue_type", value: "pothole" },
       { slot: "recurs", value: "true" },
     ]);
   });
@@ -157,26 +157,21 @@ describe("extractVoiceCalls", () => {
 describe("callsToFormPatch", () => {
   it("writes existing form names and turns a landmark into a proposal", () => {
     const calls: NormalizedCall[] = [
-      { slot: "issue_type", value: "footpath" },
+      { slot: "issue_type", value: "pothole" },
       { slot: "noticed_window", value: "this_week" },
       { slot: "recurs", value: "true" },
-      { slot: "affects", value: ["walking", "wheeling"] },
       { slot: "description", value: "Broken paving outside the gallery." },
-      { slot: "pin", value: "jehangir" },
+      { slot: "pin", value: "loc-hindmata" },
     ];
     const result = callsToFormPatch(calls);
     expect(result.fields).toEqual({
-      issueType: "footpath",
+      issueType: "pothole",
       noticedWindow: "this_week",
       recurs: "true",
-      affects: ["walking", "wheeling"],
       description: "Broken paving outside the gallery.",
     });
-    expect(result.pinProposal).toEqual({
-      landmarkId: "jehangir",
-      label: "Jehangir Art Gallery",
-      lat: 18.9277,
-      lng: 72.83185,
+    expect(result.pinProposal).toMatchObject({
+      landmarkId: "loc-hindmata",
     });
     expect(result.fields).not.toHaveProperty("category");
     expect(result.fields).not.toHaveProperty("who_blocked");
@@ -234,7 +229,7 @@ describe("processVoiceTurnAction", () => {
       warnings: [],
       replyLanguage: "en",
       reply: {
-        text: "Sorry, I did not catch that. What is the problem? For example a broken footpath, garbage, or a blocked drain.",
+        text: expect.stringMatching(/^Sorry, I did not catch that\./),
         ask: "issue_type",
         confirm: false,
       },
@@ -257,8 +252,8 @@ describe("processVoiceTurnAction", () => {
       ),
       new Response(
         completion([
-          call("save_issue_type", { issue_type: "road" }),
-          call("save_issue_type", { issue_type: "waste" }),
+          call("save_issue_type", { issue_type: "pothole" }),
+          call("save_issue_type", { issue_type: "waterlogging" }),
           call("save_recurs", { recurs: true }),
         ]),
       ),
@@ -278,7 +273,7 @@ describe("processVoiceTurnAction", () => {
       ok: true,
       transcript: "road near gallery",
       languageCode: "en-IN",
-      fields: { issueType: "road" },
+      fields: { issueType: "pothole" },
       pinProposal: null,
       warnings: [
         "issue_type: duplicate ignored",

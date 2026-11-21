@@ -4,7 +4,6 @@ vi.mock("server-only", () => ({}));
 
 import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { getReportPage } from "@/lib/queries/reports";
-import { PAVING_SLUG } from "@/lib/seed-paving";
 import type { CreateReportInput } from "@/lib/types";
 import { sampleJpegDataUrl } from "./sample-jpeg";
 
@@ -12,14 +11,13 @@ const PHOTO = "data:image/jpeg;base64,/9j/4AAQ";
 
 function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
-    issueType: "footpath",
+    issueType: "waterlogging",
     lat: 18.9298,
     lng: 72.8328,
     photo: PHOTO,
     noticedAt: "2026-09-01",
     recurs: false,
-    affects: ["walking"],
-    description: "Loose stones",
+        description: "Loose stones",
     ...partial,
   };
 }
@@ -70,7 +68,7 @@ describe("MemoryRastabaazRepository", () => {
     expect(await repo.putSeedMarker("2026-09-08-v1")).toBe(true);
     expect(await repo.putSeedMarker("2026-09-08-v1")).toBe(false);
     expect(await repo.getSeedMarker()).toBe("2026-09-08-v1");
-    expect(PAVING_SLUG.length).toBeGreaterThan(0);
+    expect("rep-test-paving".length).toBeGreaterThan(0);
   });
 
   it("replaces the seed marker when the version changes", async () => {

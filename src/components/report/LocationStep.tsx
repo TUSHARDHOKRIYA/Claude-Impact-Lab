@@ -70,7 +70,11 @@ export function LocationStep({ value, onChange, error, confirmed, onConfirm }: L
   function commitCoords() {
     const lat = parseCoord(latText);
     const lng = parseCoord(lngText);
-    if (lat == null || lng == null) return;
+    if (lat == null || lng == null) {
+      setLatText(value ? String(value.lat) : "");
+      setLngText(value ? String(value.lng) : "");
+      return;
+    }
     const next = clampToCity(lat, lng);
     if (!value || next.lat !== value.lat || next.lng !== value.lng) applyPin(next);
   }

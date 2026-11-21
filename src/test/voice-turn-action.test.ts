@@ -59,7 +59,7 @@ describe("a conversational voice turn", () => {
     heard("There is a big pothole near Hindmata");
     extractVoiceCalls.mockResolvedValue({
       calls: [
-        { slot: "issue_type", value: "waste" },
+        { slot: "issue_type", value: "pothole" },
         { slot: "pin", value: "loc-hindmata" },
       ],
       warnings: [],
@@ -70,7 +70,7 @@ describe("a conversational voice turn", () => {
 
     expect(result).toMatchObject({
       ok: true,
-      fields: { issueType: "waste" },
+      fields: { issueType: "pothole" },
       pinProposal: { landmarkId: "loc-hindmata" },
       replyLanguage: "en",
       reply: {
@@ -112,13 +112,12 @@ describe("a conversational voice turn", () => {
   });
 
   it("still answers, silently, when text-to-speech fails", async () => {
-    heard("footpath broken since yesterday, keeps coming back, hard for walking");
+    heard("pothole since yesterday, keeps coming back");
     extractVoiceCalls.mockResolvedValue({
       calls: [
-        { slot: "issue_type", value: "footpath" },
+        { slot: "issue_type", value: "pothole" },
         { slot: "noticed_window", value: "this_week" },
         { slot: "recurs", value: "true" },
-        { slot: "affects", value: ["walking"] },
       ],
       warnings: [],
     });
@@ -132,18 +131,17 @@ describe("a conversational voice turn", () => {
     expect(result.reply.ask).toBe("place");
     expect(result.reply.text).toMatch(/^Got it\. Where is it\?/);
     expect(result.audio).toBeNull();
-    expect(result.fields.affects).toEqual(["walking"]);
   });
 
   it("holds a weak transcript for confirmation and speaks it uncached", async () => {
-    heard("waste", "en-IN", 0.3);
-    extractVoiceCalls.mockResolvedValue({ calls: [{ slot: "issue_type", value: "waste" }], warnings: [] });
+    heard("pothole", "en-IN", 0.3);
+    extractVoiceCalls.mockResolvedValue({ calls: [{ slot: "issue_type", value: "pothole" }], warnings: [] });
     synthesizeSpeech.mockResolvedValue(AUDIO);
 
     const first = await processVoiceTurnAction(clip({ speak: "1" }));
     const second = await processVoiceTurnAction(clip({ speak: "1" }));
 
-    expect(first).toMatchObject({ ok: true, reply: { text: "I heard “waste”. Is that right?", confirm: true, ask: null } });
+    expect(first).toMatchObject({ ok: true, reply: { text: "I heard “pothole”. Is that right?", confirm: true, ask: null } });
     expect(second).toMatchObject({ ok: true, audio: AUDIO });
     // The echo carries the person's words, so it is never served from cache.
     expect(synthesizeSpeech).toHaveBeenCalledTimes(2);
@@ -151,7 +149,7 @@ describe("a conversational voice turn", () => {
 
   it("serves a repeated template reply from cache", async () => {
     heard("garbage");
-    extractVoiceCalls.mockResolvedValue({ calls: [{ slot: "issue_type", value: "waste" }], warnings: [] });
+    extractVoiceCalls.mockResolvedValue({ calls: [{ slot: "issue_type", value: "pothole" }], warnings: [] });
     synthesizeSpeech.mockResolvedValue(AUDIO);
 
     await processVoiceTurnAction(clip({ speak: "1" }));
@@ -174,10 +172,10 @@ describe("a conversational voice turn", () => {
 
 describe("a landmark the person clearly named", () => {
   it("becomes a pin proposal even when the model skipped propose_pin", async () => {
-    heard("जहाँगीर art gallery के सामने फुटपाथ टूटा हुआ है", "hi-IN");
-    extractVoiceCalls.mockResolvedValue({ calls: [{ slot: "issue_type", value: "footpath" }], warnings: [] });
+    heard("हिंदमाता के पास गड्ढा है", "hi-IN");
+    extractVoiceCalls.mockResolvedValue({ calls: [{ slot: "issue_type", value: "pothole" }], warnings: [] });
     const result = await processVoiceTurnAction(clip());
-    expect(result).toMatchObject({ ok: true, pinProposal: { landmarkId: "jehangir" } });
+    expect(result).toMatchObject({ ok: true, pinProposal: { landmarkId: "loc-hindmata" } });
   });
 
   it("matches area names in either script, and stays out of it when unsure", () => {

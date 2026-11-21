@@ -21,14 +21,13 @@ describe("queries on the memory repository", () => {
 
   it("assembles a report page from catalog pieces", async () => {
     const created = await createReport({
-      issueType: "waste",
+      issueType: "waterlogging",
       lat: 18.9314,
       lng: 72.8329,
       photo: PHOTO,
       noticedAt: "2026-09-01",
       recurs: true,
-      affects: ["walking"],
-      description: "Bags on the edge",
+            description: "Bags on the edge",
     });
     const page = await getReportPage(created.report.id);
     expect(page?.report).not.toHaveProperty("photo");
@@ -39,24 +38,22 @@ describe("queries on the memory repository", () => {
 
   it("lists similar reports without photos", async () => {
     const first = await createReport({
-      issueType: "waste",
+      issueType: "waterlogging",
       lat: 18.9314,
       lng: 72.8329,
       photo: PHOTO,
       noticedAt: "2026-09-01",
       recurs: true,
-      affects: ["walking"],
-      description: "Bags on the edge",
+            description: "Bags on the edge",
     });
     const second = await createReport({
-      issueType: "waste",
+      issueType: "waterlogging",
       lat: 18.9314,
       lng: 72.8329,
       photo: PHOTO,
       noticedAt: "2026-09-02",
       recurs: true,
-      affects: ["walking"],
-      description: "Bags again",
+            description: "Bags again",
     });
     const page = await getReportPage(second.report.id);
     expect(page?.report).not.toHaveProperty("photo");
@@ -67,13 +64,12 @@ describe("queries on the memory repository", () => {
 
   it("counts unresolved places", async () => {
     await createReport({
-      issueType: "road",
+      issueType: "pothole",
       lat: 18.92855,
       lng: 72.83135,
       photo: PHOTO,
       noticedAt: "2026-09-01",
       recurs: false,
-      affects: ["driving"],
       description: null,
     });
     const places = await listPlaces();
@@ -88,14 +84,13 @@ describe("queries on the memory repository", () => {
     const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     setRepositoryForTests(repo);
     const created = await createReport({
-      issueType: "waste",
+      issueType: "waterlogging",
       lat: 18.9314,
       lng: 72.8329,
       photo: PHOTO,
       noticedAt: "2026-09-01",
       recurs: false,
-      affects: ["walking"],
-      description: null,
+            description: null,
     });
     const catalog = vi.spyOn(repo, "loadCatalog");
     const place = await getPlacePage(created.location.slug);
@@ -105,7 +100,7 @@ describe("queries on the memory repository", () => {
     expect(place?.place.reportCount).toBe(1);
     expect(report?.similar).toEqual([]);
     expect(report?.report.photoIsIllustration).toBe(false);
-    await repo.updateReport({ id: created.report.id, issueType: "road" });
+    await repo.updateReport({ id: created.report.id, issueType: "pothole" });
     expect(await getPlacePage(created.location.slug)).toBeNull();
   });
 });
@@ -114,13 +109,12 @@ function row(id: string, locationId: string, description: string, noticedAt: str
   return {
     id,
     locationId,
-    issueType: "waste",
+    issueType: "waterlogging",
     lat: 18.93,
     lng: 72.83,
     noticedAt,
     noticedWindow: null,
     recurs: false,
-    affects: [],
     description,
     isSample: false,
     createdAt: noticedAt,
@@ -131,7 +125,7 @@ const location: LocationRecord = {
   id: "loc_1",
   name: "Waste on Rampart Row",
   slug: "rampart-waste",
-  issueType: "waste",
+  issueType: "waterlogging",
   lat: 18.93,
   lng: 72.83,
   street: "Rampart Row",

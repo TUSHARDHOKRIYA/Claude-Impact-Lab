@@ -33,14 +33,14 @@ const TOO_MANY = "Too many reports. Try again later.";
 function form(): FormData {
   const data = new FormData();
   const fields: Record<string, string> = {
-    issueType: "road",
+    issueType: "pothole",
     lat: String(CITY.center.lat),
     lng: String(CITY.center.lng),
     locationConfirmed: "true",
     photo: sampleJpegDataUrl(),
     noticedWindow: "today",
     recurs: "false",
-    affects: JSON.stringify(["walking"]),
+    accident: "none",
   };
   for (const [key, value] of Object.entries(fields)) data.set(key, value);
   return data;

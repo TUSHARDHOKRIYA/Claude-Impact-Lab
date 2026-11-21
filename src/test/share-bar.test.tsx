@@ -29,7 +29,7 @@ describe("ShareBar", () => {
     expect(whatsapp).toHaveAttribute("href", expect.stringContaining("wa.me"));
     expect(whatsapp).toHaveAttribute("target", "_blank");
     expect(whatsapp).toHaveAttribute("rel", "noopener noreferrer");
-    expect(whatsapp.className).toMatch(/ux4g-btn-lg/);
+    expect(whatsapp.className).toMatch(/ux4g-btn-l/);
     expect(whatsapp.className).not.toMatch(/ux4g-btn-md/);
     expect(whatsapp.className).toMatch(/touch-target/);
     expect(whatsapp).toHaveTextContent(/opens in a new tab/i);
@@ -37,11 +37,11 @@ describe("ShareBar", () => {
     const tweet = screen.getByRole("link", { name: "X (opens in a new tab)" });
     expect(tweet).toHaveAttribute("href", expect.stringContaining("twitter.com/intent/tweet"));
     expect(tweet).toHaveAttribute("target", "_blank");
-    expect(tweet.className).toMatch(/ux4g-btn-lg/);
+    expect(tweet.className).toMatch(/ux4g-btn-l/);
     expect(tweet).toHaveTextContent(/opens in a new tab/i);
 
     const copy = screen.getByRole("button", { name: "Copy link" });
-    expect(copy.className).toMatch(/ux4g-btn-lg/);
+    expect(copy.className).toMatch(/ux4g-btn-l/);
     expect(copy.className).toMatch(/touch-target/);
     await user.tab();
     expect(copy).toHaveFocus();
@@ -65,6 +65,6 @@ describe("ShareBar", () => {
     );
 
     const native = await screen.findByRole("button", { name: "Share" });
-    expect(native.className).toMatch(/ux4g-btn-lg/);
+    expect(native.className).toMatch(/ux4g-btn-l/);
   });
 });

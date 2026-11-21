@@ -34,7 +34,7 @@ describe("byType query", () => {
     for (const attr of CATALOG_ATTRS) expect(projected).toContain(attr);
 
     // An item shaped exactly like the projection must land in the catalog.
-    const item = Object.fromEntries(projected.map((name) => [name, name === "type" ? "report" : name === "affects" ? [] : "x"]));
+    const item = Object.fromEntries(projected.map((name) => [name, name === "type" ? "report" : "x"]));
     const catalog = emptyCatalog();
     ingestCatalogItem(catalog, item);
     expect(catalog.reports).toHaveLength(1);

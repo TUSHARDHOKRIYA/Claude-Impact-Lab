@@ -62,7 +62,7 @@ const place: PlaceSummary = {
     id: "loc_1",
     name: "Pothole on Dr Ambedkar Road, Parel",
     slug: "dr-ambedkar-road-parel-pothole",
-    issueType: "footpath",
+    issueType: "pothole",
     lat: 18.9298,
     lng: 72.8328,
     street: "Dr Ambedkar Road",
@@ -96,7 +96,7 @@ const point = {
   locationId: "loc_1",
   lat: 18.9298,
   lng: 72.8328,
-  issueType: "footpath" as const,
+  issueType: "pothole" as const,
   noticedAt: "2022-08-18",
 };
 
@@ -109,15 +109,10 @@ function stubMap(places: PlaceSummary[] = [place]) {
 describe("home report-first experience", () => {
   it("opens on the report form", async () => {
     render(await HomePage({ searchParams: Promise.resolve({}) }));
-    const alert = screen.getByRole("alert");
-    expect(alert).toHaveTextContent(
-      "You are recording a visible street condition, not filing a BMC complaint.",
-    );
-    expect(alert.className).toMatch(/ux4g-alert-warning/);
     expect(
-      screen.getByRole("heading", { level: 1, name: "Record a street condition" }),
+      screen.getByRole("heading", { level: 1, name: "Report a road problem" }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/not a municipal complaint portal/i)).toBeInTheDocument();
+    expect(screen.getByText(/takes about a minute/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Continue" })).toBeInTheDocument();
     expect(screen.queryByText(/Dispatch/)).not.toBeInTheDocument();
     expect(document.querySelector(".ledger, .plate, .stamp, .display")).toBeNull();
@@ -160,7 +155,7 @@ describe("map page", () => {
       locationId: "loc_fresh",
       lat: 18.93,
       lng: 72.83,
-      issueType: "waste",
+      issueType: "waterlogging",
       noticedAt: "2026-09-27",
     });
     vi.mocked(readReportPlace).mockResolvedValue({
@@ -191,7 +186,7 @@ describe("map page", () => {
       locationId: "loc_1",
       lat: 18.9298,
       lng: 72.8328,
-      issueType: "footpath",
+      issueType: "pothole",
       noticedAt: "2026-09-27",
     });
     vi.mocked(readReportPlace).mockResolvedValue({ ...place, reportCount: 5, recurring: true });
@@ -220,27 +215,23 @@ describe("map page", () => {
 });
 
 describe("HomeIssueLinks", () => {
-  it("exposes six 48px deep links in order with visible focus classes", async () => {
+  it("exposes four 48px deep links in order with visible focus classes", async () => {
     const user = userEvent.setup();
     render(<HomeIssueLinks />);
     const nav = screen.getByRole("navigation", { name: "Condition types" });
     expect(within(nav).getByRole("list")).toBeInTheDocument();
     const links = within(nav).getAllByRole("link");
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
-      "/?type=footpath",
-      "/?type=lighting",
-      "/?type=road",
-      "/?type=drainage",
-      "/?type=waste",
-      "/?type=other",
+      "/?type=pothole",
+      "/?type=waterlogging",
+      "/?type=open_manhole",
+      "/?type=road_cave_in",
     ]);
     expect(links.map((link) => link.textContent)).toEqual([
-      "Footpath",
-      "Lighting",
-      "Road",
-      "Drainage",
-      "Waste",
-      "Other",
+      "Pothole",
+      "Waterlogging",
+      "Open or broken manhole",
+      "Road cave-in",
     ]);
     for (const link of links) {
       expect(link.className).toMatch(/touch-target/);
@@ -252,10 +243,10 @@ describe("HomeIssueLinks", () => {
 });
 
 describe("not-found and new-report pages", () => {
-  it("returns home with the exact GovButton label", () => {
+  it("returns to wards with the exact GovButton label", () => {
     render(<NotFound />);
     const link = screen.getByRole("link", { name: "Go to the wards" });
-    expect(link).toHaveAttribute("href", "/map");
+    expect(link).toHaveAttribute("href", "/wards");
     expect(link.className).toMatch(/ux4g-btn-primary/);
     expect(link.className).toMatch(/touch-target/);
     expect(screen.queryByRole("link", { name: "Return to the map" })).toBeNull();
@@ -264,20 +255,17 @@ describe("not-found and new-report pages", () => {
   it("passes a valid searchParams type into the guided form", async () => {
     render(
       await HomePage({
-        searchParams: Promise.resolve({ type: "footpath" }),
+        searchParams: Promise.resolve({ type: "pothole" }),
       }),
     );
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "You are recording a visible street condition, not filing a BMC complaint.",
-    );
     expect(
-      screen.getByRole("heading", { level: 1, name: "Record a street condition" }),
+      screen.getByRole("heading", { level: 1, name: "Report a road problem" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /photo of what you can see/i }),
+      screen.getByRole("heading", { name: /photograph the problem/i }),
     ).toBeInTheDocument();
     expect(document.querySelector('input[type="hidden"][name="issueType"]')).toHaveValue(
-      "footpath",
+      "pothole",
     );
     expect(screen.getByRole("button", { name: "Continue" })).toBeInTheDocument();
   });

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { GovBadge } from "@/components/gov/GovBadge";
+import { ContractFilterSelect } from "@/components/rupee/ContractFilterSelect";
 import { formatInr } from "@/lib/rupee/format";
 import type { ScoredOrder } from "@/lib/rupee/scorecard";
 import { wardSlug } from "@/lib/rupee/slug";
@@ -30,19 +31,22 @@ function marks(order: ScoredOrder): Array<{ text: string; tone: "error" | "warni
   return out;
 }
 
-/** Every contract, newest first. The filter chips are plain links, so the list works without JavaScript. */
+/** Every contract, newest first, narrowed by one dropdown. */
 export function ContractList({
   orders,
   basePath,
   filter,
   limit,
   total,
+  counts,
 }: {
   orders: ScoredOrder[];
   basePath: string;
   filter: ContractFilterKey;
   limit: number;
   total: number;
+  /** How many jobs each filter matches, for the dropdown. */
+  counts: Record<ContractFilterKey, number>;
 }) {
   const shown = orders.slice(0, limit);
   const query = (extra: Record<string, string>) => {
@@ -51,22 +55,20 @@ export function ContractList({
   };
   return (
     <>
-      <nav className="rb-sort rb-sort-wrap" aria-label="Filter contracts">
-        {CONTRACT_FILTERS.map((option) => (
-          <Link
-            key={option.key}
-            href={option.key === "all" ? `${basePath}#contracts` : query({ show: option.key })}
-            className={filter === option.key ? "ux4g-filter-chip-m active touch-target" : "ux4g-filter-chip-m touch-target"}
-            aria-current={filter === option.key ? "true" : undefined}
-            scroll={false}
-          >
-            {option.label}
-          </Link>
-        ))}
-      </nav>
-      <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-xs" aria-live="polite">
-        Showing {shown.length} of {orders.length} {orders.length === total ? "jobs" : `matching jobs (${total} in all)`}.
-      </p>
+      <div className="rb-filter-row">
+        <ContractFilterSelect
+          value={filter}
+          options={CONTRACT_FILTERS.map((option) => ({
+            key: option.key,
+            label: option.label,
+            count: counts[option.key],
+            href: option.key === "all" ? `${basePath}#contracts` : query({ show: option.key }),
+          }))}
+        />
+        <p className="ux4g-body-s-default ux4g-text-neutral-secondary" aria-live="polite">
+          Showing {shown.length} of {orders.length} {orders.length === total ? "jobs" : `matching jobs (${total} in all)`}.
+        </p>
+      </div>
       <div className="ux4g-table-responsive ux4g-mt-xs">
         <table className="ux4g-table ux4g-table-s rb-table rb-stack">
           <caption className="sr-only">Contracts, newest first</caption>

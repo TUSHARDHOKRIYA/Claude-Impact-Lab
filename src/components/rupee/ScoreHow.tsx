@@ -12,16 +12,19 @@ const LINES = {
   ],
 } as const;
 
-/** A short, closed-by-default explanation of how a score is calculated. */
+/** How a score is calculated, always in view: a few lines, so no toggle to hunt for. */
 export function ScoreHow({ kind, className }: { kind: keyof typeof LINES; className?: string }) {
   return (
-    <details className={className ? `rb-how ${className}` : "rb-how"}>
-      <summary className="touch-target">How the score works</summary>
+    <section className={className ? `rb-how ${className}` : "rb-how"} aria-label="How the score works">
+      <p className="rb-how-title">
+        <span className="rb-how-mark" aria-hidden="true">?</span>
+        How the score works
+      </p>
       <ul>
         {LINES[kind].map((line) => (
           <li key={line}>{line}</li>
         ))}
       </ul>
-    </details>
+    </section>
   );
 }

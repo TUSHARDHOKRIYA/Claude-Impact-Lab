@@ -18,11 +18,14 @@ export function FoldRows({ total, noun, children }: { total: number; noun: strin
       {folds ? (
         <button
           type="button"
-          className="ux4g-btn ux4g-btn-m ux4g-btn-text-primary touch-target rb-fold-btn"
+          className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target rb-fold-btn"
           aria-expanded={open}
           onClick={() => setOpen((was) => !was)}
         >
           {open ? `Show fewer ${noun}` : `Show all ${total} ${noun}`}
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="rb-fold-chev">
+            <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </button>
       ) : null}
     </div>

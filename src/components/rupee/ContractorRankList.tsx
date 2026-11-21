@@ -47,8 +47,10 @@ export function ContractorRankList({ cards, flagsById }: { cards: ContractorScor
               <span className="rb-crank-parts">
                 {PARTS.map((part) => {
                   const score = Math.round(card[part.key].score);
+                  // Same cut-offs as the overall band: 60 and up strong, under 40 needs attention.
+                  const tone = score >= 60 ? "good" : score >= 40 ? "fair" : "poor";
                   return (
-                    <span key={part.key} className="rb-crank-part">
+                    <span key={part.key} className="rb-crank-part" data-tone={tone}>
                       <span className="rb-crank-part-label">
                         {part.label} <strong>{score}</strong>
                       </span>

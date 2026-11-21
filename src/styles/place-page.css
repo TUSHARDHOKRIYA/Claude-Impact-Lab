@@ -88,20 +88,20 @@ a.rb-rrow:hover > svg {
   text-align: center;
 }
 
-.rb-more {
+.rb-earlier {
   margin-top: 1.25rem;
 }
 
-.rb-more > summary {
+.rb-earlier > summary {
   list-style: none;
   cursor: pointer;
 }
 
-.rb-more > summary::-webkit-details-marker {
+.rb-earlier > summary::-webkit-details-marker {
   display: none;
 }
 
-.rb-more[open] > summary {
+.rb-earlier[open] > summary {
   display: none;
 }
 

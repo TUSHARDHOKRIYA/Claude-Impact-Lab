@@ -61,7 +61,7 @@ export function PlaceTimeline({ history }: { history: PlaceHistoryEvent[] }) {
             <MonthBlock key={month.key} month={month} />
           ))}
           {rest.length ? (
-            <details className="rb-more">
+            <details className="rb-earlier">
               <summary className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target">
                 Show {restCount} earlier {restCount === 1 ? "report" : "reports"}
               </summary>

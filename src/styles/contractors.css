@@ -93,6 +93,11 @@
   background: var(--ux4g-bg-primary-strong);
 }
 
+/* Part bars wear the band colours: green strong, amber as expected, red needs attention. */
+.rb-crank-part[data-tone="good"] .rb-crank-bar > span { background: var(--held); }
+.rb-crank-part[data-tone="fair"] .rb-crank-bar > span { background: #d49a00; }
+.rb-crank-part[data-tone="poor"] .rb-crank-bar > span { background: var(--failed); }
+
 /* The 50 mark: "as expected". */
 .rb-crank-bar::after {
   content: "";
@@ -161,4 +166,53 @@
   .rb-crank-parts {
     grid-column: 1 / -1;
   }
+}
+
+/* ---- Contract filter: one dropdown and the count beside it. ---- */
+.rb-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.rb-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.rb-filter-select {
+  min-width: 14rem;
+  padding: 0 2.25rem 0 0.875rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 0.75rem;
+  background: var(--ux4g-bg-neutral-elevated)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 0.75rem center / 1rem;
+  color: var(--ux4g-text-neutral-primary);
+  font: inherit;
+  font-weight: 600;
+  appearance: none;
+}
+
+.rb-filter-select:focus-visible {
+  outline: 2px solid var(--enamel);
+  outline-offset: 2px;
+}
+
+/* Notes get room: tags sit in a row, each on one line. */
+.rb-table td.rb-notes {
+  min-width: 13rem;
+}
+
+.rb-notes > span {
+  white-space: nowrap;
+}
+
+/* The detail page runs wide for its tables; running text keeps a reading measure. */
+.rb-cdetail .rb-section > p,
+.rb-cdetail > p {
+  max-width: 44rem;
 }

@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { ContractorBrief, ContractorBriefLoading } from "@/components/rupee/ContractorBrief";
 import { ContractorMethod } from "@/components/rupee/ContractorMethod";
 import { MethodTable, WardTable } from "@/components/rupee/ContractorBreakdowns";
-import { CONTRACT_FILTERS, ContractList, contractFilterOf } from "@/components/rupee/ContractList";
+import { CONTRACT_FILTERS, ContractList, contractFilterOf, type ContractFilterKey } from "@/components/rupee/ContractList";
 import { FlagList } from "@/components/rupee/FlagList";
 import { RepeatRepairs } from "@/components/rupee/RepeatRepairs";
 import { BandBadge, ScoreMeter } from "@/components/rupee/ScoreMeter";
@@ -49,7 +49,7 @@ export default async function ContractorPage({ params, searchParams }: Props) {
   const basePath = `/contractors/${card.id}`;
 
   return (
-    <div className="shell-narrow rb-page">
+    <div className="shell rb-page rb-cdetail">
       <nav className="ux4g-breadcrumb ux4g-breadcrumb-divider" aria-label="Breadcrumb">
         <ol className="ux4g-breadcrumb-list flex">
           <li className="ux4g-breadcrumb-item">
@@ -165,7 +165,7 @@ export default async function ContractorPage({ params, searchParams }: Props) {
           <WardTable rows={card.byWard} />
         </div>
         <details className="rb-more ux4g-mt-s">
-          <summary className="ux4g-btn-text-primary ux4g-btn-m touch-target">By repair method</summary>
+          <summary className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target rb-more-btn">Results by repair method</summary>
           <div className="ux4g-mt-xs">
             <MethodTable rows={card.byMethod} />
           </div>
@@ -183,6 +183,11 @@ export default async function ContractorPage({ params, searchParams }: Props) {
             filter={filter}
             limit={limit}
             total={card.orders.length}
+            counts={
+              Object.fromEntries(
+                CONTRACT_FILTERS.map((f) => [f.key, card.orders.filter(f.test).length]),
+              ) as Record<ContractFilterKey, number>
+            }
           />
         </div>
       </section>

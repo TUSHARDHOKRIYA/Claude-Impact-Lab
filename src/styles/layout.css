@@ -176,23 +176,46 @@
     var(--asphalt);
 }
 
-.rb-footer {
-  margin-top: var(--ux4g-margin-4xl);
-  padding-bottom: calc(var(--ux4g-padding-2xl) + env(safe-area-inset-bottom));
+.rb-footer.ux4g-footer-wrapper {
+  margin-top: var(--ux4g-margin-3xl);
+  padding-top: 0;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.rb-footer .ux4g-footer-row {
+  padding-top: 1rem;
+  padding-bottom: 0;
 }
 
 .rb-footer-grid {
   display: grid;
-  gap: var(--ux4g-gap-row-l);
+  gap: 0.5rem;
+}
+
+/* Two columns of links on phones, one row on wide screens. */
+.rb-footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
 }
 
 .rb-footer-note {
-  opacity: 0.8;
+  max-width: 60rem;
+  opacity: 0.7;
 }
 
 @media (min-width: 48rem) {
   .rb-footer-grid {
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 2rem;
+  }
+
+  .rb-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    column-gap: 1.125rem;
   }
 
   .rb-footer-note {
@@ -226,4 +249,16 @@
   outline: 2px solid var(--ux4g-bg-primary-strong);
   outline-offset: 0;
   border-color: var(--ux4g-bg-primary-strong);
+}
+
+.rb-footer-legal {
+  margin-left: 0.75rem;
+  text-decoration: underline;
+}
+
+/* On phones the tab bar already carries these five links. */
+@media (max-width: 47.99rem) {
+  .rb-footer nav[aria-label="Footer"] {
+    display: none;
+  }
 }

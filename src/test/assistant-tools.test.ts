@@ -93,6 +93,22 @@ describe("assistant read-only retrieval tools", () => {
     expect(evidence[0].recordId).toBe(firstComplaint.id);
   });
 
+  it("get_source_evidence masks contact details in the complaint text", () => {
+    const first = ds.complaints[0];
+    const leaky = {
+      ...engine,
+      getComplaint: (id: string) => {
+        const c = engine.getComplaint(id);
+        return c ? { ...c, cleanText: "Pothole outside, call me on 9876543210 or a@b.com" } : c;
+      },
+    };
+    const res = executeAssistantTool("get_source_evidence", { complaint_id: first.id }, { engine: leaky, dataset: ds });
+    const text = JSON.stringify(res.data);
+    expect(text).not.toContain("9876543210");
+    expect(text).not.toContain("a@b.com");
+    expect(text).toContain("[PHONE NUMBER REDACTED]");
+  });
+
   it("get_next_steps returns actionable escalation advice", () => {
     const resOpen = executeAssistantTool("get_next_steps", { issue_status: "open", is_reopened: false }, ctx);
     expect(resOpen.success).toBe(true);

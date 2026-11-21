@@ -1,4 +1,4 @@
-import { MATCH_METERS, metersBetween, neighbourClusterKeys } from "@/lib/geo";
+import { neighbourClusterKeys, nearestMatching } from "@/lib/geo";
 import { nid, slugify } from "@/lib/id";
 import { assertItemSize } from "@/lib/item-size";
 import { clusterKey, isInsideCity, wardAt } from "@/lib/city";
@@ -56,7 +56,7 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
 
   async findNearbyLocation(lat: number, lng: number, issueType: IssueType): Promise<LocationRecord | null> {
     const seen = new Set<string>();
-    const matches: LocationRecord[] = [];
+    const candidates: LocationRecord[] = [];
     for (const key of neighbourClusterKeys(lat, lng)) {
       const ids = this.locationsByCluster.get(key);
       if (!ids) continue;
@@ -64,12 +64,10 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
         if (seen.has(id)) continue;
         seen.add(id);
         const location = this.locations.get(id);
-        if (!location || location.issueType !== issueType) continue;
-        if (metersBetween(lat, lng, location.lat, location.lng) <= MATCH_METERS) matches.push(repairStoredPlace(location));
+        if (location) candidates.push(repairStoredPlace(location));
       }
     }
-    if (matches.length === 0) return null;
-    return matches.sort((a, b) => metersBetween(lat, lng, a.lat, a.lng) - metersBetween(lat, lng, b.lat, b.lng))[0];
+    return nearestMatching(candidates, lat, lng, issueType);
   }
 
   async getReport(id: string): Promise<ReportRecord | null> {

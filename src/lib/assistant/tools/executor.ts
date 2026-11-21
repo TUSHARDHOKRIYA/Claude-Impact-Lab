@@ -236,7 +236,7 @@ export function executeAssistantTool(
           evidence.push({
             type: "citizen_report",
             recordId: c.id,
-            description: `Logged via ${c.channelRaw} on ${c.receivedAt}. Description: "${c.cleanText}".`,
+            description: `Logged via ${c.channelRaw} on ${c.receivedAt}. Description: "${maskPII(c.cleanText)}".`,
           });
         }
       }
@@ -247,7 +247,8 @@ export function executeAssistantTool(
           evidence.push({
             type: l.linkType,
             recordId: l.workOrderId,
-            description: l.explanation,
+            // Explanations can quote the complaint's own words (fuzzy locality matches do).
+            description: maskPII(l.explanation),
           });
         }
       }

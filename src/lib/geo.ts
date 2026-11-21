@@ -27,3 +27,31 @@ export function neighbourClusterKeys(lat: number, lng: number): string[] {
   }
   return [...keys];
 }
+
+type IssueSpot = { lat: number; lng: number; issueType: string };
+
+/**
+ * The one "does this pin join this place?" rule. A place keeps the point of
+ * its first report; a pin joins it only if it is the same problem within
+ * MATCH_METERS of that point, and the nearest such place wins. Callers may
+ * narrow the candidates with `neighbourClusterKeys`, but must not change the
+ * match itself — live writes and seed grouping share this function so they
+ * cannot disagree about what a place is.
+ */
+export function nearestMatching<T extends IssueSpot>(
+  candidates: Iterable<T>,
+  lat: number,
+  lng: number,
+  issueType: string,
+): T | null {
+  let best: T | null = null;
+  let bestMetres = Infinity;
+  for (const candidate of candidates) {
+    if (candidate.issueType !== issueType) continue;
+    const metres = metersBetween(lat, lng, candidate.lat, candidate.lng);
+    if (metres > MATCH_METERS || metres >= bestMetres) continue;
+    best = candidate;
+    bestMetres = metres;
+  }
+  return best;
+}

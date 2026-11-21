@@ -101,6 +101,16 @@ export function PinMap({ value, onChange, compact = false }: PinMapProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      mapRef.current?.resize();
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   const pinLat = value?.lat;
   const pinLng = value?.lng;
   useEffect(() => {

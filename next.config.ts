@@ -2,11 +2,11 @@ import type { NextConfig } from "next";
 
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://tile.openstreetmap.org",
+  "img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org",
   "font-src 'self' data: https://demotiles.maplibre.org",
-  "connect-src 'self' https://tile.openstreetmap.org https://demotiles.maplibre.org",
+  "connect-src 'self' https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://demotiles.maplibre.org",
   "media-src 'self' data: blob:",
   "worker-src 'self' blob:",
   "object-src 'none'",

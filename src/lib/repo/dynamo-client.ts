@@ -3,8 +3,8 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 export function getTableName(): string {
-  const name = process.env.KHABAR_TABLE_NAME;
-  if (!name) throw new Error("KHABAR_TABLE_NAME is not set.");
+  const name = process.env.RASTABAAZ_TABLE_NAME;
+  if (!name) throw new Error("RASTABAAZ_TABLE_NAME is not set.");
   return name;
 }
 

@@ -1,37 +1,37 @@
 @layer components {
-  .kg-map {
+  .rb-map {
     color: var(--ink);
   }
 
-  .kg-map .maplibregl-ctrl-attrib {
+  .rb-map .maplibregl-ctrl-attrib {
     background: var(--card);
     color: var(--mist);
     font-size: 0.6875rem;
   }
 
-  .kg-map .maplibregl-ctrl-attrib a {
+  .rb-map .maplibregl-ctrl-attrib a {
     color: var(--enamel);
   }
 
-  .kg-map .maplibregl-ctrl-group {
+  .rb-map .maplibregl-ctrl-group {
     border: 1px solid var(--rule-firm);
     background: var(--card);
   }
 
-  .kg-map .maplibregl-ctrl-group button {
+  .rb-map .maplibregl-ctrl-group button {
     min-height: 48px;
     min-width: 48px;
   }
 
-  .kg-map .maplibregl-ctrl-group button + button {
+  .rb-map .maplibregl-ctrl-group button + button {
     border-top: 1px solid var(--rule);
   }
 
-  .kg-map .maplibregl-ctrl-group button:hover {
+  .rb-map .maplibregl-ctrl-group button:hover {
     background: var(--sheet);
   }
 
-  .kg-map .maplibregl-ctrl-group button:focus-visible {
+  .rb-map .maplibregl-ctrl-group button:focus-visible {
     outline: 2px solid var(--enamel);
     outline-offset: 2px;
   }
@@ -45,19 +45,19 @@
    * desktop the pair sits side by side with the list on the left, which the
    * `order` swap below restores without moving it back in the source.
    */
-  .kg-map-split {
+  .rb-map-split {
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
 
-  .kg-map-panel {
+  .rb-map-panel {
     min-width: 0;
   }
 
   /* Holds the map's footprint while `next/dynamic` fetches MapLibre. */
-  .kg-map-placeholder {
+  .rb-map-placeholder {
     width: 100%;
     height: min(70dvh, 36rem);
     min-height: 22rem;
@@ -66,14 +66,14 @@
   }
 
   @media (min-width: 64rem) {
-    .kg-map-split {
+    .rb-map-split {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
       gap: 2.5rem;
       align-items: start;
     }
 
-    .kg-map-panel {
+    .rb-map-panel {
       order: 2;
     }
   }

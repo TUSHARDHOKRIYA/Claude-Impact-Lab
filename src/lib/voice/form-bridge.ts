@@ -33,15 +33,11 @@ export function landmarkPin(id: string): VoicePinProposal | null {
 
 /** Short spoken forms the data file does not list, in the scripts STT actually returns. */
 const EXTRA_NAMES: Record<string, string[]> = {
-  jehangir: ["jehangir", "jahangir", "जहांगीर"],
-  sassoon: ["sassoon", "ससून"],
-  "max-mueller": ["max muller", "मैक्स मुलर", "मैक्स म्यूलर"],
-  csmvs: ["वस्तु संग्रहालय", "प्रिंस ऑफ वेल्स"],
-  "black-horse": ["horse statue", "घोडे की मूर्ति", "घोड्याचा पुतळा"],
+  "loc-kings-circle": ["kings circle", "किंग्स सर्कल", "किंग सर्कल"],
+  "loc-hindmata": ["हिंदमाता", "हिन्दमाता"],
+  "loc-sion": ["sion", "सायन", "शीव"],
+  "loc-andheri-east": ["andheri east", "अंधेरी ईस्ट"],
 };
-
-/** "Kala Ghoda" names the whole precinct, not the statue, so it never pins anything. */
-const PRECINCT = new Set(["kala ghoda", "काला घोडा", "काळा घोडा"]);
 
 /** Lowercase, and fold the Devanagari spellings STT varies between (ँ/ं, nukta). */
 function fold(text: string): string {
@@ -51,7 +47,7 @@ function fold(text: string): string {
 const SPOKEN = PINNABLE_LANDMARKS.flatMap((landmark) =>
   [landmark.name, ...landmark.aliases, ...(EXTRA_NAMES[landmark.id] ?? [])]
     .map(fold)
-    .filter((name) => name.length >= 4 && !PRECINCT.has(name))
+    .filter((name) => name.length >= 4)
     .map((name) => ({ id: landmark.id, name })),
 );
 

@@ -79,7 +79,7 @@ describe("leaving the chat while a turn is in flight", () => {
     expect(hidden("issueType")).toBe("");
     expect(audio.spoken()).toEqual([]);
     await tap(user, "Voice");
-    expect(screen.queryByText("garbage near the horse")).not.toBeInTheDocument();
+    expect(screen.queryByText("pothole near Hindmata")).not.toBeInTheDocument();
     expect(screen.getByText(/What is the problem\?/)).toBeInTheDocument();
     expect(screen.queryByText(/When did you notice it/)).not.toBeInTheDocument();
   });

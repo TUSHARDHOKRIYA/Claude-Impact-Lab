@@ -18,7 +18,7 @@ function byTypeNonKeyAttributes(yaml: string): string[] {
 
 describe("byType projection", () => {
   it("matches CATALOG_ATTRS to the table's NonKeyAttributes", () => {
-    const yaml = readFileSync("infra/khabar-table.yaml", "utf8");
+    const yaml = readFileSync("infra/rastabaaz-table.yaml", "utf8");
     const fromTable = byTypeNonKeyAttributes(yaml).sort();
     expect(fromTable.length).toBeGreaterThan(0);
     expect([...CATALOG_ATTRS].sort()).toEqual(fromTable);

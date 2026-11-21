@@ -2,7 +2,7 @@ import { chmodSync, realpathSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const REQUIRED_KEYS = ["KHABAR_TABLE_NAME", "ADMIN_KEY"] as const;
+const REQUIRED_KEYS = ["RASTABAAZ_TABLE_NAME", "ADMIN_KEY"] as const;
 const OPTIONAL_KEYS = [
   "SARVAM_API_KEY",
   "VOICE_LLM_BASE_URL",
@@ -30,7 +30,7 @@ export function collectServerEnv(env: EnvMap = process.env): AmplifyServerEnv {
     );
   }
   const values: AmplifyServerEnv = {
-    KHABAR_TABLE_NAME: env.KHABAR_TABLE_NAME as string,
+    RASTABAAZ_TABLE_NAME: env.RASTABAAZ_TABLE_NAME as string,
     ADMIN_KEY: env.ADMIN_KEY as string,
   };
   for (const key of OPTIONAL_KEYS) {

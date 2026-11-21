@@ -5,10 +5,10 @@ import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { token } from "@/components/map/map-style";
 import type { MapReportPoint } from "@/lib/types";
 
-export const HEAT_SOURCE = "kg-heat";
-export const HEAT_LAYER = "kg-heat-layer";
-export const REPORT_SOURCE = "kg-reports";
-export const CLUSTER_LAYER = "kg-clusters";
+export const HEAT_SOURCE = "rb-heat";
+export const HEAT_LAYER = "rb-heat-layer";
+export const REPORT_SOURCE = "rb-reports";
+export const CLUSTER_LAYER = "rb-clusters";
 
 export type ReportFeatureCollection = {
   type: "FeatureCollection";

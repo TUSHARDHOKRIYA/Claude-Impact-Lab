@@ -25,7 +25,7 @@ describe("admin-auth", () => {
   });
 
   it("uses the non-host cookie name outside production", () => {
-    expect(ADMIN_COOKIE).toBe("khabar_admin");
+    expect(ADMIN_COOKIE).toBe("rastabaaz_admin");
   });
 
   it("equalSecret compares buffers of equal length", () => {

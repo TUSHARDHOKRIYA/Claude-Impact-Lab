@@ -40,7 +40,7 @@ describe("tool call validation", () => {
       call("save_affects", { affects: [] }),
       call("save_affects", { affects: ["night safety"] }),
       call("save_affects", { affects: ["walking", "walking"] }),
-      // In the landmark data but outside Kala Ghoda: a pin may never land there.
+      // Not a known area id: a pin may never land there.
       call("propose_pin", { landmark_id: "regal-cinema" }),
       call("save_issue_type", {}),
       { name: "submit", argumentsJson: "{}" },

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const PLACEHOLDER = "__KHABAR_TABLE_NAME__";
+export const PLACEHOLDER = "__RASTABAAZ_TABLE_NAME__";
 export const TEMPLATE_PATH = "infra/amplify-compute-policy.json";
 export const TABLE_NAME_PATTERN = /^[a-zA-Z0-9_.-]{3,255}$/;
 

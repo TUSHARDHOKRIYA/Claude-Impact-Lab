@@ -1,7 +1,7 @@
 import "server-only";
 
 import { listPlaces } from "@/lib/queries/places";
-import type { KhabarRepository } from "@/lib/repo/port";
+import type { RastabaazRepository } from "@/lib/repo/port";
 import type { MapInsightCounts, PlaceSummary } from "@/lib/types";
 
 export function insightsFromPlaces(places: PlaceSummary[]): MapInsightCounts {
@@ -12,6 +12,6 @@ export function insightsFromPlaces(places: PlaceSummary[]): MapInsightCounts {
   };
 }
 
-export async function getMapInsights(repo?: KhabarRepository): Promise<MapInsightCounts> {
+export async function getMapInsights(repo?: RastabaazRepository): Promise<MapInsightCounts> {
   return insightsFromPlaces(await listPlaces(repo));
 }

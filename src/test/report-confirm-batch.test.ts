@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 import { getPlacePage, readReportPlace } from "@/lib/queries";
-import { toListItem, type KhabarRepository } from "@/lib/repo/port";
+import { toListItem, type RastabaazRepository } from "@/lib/repo/port";
 import type { LocationRecord, ReportRecord } from "@/lib/types";
 
 function deferred<T>() {
@@ -86,7 +86,7 @@ describe("sibling confirm batches of 8", () => {
         notes: [],
       }),
       getReport,
-    } as unknown as KhabarRepository;
+    } as unknown as RastabaazRepository;
     const pending = getPlacePage(location.slug, repo);
     await flush();
     expect(started).toEqual(siblingIds.slice(0, 8));
@@ -132,7 +132,7 @@ describe("sibling confirm batches of 8", () => {
         ],
         notes: [],
       }),
-    } as unknown as KhabarRepository;
+    } as unknown as RastabaazRepository;
     const pending = readReportPlace(submitted.id, repo);
     await flush();
     expect(submittedReads).toBe(1);

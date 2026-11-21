@@ -49,7 +49,7 @@ export function HistoryFields({
 }) {
   return (
     <div>
-      <h2 id="report-step-heading" tabIndex={-1} className="rh-step-heading ux4g-title-l-strong">
+      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
         When did you first notice it?
       </h2>
       <GovChoiceGroup
@@ -101,7 +101,7 @@ export function ImpactFields({
 }) {
   return (
     <div>
-      <h2 id="report-step-heading" tabIndex={-1} className="rh-step-heading ux4g-title-l-strong">
+      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
         Have you seen an accident or a fall here?
       </h2>
       <GovChoiceGroup

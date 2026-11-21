@@ -9,9 +9,9 @@ export function NextRupeeList({ items }: { items: NextRupeeItem[] }) {
     return <p className="ux4g-body-m-default ux4g-text-neutral-secondary">No open risks ranked for this ward.</p>;
   }
   return (
-    <ol className="rh-next">
+    <ol className="rb-next">
       {items.map((item) => (
-        <li key={item.roadId} className="ux4g-card ux4g-card-outline ux4g-card-vertical rh-next-card">
+        <li key={item.roadId} className="ux4g-card ux4g-card-outline ux4g-card-vertical rb-next-card">
           <div className="ux4g-card-header">
             <p className="ux4g-card-title">
               {item.rank}. {item.roadName}
@@ -20,15 +20,15 @@ export function NextRupeeList({ items }: { items: NextRupeeItem[] }) {
               Segment {item.roadId}, risk {item.score} of 100
             </p>
           </div>
-          <div className="ux4g-card-body rh-next-body">
+          <div className="ux4g-card-body rb-next-body">
             {item.underDlp ? <GovBadge tone="primary" small>Under guarantee</GovBadge> : null}
-            <ul className="ux4g-body-s-default rh-next-reasons">
+            <ul className="ux4g-body-s-default rb-next-reasons">
               {item.reasons.map((reason) => (
                 <li key={reason}>{reason}</li>
               ))}
             </ul>
           </div>
-          <div className="ux4g-card-footer rh-next-fix">
+          <div className="ux4g-card-footer rb-next-fix">
             {item.underDlp ? (
               <p className="ux4g-body-s-strong">
                 Send it back to the contractor who resurfaced it. The guarantee means BMC pays nothing.

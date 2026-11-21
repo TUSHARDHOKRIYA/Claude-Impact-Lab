@@ -4,7 +4,7 @@ vi.mock("server-only", () => ({}));
 
 import { filterMapPoints } from "@/components/map/MapFilters";
 import { listMapPoints, readReportPoint } from "@/lib/queries/reports";
-import type { KhabarRepository } from "@/lib/repo/port";
+import type { RastabaazRepository } from "@/lib/repo/port";
 import type { MapReportPoint, ReportListItem, ReportRecord } from "@/lib/types";
 
 function item(partial: Partial<ReportListItem> & Pick<ReportListItem, "id">): ReportListItem {
@@ -25,11 +25,11 @@ function item(partial: Partial<ReportListItem> & Pick<ReportListItem, "id">): Re
   };
 }
 
-function repo(reports: ReportListItem[], records: ReportRecord[] = []): KhabarRepository {
+function repo(reports: ReportListItem[], records: ReportRecord[] = []): RastabaazRepository {
   return {
     loadCatalog: async () => ({ locations: [], reports, notes: [] }),
     getReport: async (id: string) => records.find((row) => row.id === id) ?? null,
-  } as unknown as KhabarRepository;
+  } as unknown as RastabaazRepository;
 }
 
 function ids(points: MapReportPoint[]): string[] {

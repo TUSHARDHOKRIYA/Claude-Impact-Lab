@@ -5,7 +5,7 @@ import { isReportId } from "@/lib/id";
 import { mapInBatches } from "@/lib/queries/batch";
 import { loadSharedCatalog } from "@/lib/queries/catalog";
 import { getRepository } from "@/lib/repo/context";
-import { toListItem, type KhabarRepository } from "@/lib/repo/port";
+import { toListItem, type RastabaazRepository } from "@/lib/repo/port";
 import { buildHistory, toPlaceSummary } from "@/lib/place-summary";
 import type {
   DeskNote,
@@ -16,13 +16,13 @@ import type {
   ReportPageData,
 } from "@/lib/types";
 
-function resolveRepo(repo?: KhabarRepository): KhabarRepository {
+function resolveRepo(repo?: RastabaazRepository): RastabaazRepository {
   return repo ?? getRepository();
 }
 
 export async function listMapPoints(
   filters?: { issueType?: IssueType; since?: string },
-  repo?: KhabarRepository,
+  repo?: RastabaazRepository,
 ): Promise<MapReportPoint[]> {
   const catalog = await loadSharedCatalog(repo);
   return catalog.reports
@@ -46,12 +46,12 @@ export async function listMapPoints(
     }));
 }
 
-export async function listAllReports(repo?: KhabarRepository): Promise<ReportListItem[]> {
+export async function listAllReports(repo?: RastabaazRepository): Promise<ReportListItem[]> {
   const catalog = await loadSharedCatalog(repo);
   return [...catalog.reports].sort((a, b) => b.noticedAt.localeCompare(a.noticedAt));
 }
 
-export async function listNotesByReport(repo?: KhabarRepository): Promise<Map<string, DeskNote[]>> {
+export async function listNotesByReport(repo?: RastabaazRepository): Promise<Map<string, DeskNote[]>> {
   const catalog = await loadSharedCatalog(repo);
   const grouped = new Map<string, DeskNote[]>();
   const notes = [...catalog.notes].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
@@ -69,7 +69,7 @@ export async function listNotesByReport(repo?: KhabarRepository): Promise<Map<st
  * write the consistent report last so it wins a tie on id.
  */
 async function unionPlaceReports(
-  repo: KhabarRepository,
+  repo: RastabaazRepository,
   locationId: string,
   consistent: ReportListItem,
   listed: ReportListItem[],
@@ -93,7 +93,7 @@ async function unionPlaceReports(
  * or still be counting the ones already there. The union is what the preview,
  * the counts and the insight strip have to show.
  */
-export async function readReportPlace(id: string, repo?: KhabarRepository): Promise<PlaceSummary | null> {
+export async function readReportPlace(id: string, repo?: RastabaazRepository): Promise<PlaceSummary | null> {
   if (!isReportId(id)) return null;
   const r = resolveRepo(repo);
   const report = await r.getReport(id);
@@ -109,7 +109,7 @@ export async function readReportPlace(id: string, repo?: KhabarRepository): Prom
   return toPlaceSummary(location, reports);
 }
 
-export async function readReportPoint(id: string, repo?: KhabarRepository): Promise<MapReportPoint | null> {
+export async function readReportPoint(id: string, repo?: RastabaazRepository): Promise<MapReportPoint | null> {
   if (!isReportId(id)) return null;
   const report = await resolveRepo(repo).getReport(id);
   if (!report) return null;
@@ -126,7 +126,7 @@ export async function readReportPoint(id: string, repo?: KhabarRepository): Prom
 
 export const getReportPage = cache(async function getReportPage(
   id: string,
-  repo?: KhabarRepository,
+  repo?: RastabaazRepository,
 ): Promise<ReportPageData | null> {
   if (!isReportId(id)) return null;
   const r = resolveRepo(repo);

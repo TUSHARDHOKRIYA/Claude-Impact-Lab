@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import { setRepositoryForTests } from "@/lib/repo/context";
-import { toListItem, type KhabarRepository } from "@/lib/repo/port";
+import { toListItem, type RastabaazRepository } from "@/lib/repo/port";
 import { createReport, getMapInsights, getPlacePage, getReportPage, listPlaces, readReportPlace } from "@/lib/queries";
 import type { LocationRecord, ReportRecord } from "@/lib/types";
 
@@ -12,7 +12,7 @@ const PHOTO = "data:image/jpeg;base64,/9j/4AAQ";
 
 describe("queries on the memory repository", () => {
   beforeEach(() => {
-    setRepositoryForTests(new MemoryKhabarRepository({ strictPhoto: false }));
+    setRepositoryForTests(new MemoryRastabaazRepository({ strictPhoto: false }));
   });
 
   afterEach(() => {
@@ -85,7 +85,7 @@ describe("queries on the memory repository", () => {
   });
 
   it("reads a place and a report without the whole catalog", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     setRepositoryForTests(repo);
     const created = await createReport({
       issueType: "waste",
@@ -160,7 +160,7 @@ describe("readReportPlace", () => {
         reports: [stale, toListItem(catalogOnly), elsewhere],
         notes: [],
       }),
-    } as unknown as KhabarRepository;
+    } as unknown as RastabaazRepository;
     const place = await readReportPlace("rpt_new", repo);
     expect(place?.reportCount).toBe(3);
     expect(place?.recurring).toBe(true);
@@ -188,7 +188,7 @@ describe("readReportPlace", () => {
         reports: [staleMoved, staleSibling],
         notes: [],
       }),
-    } as unknown as KhabarRepository;
+    } as unknown as RastabaazRepository;
     const place = await readReportPlace("rpt_new", repo);
     expect(place?.reportCount).toBe(2);
     expect(place?.recurring).toBe(true);

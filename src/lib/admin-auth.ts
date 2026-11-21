@@ -7,7 +7,7 @@ const COOKIE_TTL_MS = 12 * 60 * 60 * 1000;
 const HMAC_HEX_LENGTH = 64;
 
 export const ADMIN_COOKIE =
-  process.env.NODE_ENV === "production" ? "__Host-khabar_admin" : "khabar_admin";
+  process.env.NODE_ENV === "production" ? "__Host-rastabaaz_admin" : "rastabaaz_admin";
 
 export function adminCookieOptions() {
   const production = process.env.NODE_ENV === "production";

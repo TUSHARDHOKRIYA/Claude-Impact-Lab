@@ -32,8 +32,8 @@ vi.mock("@/components/report/PinMap", () => ({
   },
 }));
 
-vi.mock("@/components/map/KalaGhodaMap", () => ({
-  KalaGhodaMap: ({
+vi.mock("@/components/map/CityMap", () => ({
+  CityMap: ({
     points,
     highlightReportId,
     focusPoint,
@@ -42,7 +42,7 @@ vi.mock("@/components/map/KalaGhodaMap", () => ({
     highlightReportId?: string;
     focusPoint?: { lat: number; lng: number };
   }) => (
-    <div data-testid="kg-map-enhancement">
+    <div data-testid="rb-map-enhancement">
       <span>points {points.map((item) => item.id).join(" ")}</span>
       <span>highlight {highlightReportId ?? "none"}</span>
       <span>focus {focusPoint ? `${focusPoint.lat},${focusPoint.lng}` : "none"}</span>
@@ -60,12 +60,12 @@ import { getMapInsights, listMapPoints, listPlaces, readReportPlace, readReportP
 const place: PlaceSummary = {
   location: {
     id: "loc_1",
-    name: "K Dubash Marg footpath, Kala Ghoda Part 2",
-    slug: "k-dubash-marg-kala-ghoda-part-2-footpath",
+    name: "Pothole on Dr Ambedkar Road, Parel",
+    slug: "dr-ambedkar-road-parel-pothole",
     issueType: "footpath",
     lat: 18.9298,
     lng: 72.8328,
-    street: "K Dubash Marg",
+    street: "Dr Ambedkar Road",
     ward: "A Ward",
     createdAt: "2022-08-18",
   },
@@ -130,7 +130,7 @@ describe("map page", () => {
     render(await MapPage({ searchParams: Promise.resolve({}) }));
     expect(screen.getByRole("heading", { level: 1, name: "Map of reports" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Counts from the stored records" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Places in Kala Ghoda" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Reported road problems" })).toBeInTheDocument();
     expect(screen.queryByText(/Submitted\. Your report is highlighted/)).not.toBeInTheDocument();
   });
 
@@ -140,7 +140,7 @@ describe("map page", () => {
     expect(screen.getByText("Submitted. Your report is highlighted on the map.")).toBeInTheDocument();
     expect(readReportPlace).not.toHaveBeenCalled();
     expect(screen.getByText("highlight rpt_1")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /K Dubash Marg footpath/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toHaveAttribute("aria-current", "true");
   });
 
   it("keeps the highlight without the banner when new is absent", async () => {
@@ -148,7 +148,7 @@ describe("map page", () => {
     render(await MapPage({ searchParams: Promise.resolve({ report: "rpt_1" }) }));
     expect(screen.queryByText(/Submitted\. Your report is highlighted/)).not.toBeInTheDocument();
     expect(screen.getByText("highlight rpt_1")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /K Dubash Marg footpath/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toHaveAttribute("aria-current", "true");
   });
 
   it("shows a report the catalog has not caught up to, even with no place row", async () => {
@@ -182,7 +182,7 @@ describe("map page", () => {
     render(await MapPage({ searchParams: Promise.resolve({ report: "rpt_1" }) }));
     expect(readReportPlace).toHaveBeenCalledWith("rpt_1");
     expect(readReportPoint).not.toHaveBeenCalled();
-    expect(screen.getByRole("link", { name: /K Dubash Marg footpath/i })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toHaveAttribute("aria-current", "true");
   });
   it("rebuilds a joined place so the new report is counted", async () => {
     stubMap();
@@ -254,7 +254,7 @@ describe("HomeIssueLinks", () => {
 describe("not-found and new-report pages", () => {
   it("returns home with the exact GovButton label", () => {
     render(<NotFound />);
-    const link = screen.getByRole("link", { name: "Return to Kala Ghoda records" });
+    const link = screen.getByRole("link", { name: "Go to the wards" });
     expect(link).toHaveAttribute("href", "/map");
     expect(link.className).toMatch(/ux4g-btn-primary/);
     expect(link.className).toMatch(/touch-target/);

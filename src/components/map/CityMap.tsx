@@ -14,9 +14,9 @@ import { useMapClicks } from "@/components/map/use-map-clicks";
 import { CITY } from "@/lib/city";
 import type { MapReportPoint, PlaceSummary } from "@/lib/types";
 
-const MAP_HINT_ID = "kg-map-list-hint";
+const MAP_HINT_ID = "rb-map-list-hint";
 
-export function KalaGhodaMap({
+export function CityMap({
   points,
   places,
   initialLocationId,
@@ -156,9 +156,9 @@ export function KalaGhodaMap({
       <div className="relative">
         <div
           ref={containerRef}
-          className="kg-map h-[min(70dvh,36rem)] min-h-[22rem] w-full bg-paper"
+          className="rb-map h-[min(70dvh,36rem)] min-h-[22rem] w-full bg-paper"
           role="region"
-          aria-label="Kala Ghoda report map"
+          aria-label="Map of road reports in Mumbai"
           aria-describedby={MAP_HINT_ID}
         />
         <HeatLayer map={map} points={points} />

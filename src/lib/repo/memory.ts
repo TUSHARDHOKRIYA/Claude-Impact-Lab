@@ -6,7 +6,7 @@ import { namePlace, nearestRoad, repairStoredPlace } from "@/lib/place-name";
 import { MAX_ENCODED_PHOTO_BYTES, SAMPLE_PHOTO_PATTERN } from "@/lib/photo-limits";
 import { assertPhotoString, dataUrlByteLength } from "@/lib/photo-validate";
 import { ItemTooLargeError, ReportValidationError } from "@/lib/repo/errors";
-import { seedReportUntouched, toListItem, type KhabarRepository, type SeedItem } from "@/lib/repo/port";
+import { seedReportUntouched, toListItem, type RastabaazRepository, type SeedItem } from "@/lib/repo/port";
 import { PREVIOUS_SEED_DESCRIPTIONS } from "@/lib/seed/previous-copy";
 import {
   ISSUE_TYPE_LABELS,
@@ -30,7 +30,7 @@ function sortReports(reports: ReportRecord[]): ReportRecord[] {
   });
 }
 
-export class MemoryKhabarRepository implements KhabarRepository {
+export class MemoryRastabaazRepository implements RastabaazRepository {
   private readonly strictPhoto: boolean;
   private readonly locations = new Map<string, LocationRecord>();
   private readonly locationsBySlug = new Map<string, string>();

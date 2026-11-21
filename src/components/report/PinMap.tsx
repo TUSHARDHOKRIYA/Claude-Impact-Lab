@@ -132,7 +132,7 @@ export function PinMap({ value, onChange, compact = false }: PinMapProps) {
       )}
       <div
         ref={containerRef}
-        className={`kg-map rh-pinmap w-full ${compact ? "h-56" : "h-72"}`}
+        className={`rb-map rb-pinmap w-full ${compact ? "h-56" : "h-72"}`}
         role="region"
         aria-label={
           value

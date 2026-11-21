@@ -27,9 +27,9 @@ export type IssueFilter = IssueType | "all";
  * the disclosure was ever touched. `next/dynamic` keeps it out of the first
  * payload, the same way `LocationStep` already loads `PinMap`.
  */
-const KalaGhodaMap = dynamic(
-  () => import("@/components/map/KalaGhodaMap").then((mod) => mod.KalaGhodaMap),
-  { ssr: false, loading: () => <div className="kg-map-placeholder" aria-hidden="true" /> },
+const CityMap = dynamic(
+  () => import("@/components/map/CityMap").then((mod) => mod.CityMap),
+  { ssr: false, loading: () => <div className="rb-map-placeholder" aria-hidden="true" /> },
 );
 
 const TIME_OPTIONS: { value: TimeWindow; label: string }[] = [
@@ -117,7 +117,7 @@ export function MapFilters({
     <section aria-labelledby="map-heading" className="bg-paper">
       <div className="shell py-12 sm:py-14">
         <h2 id="map-heading" className="ux4g-heading-l-strong">
-          Places in Kala Ghoda
+          Reported road problems
         </h2>
         <p className="ux4g-text mt-3 max-w-3xl">
           Filter by what people recorded and when they noticed it. The list
@@ -180,9 +180,9 @@ export function MapFilters({
           </p>
         ) : null}
 
-        <div className="kg-map-split">
-          <div className="kg-map-panel">
-            <KalaGhodaMap
+        <div className="rb-map-split">
+          <div className="rb-map-panel">
+            <CityMap
               points={filtered}
               places={visiblePlaces}
               initialLocationId={initialLocationId}

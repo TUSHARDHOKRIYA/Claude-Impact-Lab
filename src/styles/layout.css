@@ -39,28 +39,28 @@
     --status: var(--moss);
   }
 
-  .kg-home-intro {
+  .rb-home-intro {
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
   }
 
-  .kg-home-intro > * {
+  .rb-home-intro > * {
     min-width: 0;
   }
 
-  .kg-home-cta {
+  .rb-home-cta {
     width: 100%;
     max-width: 100%;
   }
 
-  .kg-home-cta .ux4g-btn,
-  .kg-home-issues .ux4g-btn {
+  .rb-home-cta .ux4g-btn,
+  .rb-home-issues .ux4g-btn {
     width: 100%;
     max-width: 100%;
   }
 
-  .kg-home-issues {
+  .rb-home-issues {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
@@ -69,19 +69,19 @@
     list-style: none;
   }
 
-  .kg-home h1,
-  .kg-cited-link {
+  .rb-home h1,
+  .rb-cited-link {
     overflow-wrap: anywhere;
     max-width: 100%;
   }
 
-  .kg-cited-link {
+  .rb-cited-link {
     display: inline;
     white-space: normal;
   }
 
   @media (min-width: 64rem) {
-    .kg-home-intro {
+    .rb-home-intro {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       align-items: start;
@@ -132,7 +132,7 @@
   outline-offset: 2px;
 }
 
-.kg-navbar-wordmark {
+.rb-navbar-wordmark {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -141,7 +141,7 @@
   line-height: 1.15;
 }
 
-.kg-wrap-link {
+.rb-wrap-link {
   display: block;
   max-width: 100%;
   min-width: 0;
@@ -149,8 +149,8 @@
   white-space: normal;
 }
 
-/* ---- Rasta Hisaab chrome: UX4G navbar and footer, plus the lane marking. ---- */
-.rh-header {
+/* ---- Rastabaaz chrome: UX4G navbar and footer, plus the lane marking. ---- */
+.rb-header {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -158,70 +158,70 @@
   background: var(--ux4g-bg-neutral-elevated);
 }
 
-.rh-header .ux4g-navbar-wrap {
+.rb-header .ux4g-navbar-wrap {
   padding-block: var(--ux4g-padding-xs);
 }
 
-.rh-wordmark {
+.rb-wordmark {
   display: flex;
   flex-direction: column;
   justify-content: center;
   color: var(--ux4g-text-neutral-primary);
 }
 
-.rh-nav {
+.rb-nav {
   display: flex;
   gap: var(--ux4g-gap-column-2xs);
 }
 
-.rh-nav-link {
+.rb-nav-link {
   padding-inline: var(--ux4g-padding-s);
   border-radius: var(--ux4g-radius-sm);
 }
 
-.rh-nav-link[aria-current="page"] {
+.rb-nav-link[aria-current="page"] {
   color: var(--ux4g-text-brand-primary-default);
   background: var(--ux4g-bg-primary);
   font-weight: var(--ux4g-fw-bold);
 }
 
 /* The road's centre line: the one decorative device on the site. */
-.rh-lane {
+.rb-lane {
   height: 6px;
   background: repeating-linear-gradient(90deg, var(--lane) 0 28px, transparent 28px 46px) center / 100% 2px no-repeat,
     var(--asphalt);
 }
 
-.rh-footer {
+.rb-footer {
   margin-top: var(--ux4g-margin-4xl);
   padding-bottom: calc(var(--ux4g-padding-2xl) + env(safe-area-inset-bottom));
 }
 
-.rh-footer-grid {
+.rb-footer-grid {
   display: grid;
   gap: var(--ux4g-gap-row-l);
 }
 
-.rh-footer-note {
+.rb-footer-note {
   opacity: 0.8;
 }
 
 @media (min-width: 48rem) {
-  .rh-footer-grid {
+  .rb-footer-grid {
     grid-template-columns: 1.4fr 1fr;
   }
 
-  .rh-footer-note {
+  .rb-footer-note {
     grid-column: 1 / -1;
   }
 }
 
 /* A comfortable reading measure for running text. */
-.rh-measure {
+.rb-measure {
   max-width: 38rem;
 }
 
-.rh-home {
+.rb-home {
   padding-top: var(--ux4g-padding-l);
 }
 

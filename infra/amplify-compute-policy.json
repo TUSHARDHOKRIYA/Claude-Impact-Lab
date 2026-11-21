@@ -3,7 +3,7 @@
   "DoNotAttach": "TEMPLATE — Do not attach. Render with: npm run iam:policy -- --table <table-name>",
   "Statement": [
     {
-      "Sid": "KhabarTableAndIndexes",
+      "Sid": "RastabaazTableAndIndexes",
       "Effect": "Allow",
       "Action": [
         "dynamodb:GetItem",
@@ -15,8 +15,8 @@
         "dynamodb:DescribeTable"
       ],
       "Resource": [
-        "arn:aws:dynamodb:*:*:table/__KHABAR_TABLE_NAME__",
-        "arn:aws:dynamodb:*:*:table/__KHABAR_TABLE_NAME__/index/*"
+        "arn:aws:dynamodb:*:*:table/__RASTABAAZ_TABLE_NAME__",
+        "arn:aws:dynamodb:*:*:table/__RASTABAAZ_TABLE_NAME__/index/*"
       ]
     }
   ]

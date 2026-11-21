@@ -30,9 +30,9 @@ export default async function WardsPage({ searchParams }: Props) {
     sort === "explain" ? [...overview.wards].sort((a, b) => toExplainShare(b) - toExplainShare(a)) : overview.wards;
 
   return (
-    <div className="shell rh-page">
+    <div className="shell rb-page">
       <h1 className="ux4g-display-xs-strong">Where the monsoon road money went</h1>
-      <p className="ux4g-body-l-default ux4g-text-neutral-secondary ux4g-mt-xs rh-measure">
+      <p className="ux4g-body-l-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
         Mumbai&apos;s wards spent {formatInrShort(overview.spentInr)} on {overview.orders.toLocaleString("en-IN")} road
         and drain repairs this monsoon, against a budget of {formatInrShort(overview.budgetInr)}.
       </p>
@@ -54,11 +54,11 @@ export default async function WardsPage({ searchParams }: Props) {
       </section>
 
       <section className="ux4g-mt-2xl" aria-labelledby="all-heading">
-        <div className="rh-list-head">
+        <div className="rb-list-head">
           <h2 id="all-heading" className="ux4g-title-l-strong">
             {overview.wards.length} wards
           </h2>
-          <nav className="rh-sort" aria-label="Sort wards">
+          <nav className="rb-sort" aria-label="Sort wards">
             {SORTS.map((option) => (
               <Link
                 key={option.key}
@@ -77,15 +77,15 @@ export default async function WardsPage({ searchParams }: Props) {
             Share of spend that failed within 30 days or carries an audit flag, highest first.
           </p>
         ) : null}
-        <ul className="ux4g-list ux4g-list-default ux4g-list-l ux4g-mt-s rh-ward-list">
+        <ul className="ux4g-list ux4g-list-default ux4g-list-l ux4g-mt-s rb-ward-list">
           {wards.map((row) => (
             <li key={row.code} className="ux4g-list-item">
-              <Link href={`/wards/${wardSlug(row.code)}`} className="ux4g-list-item-row rh-ward-row">
-                <span className="rh-ward-row-head">
+              <Link href={`/wards/${wardSlug(row.code)}`} className="ux4g-list-item-row rb-ward-row">
+                <span className="rb-ward-row-head">
                   <span className="ux4g-body-m-strong">
                     {row.code} <span className="ux4g-body-s-default ux4g-text-neutral-secondary">{row.name}</span>
                   </span>
-                  <span className="ux4g-body-s-strong rh-num">{formatInrShort(row.spentInr)}</span>
+                  <span className="ux4g-body-s-strong rb-num">{formatInrShort(row.spentInr)}</span>
                 </span>
                 <OutcomeBar
                   compact
@@ -94,7 +94,7 @@ export default async function WardsPage({ searchParams }: Props) {
                   budgetInr={row.budgetInr}
                   label={`${row.code} ward spend by outcome`}
                 />
-                <span className="rh-ward-row-meta">
+                <span className="rb-ward-row-meta">
                   <span className="ux4g-body-xs-default ux4g-text-neutral-secondary">
                     {pct(row.outcome.heldInr / Math.max(row.spentInr, 1))} held up, {pct(toExplainShare(row))} to explain
                   </span>

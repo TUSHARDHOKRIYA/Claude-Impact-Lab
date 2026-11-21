@@ -1,4 +1,4 @@
-// Local demo only: with KHABAR_REPO=memory the store starts empty, so load the
+// Local demo only: with RASTABAAZ_REPO=memory the store starts empty, so load the
 // seed reports once at boot. Never runs against DynamoDB or in production.
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;

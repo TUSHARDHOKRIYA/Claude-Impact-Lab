@@ -38,7 +38,7 @@ export default async function PlacePage({ params, searchParams }: PageProps) {
         <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-2 p-0">
           <li>
             <Link href="/map" className="ux4g-text-link-m touch-target inline-flex items-center">
-              Kala Ghoda records
+              Map of reports
             </Link>
           </li>
           <li aria-hidden="true" className="ux4g-text ux4g-text-neutral-tertiary">

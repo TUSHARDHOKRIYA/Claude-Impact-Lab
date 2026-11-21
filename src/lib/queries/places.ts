@@ -5,7 +5,7 @@ import { isReportId } from "@/lib/id";
 import { mapInBatches } from "@/lib/queries/batch";
 import { loadSharedCatalog } from "@/lib/queries/catalog";
 import { getRepository } from "@/lib/repo/context";
-import { toListItem, type KhabarRepository } from "@/lib/repo/port";
+import { toListItem, type RastabaazRepository } from "@/lib/repo/port";
 import { buildHistory, toPlaceSummary } from "@/lib/place-summary";
 import type { Catalog, LocationRecord, PlaceHistoryEvent, PlaceSummary, ReportListItem } from "@/lib/types";
 
@@ -16,7 +16,7 @@ export type PlacePageData = {
   history: PlaceHistoryEvent[];
 };
 
-function resolveRepo(repo?: KhabarRepository): KhabarRepository {
+function resolveRepo(repo?: RastabaazRepository): RastabaazRepository {
   return repo ?? getRepository();
 }
 
@@ -46,7 +46,7 @@ export function assemblePlace(
  * lock slot. Hidden, it costs nothing, and the next report of that problem at
  * that spot joins it and brings it back.
  */
-export async function listPlaces(repo?: KhabarRepository): Promise<PlaceSummary[]> {
+export async function listPlaces(repo?: RastabaazRepository): Promise<PlaceSummary[]> {
   const catalog = await loadSharedCatalog(repo);
   return [...catalog.locations]
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -59,7 +59,7 @@ export async function listPlaces(repo?: KhabarRepository): Promise<PlaceSummary[
  * byType can still name this place after the desk moved the report. Keep a
  * fallback row only when a consistent read says it is still here.
  */
-async function confirmedFallback(repo: KhabarRepository, locationId: string): Promise<ReportListItem[]> {
+async function confirmedFallback(repo: RastabaazRepository, locationId: string): Promise<ReportListItem[]> {
   const candidates = reportsFor(locationId, await loadSharedCatalog(repo));
   const current = await mapInBatches(candidates, (row) => repo.getReport(row.id));
   return current.flatMap((report) => (report?.locationId === locationId ? [toListItem(report)] : []));
@@ -71,7 +71,7 @@ function withConsistentReport(reports: ReportListItem[], fresh: ReportListItem):
 
 export const getPlacePage = cache(async function getPlacePage(
   slug: string,
-  repo?: KhabarRepository,
+  repo?: RastabaazRepository,
   reportId?: string,
 ): Promise<PlacePageData | null> {
   const r = resolveRepo(repo);

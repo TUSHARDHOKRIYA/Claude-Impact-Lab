@@ -24,7 +24,7 @@
 
   ::selection {
     background-color: var(--marking);
-    color: var(--horse);
+    color: var(--asphalt);
   }
 
   :focus-visible {
@@ -32,7 +32,7 @@
     outline-offset: 2px;
   }
 
-  .bg-horse :focus-visible {
+  .bg-asphalt :focus-visible {
     outline-color: var(--marking);
   }
 

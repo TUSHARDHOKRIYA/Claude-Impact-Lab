@@ -2,7 +2,7 @@ import type { StyleSpecification } from "maplibre-gl";
 
 export type MarkerColors = {
   enamel: string;
-  horse: string;
+  dark: string;
   oxide: string;
   marking: string;
   card: string;
@@ -10,7 +10,7 @@ export type MarkerColors = {
 
 const FALLBACK: MarkerColors = {
   enamel: "#4a2bc2",
-  horse: "#171717",
+  dark: "#171717",
   oxide: "#db372d",
   marking: "#ffab27",
   card: "#ffffff",
@@ -27,7 +27,7 @@ export function token(name: string, fallback: string): string {
 export function readMarkerColors(): MarkerColors {
   return {
     enamel: token("--enamel", FALLBACK.enamel),
-    horse: token("--horse", FALLBACK.horse),
+    dark: token("--asphalt", FALLBACK.dark),
     oxide: token("--oxide", FALLBACK.oxide),
     marking: token("--marking", FALLBACK.marking),
     card: token("--card", FALLBACK.card),

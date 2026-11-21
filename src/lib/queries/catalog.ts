@@ -1,16 +1,16 @@
 import "server-only";
 import { cache } from "react";
 import { getRepository } from "@/lib/repo/context";
-import type { KhabarRepository } from "@/lib/repo/port";
+import type { RastabaazRepository } from "@/lib/repo/port";
 import type { Catalog } from "@/lib/types";
 
-const inFlight = new WeakMap<KhabarRepository, Promise<Catalog>>();
+const inFlight = new WeakMap<RastabaazRepository, Promise<Catalog>>();
 
 const catalogsForRequest = cache(
-  () => new Map<KhabarRepository, Promise<Catalog>>(),
+  () => new Map<RastabaazRepository, Promise<Catalog>>(),
 );
 
-function readCatalog(repo: KhabarRepository): Promise<Catalog> {
+function readCatalog(repo: RastabaazRepository): Promise<Catalog> {
   const flying = inFlight.get(repo);
   if (flying) return flying;
   const next = repo.loadCatalog().finally(() => {
@@ -20,7 +20,7 @@ function readCatalog(repo: KhabarRepository): Promise<Catalog> {
   return next;
 }
 
-export function loadSharedCatalog(repo?: KhabarRepository): Promise<Catalog> {
+export function loadSharedCatalog(repo?: RastabaazRepository): Promise<Catalog> {
   const resolved = repo ?? getRepository();
   const requestMap = catalogsForRequest();
   const cached = requestMap.get(resolved);

@@ -1,5 +1,5 @@
 /*
- * Rasta Hisaab tokens. UX4G 3.3.3 is the design system: its violet primary,
+ * Rastabaaz tokens. UX4G 3.3.3 is the design system: its violet primary,
  * Noto Sans, neutrals, radii and spacing. The only additions are the asphalt
  * and lane yellow of the header band and the three outcome colours.
  */
@@ -29,7 +29,6 @@
 
   /* Older component names, kept so map and desk code reads the same tokens. */
   --paper: var(--overcast);
-  --horse: var(--asphalt);
   --marking: var(--lane);
   --oxide: var(--failed);
   --moss: var(--held);
@@ -60,7 +59,6 @@
   --color-rule: var(--rule);
   --color-rule-firm: var(--rule-firm);
   /* Legacy names still used in map and desk markup. */
-  --color-horse: var(--asphalt);
   --color-marking: var(--lane);
   --color-oxide: var(--failed);
   --color-moss: var(--held);

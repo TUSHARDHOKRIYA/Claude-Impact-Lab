@@ -14,7 +14,7 @@ import {
 import { composeReply, LOW_CONFIDENCE, readTurnContext } from "@/lib/voice/turn";
 import { VOICE_COPY } from "@/lib/voice/voice-copy";
 
-const clear = { transcript: "garbage near the horse", languageCode: "en-IN", languageProbability: 0.99 };
+const clear = { transcript: "pothole near Hindmata", languageCode: "en-IN", languageProbability: 0.99 };
 
 describe("the missing-field loop", () => {
   it("asks for the required slots in order and stops when all are filled", () => {
@@ -166,7 +166,7 @@ describe("composeReply", () => {
       filled: [],
       lang: "hi",
     });
-    expect(reply).toEqual({ text: "मैंने सुना “garbage near the horse”। क्या यह सही है?", ask: null, confirm: true });
+    expect(reply).toEqual({ text: "मैंने सुना “pothole near Hindmata”। क्या यह सही है?", ask: null, confirm: true });
     expect(spec).toBeNull();
   });
 });

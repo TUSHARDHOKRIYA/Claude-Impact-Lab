@@ -9,7 +9,7 @@ vi.mock("next/headers", () => ({
   headers: async () => requestHeaders,
   cookies: async () => ({
     get: (name: string) =>
-      name === "khabar_admin" && cookieValue !== undefined
+      name === "rastabaaz_admin" && cookieValue !== undefined
         ? { name, value: cookieValue }
         : undefined,
   }),
@@ -40,7 +40,7 @@ describe("the desk accepts only its signed cookie", () => {
 
   it("accepts a valid signed cookie", async () => {
     cookieValue = signAdminCookie() ?? undefined;
-    expect(ADMIN_COOKIE).toBe("khabar_admin");
+    expect(ADMIN_COOKIE).toBe("rastabaaz_admin");
     expect(await isAdminAuthed()).toBe(true);
   });
 

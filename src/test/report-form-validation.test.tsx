@@ -20,8 +20,8 @@ import { ReportForm } from "@/components/report/ReportForm";
 import { LANDMARKS } from "@/lib/city";
 
 const PHOTO = "data:image/jpeg;base64,NEW";
-const horse = LANDMARKS.find((item) => item.id === "black-horse");
-if (!horse) throw new Error("black-horse landmark missing");
+const hindmata = LANDMARKS.find((item) => item.id === "loc-hindmata");
+if (!hindmata) throw new Error("Hindmata area missing");
 
 function jpeg(): File {
   return new File([new Uint8Array([0xff, 0xd8, 0xff])], "street.jpg", {
@@ -183,7 +183,7 @@ describe("ReportForm details and submit gating", () => {
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await waitFor(() => expect(screen.getByRole("heading", { name: /check this record/i })).toBeInTheDocument());
     pending[0]?.({
-      coords: { latitude: horse.lat, longitude: horse.lng },
+      coords: { latitude: hindmata.lat, longitude: hindmata.lng },
     } as GeolocationPosition);
     await user.click(screen.getByRole("button", { name: "Back" }));
     expect(screen.getByText(/18\.92770,\s*72\.83185/)).toBeInTheDocument();
@@ -199,7 +199,7 @@ describe("ReportForm details and submit gating", () => {
     await user.click(screen.getByRole("button", { name: "Confirm this pin" }));
     expect(screen.getByRole("button", { name: "Pin confirmed" })).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: horse.name }));
+    await user.click(screen.getByRole("button", { name: hindmata.name }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
     expect(screen.getByRole("heading", { name: "Where is it?" })).toBeInTheDocument();

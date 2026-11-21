@@ -10,7 +10,7 @@ export function HomeIssueLinks({
   return (
     <nav aria-label="Condition types">
       <h2 className="ux4g-heading-xs-strong">Choose a condition type</h2>
-      <ul className="kg-home-issues mt-3" role="list">
+      <ul className="rb-home-issues mt-3" role="list">
         {types.map((type) => (
           <li key={type} className="min-w-0">
             <GovButton

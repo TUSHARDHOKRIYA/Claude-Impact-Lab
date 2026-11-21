@@ -2,7 +2,7 @@ import { readMarkerColors } from "@/components/map/map-style";
 
 const LABELS = [
   { key: "enamel", label: "1–3 reports" },
-  { key: "horse", label: "4–7" },
+  { key: "dark", label: "4–7" },
   { key: "oxide", label: "8 or more" },
 ] as const;
 

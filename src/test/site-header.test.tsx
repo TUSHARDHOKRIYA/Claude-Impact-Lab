@@ -26,10 +26,10 @@ describe("SiteHeader", () => {
     expect(document.querySelector(".ux4g-topbar")).not.toBeNull();
     expect(document.querySelector(".ux4g-navbar-wrap")).not.toBeNull();
     expect(document.querySelector(".ux4g-navbar-brand")).toBeNull();
-    const wordmark = screen.getByRole("link", { name: /kala ghoda khabar/i });
+    const wordmark = screen.getByRole("link", { name: /rastabaaz/i });
     expect(wordmark.className).toMatch(/ux4g-navbar-logo/);
     expect(wordmark.className).toMatch(/touch-target/);
-    expect(wordmark.querySelector(".kg-navbar-wordmark")).not.toBeNull();
+    expect(wordmark.querySelector(".rb-navbar-wordmark")).not.toBeNull();
     expect(record.className).toMatch(/ux4g-text-link-md/);
     const map = screen.getByRole("link", { name: /^map$/i });
     expect(map).toHaveAttribute("href", "/map");

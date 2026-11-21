@@ -45,7 +45,7 @@ export function ReportFormFooter(props: ReportFormFooterProps) {
           </GovAlert>
         </div>
       ) : null}
-      <div className={props.showBack ? "rh-actionbar rh-actionbar-split" : "rh-actionbar"}>
+      <div className={props.showBack ? "rb-actionbar rb-actionbar-split" : "rb-actionbar"}>
         {props.showBack ? (
           <GovButton type="button" variant="secondary" className="w-full" disabled={props.pending} onClick={props.onBack}>
             Back

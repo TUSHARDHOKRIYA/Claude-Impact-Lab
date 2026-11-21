@@ -3,7 +3,7 @@ import { PINNABLE_LANDMARKS } from "@/lib/landmarks";
 
 /**
  * Every pinnable landmark with the names people say it by, Devanagari included,
- * so "Kala Ghoda Cafe ke saamne" or "रिदम हाउस" lands on the map.
+ * so "Hindmata ke paas" or "किंग्स सर्कल" lands on the map.
  */
 export function landmarkBlock(): string {
   return PINNABLE_LANDMARKS.map((landmark) => {
@@ -15,7 +15,7 @@ export function landmarkBlock(): string {
 
 export function buildSystemPrompt(): string {
   return [
-    "You are filling in a street-condition report form for a resident of Kala Ghoda, Mumbai.",
+    "You are filling in a road-problem report form for someone in Mumbai.",
     "They speak in code-mixed Hindi, Marathi and English. Understand all three, in any script.",
     "",
     "You fill the form ONLY by calling tools. One tool call per slot, one slot per call.",

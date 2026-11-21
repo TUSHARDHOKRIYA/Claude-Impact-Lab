@@ -61,7 +61,7 @@ describe("ux4g token foundation", () => {
     }
   });
 
-  it("defines official UX4G token aliases used by Kala Ghoda names", () => {
+  it("defines official UX4G token aliases used by Rastabaaz names", () => {
     const core = read("src/styles/ux4g-core.css");
     expect(core).toContain("--ux4g-bg-primary-strong");
     expect(core).toContain("--ux4g-color-red-600");
@@ -78,10 +78,9 @@ describe("ux4g token foundation", () => {
     expect(core).not.toMatch(/--ux4g-color-primary-50:\s*#f2efff/);
   });
 
-  it("exposes Kala Ghoda semantic tokens mapped from UX4G primitives", () => {
+  it("exposes Rastabaaz semantic tokens mapped from UX4G primitives", () => {
     const tokens = read("src/styles/tokens.css");
     for (const name of [
-      "--horse",
       "--enamel",
       "--oxide",
       "--moss",
@@ -255,7 +254,7 @@ describe("map layout", () => {
     const css = read("src/styles/map.css");
     expect(css).toMatch(/@media\s*\(\s*min-width:\s*64rem\s*\)/);
     const desktop = css.slice(css.search(/@media\s*\(\s*min-width:\s*64rem\s*\)/));
-    expect(desktop).toMatch(/\.kg-map-split\s*\{[^}]*grid-template-columns/);
-    expect(css).not.toMatch(/kg-map-disclosure/);
+    expect(desktop).toMatch(/\.rb-map-split\s*\{[^}]*grid-template-columns/);
+    expect(css).not.toMatch(/rb-map-disclosure/);
   });
 });

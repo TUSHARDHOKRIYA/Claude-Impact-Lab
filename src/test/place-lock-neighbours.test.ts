@@ -10,10 +10,10 @@ const send = vi.fn();
 
 vi.mock("@/lib/repo/dynamo-client", () => ({
   getDocClient: () => ({ send }),
-  getTableName: () => "khabar-test",
+  getTableName: () => "rastabaaz-test",
 }));
 
-let DynamoKhabarRepository: typeof import("@/lib/repo/dynamo").DynamoKhabarRepository;
+let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaazRepository;
 
 function input(partial: Partial<CreateReportInput> = {}): CreateReportInput {
   return {
@@ -34,12 +34,12 @@ const WINNER_LOCATION = {
   sk: "META",
   type: "location",
   id: "loc_winner",
-  name: "Footpath near Kala Ghoda",
-  slug: "kala-ghoda-footpath",
+  name: "Pothole near Hindmata",
+  slug: "hindmata-pothole",
   issueType: "footpath",
   lat: 18.9298,
   lng: 72.8328,
-  street: "Kala Ghoda",
+  street: "Hindmata",
   ward: "A Ward",
   createdAt: "2026-09-01T00:00:00.000Z",
 };
@@ -56,7 +56,7 @@ function placeCreate(input: Record<string, unknown>): boolean {
 
 describe("the neighbour lock probe", () => {
   beforeAll(async () => {
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -78,7 +78,7 @@ describe("the neighbour lock probe", () => {
       return { Item: undefined, Items: [] }; // gsi2 has not indexed the winner yet
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input(pin));
+    const result = await new DynamoRastabaazRepository().createReport(input(pin));
 
     expect(result.location.id).toBe("loc_winner");
     expect(result.report.locationId).toBe("loc_winner");
@@ -101,7 +101,7 @@ describe("the neighbour lock probe", () => {
       return { Item: undefined, Items: [] };
     });
 
-    const result = await new DynamoKhabarRepository().createReport(input(pin));
+    const result = await new DynamoRastabaazRepository().createReport(input(pin));
 
     expect(result.location.id).toBe("loc_winner");
   });

@@ -11,7 +11,7 @@ type LoginPageProps = {
 };
 
 export const metadata = {
-  title: "Desk — Kala Ghoda Khabar",
+  title: "Desk — Rastabaaz",
 };
 
 export default async function AdminLoginPage({ searchParams }: LoginPageProps) {

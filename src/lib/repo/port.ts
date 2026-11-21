@@ -17,7 +17,7 @@ export type SeedItem =
   | { entity: "report"; record: SeedReport }
   | { entity: "retire_report"; record: SeedReport };
 
-export type KhabarRepository = {
+export type RastabaazRepository = {
   getLocation(id: string): Promise<LocationRecord | null>;
   getLocationBySlug(slug: string): Promise<LocationRecord | null>;
   findNearbyLocation(

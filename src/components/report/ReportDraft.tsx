@@ -208,14 +208,14 @@ export function ReportDraft({
     return <SubmittedPanel reportId={submittedId} lang={convo.lang} onAgain={onAgain} />;
   }
   return (
-    <form className="rh-report" data-step={submittedId ? "done" : step} noValidate onSubmit={onSubmit}>
+    <form className="rb-report" data-step={submittedId ? "done" : step} noValidate onSubmit={onSubmit}>
       {voiceEnabled ? (
         <GovProgress current={step === STEP.photo ? 1 : step === STEP.review ? 3 : 2} labels={["Photo", "Answer", "Check"]} />
       ) : (
         <GovProgress current={step} labels={TAP_LABELS} />
       )}
       {step === STEP.photo ? (
-        <div className="rh-step">
+        <div className="rb-step">
           <ReportPhotoField
             preview={photoState.preview}
             status={photoState.status}

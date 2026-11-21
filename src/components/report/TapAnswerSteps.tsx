@@ -38,8 +38,8 @@ export function TapAnswerSteps(props: {
 }) {
   if (props.step === TAP_STEP.issue) {
     return (
-      <div className="rh-step">
-        <h2 id="report-step-heading" tabIndex={-1} className="rh-step-heading ux4g-title-l-strong">
+      <div className="rb-step">
+        <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
           What is wrong with the road?
         </h2>
         <IssueTypePicker
@@ -53,7 +53,7 @@ export function TapAnswerSteps(props: {
   }
   if (props.step === TAP_STEP.history) {
     return (
-      <div className="rh-step">
+      <div className="rb-step">
         <HistoryFields
           noticedWindow={props.noticedWindow}
           recurs={props.recurs}
@@ -67,7 +67,7 @@ export function TapAnswerSteps(props: {
   }
   if (props.step === TAP_STEP.impact) {
     return (
-      <div className="rh-step">
+      <div className="rb-step">
         <ImpactFields
           accident={props.accident}
           affects={props.affects}
@@ -83,7 +83,7 @@ export function TapAnswerSteps(props: {
   }
   if (props.step === TAP_STEP.place) {
     return (
-      <div className="rh-step">
+      <div className="rb-step">
         <LocationStep
           value={props.pin}
           error={props.locationError}

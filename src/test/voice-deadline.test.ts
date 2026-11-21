@@ -114,7 +114,7 @@ describe("voice turn deadline", () => {
       "fetch",
       vi.fn(async (url: string | URL | Request) => {
         const href = String(url);
-        if (href.includes("speech-to-text")) return sttResponse("garbage near the horse");
+        if (href.includes("speech-to-text")) return sttResponse("pothole near Hindmata");
         if (href.includes("chat/completions")) {
           chats += 1;
           return toolResponse();
@@ -136,7 +136,7 @@ describe("voice turn deadline", () => {
       "fetch",
       vi.fn(async (url: string | URL | Request) => {
         const href = String(url);
-        if (href.includes("speech-to-text")) return sttResponse("garbage near the horse");
+        if (href.includes("speech-to-text")) return sttResponse("pothole near Hindmata");
         if (href.includes("chat/completions")) return stopResponse();
         return new Promise(() => {});
       }),
@@ -146,7 +146,7 @@ describe("voice turn deadline", () => {
 
     expect(result).toMatchObject({
       ok: true,
-      transcript: "garbage near the horse",
+      transcript: "pothole near Hindmata",
       audio: null,
     });
     expect(logged).not.toHaveBeenCalled();
@@ -174,7 +174,7 @@ describe("voice turn deadline", () => {
       "fetch",
       vi.fn(async (url: string | URL | Request) => {
         const href = String(url);
-        if (href.includes("speech-to-text")) return sttResponse("garbage near the horse");
+        if (href.includes("speech-to-text")) return sttResponse("pothole near Hindmata");
         if (href.includes("chat/completions")) return stopResponse();
         const response = new Response("{}", { status: 200 });
         response.json = () => new Promise(() => {});
@@ -184,7 +184,7 @@ describe("voice turn deadline", () => {
 
     const result = await settleWithinBudget(processVoiceTurnAction(clip({ speak: "1" })));
 
-    expect(result).toMatchObject({ ok: true, transcript: "garbage near the horse", audio: null });
+    expect(result).toMatchObject({ ok: true, transcript: "pothole near Hindmata", audio: null });
     expect(logged).not.toHaveBeenCalled();
   });
 

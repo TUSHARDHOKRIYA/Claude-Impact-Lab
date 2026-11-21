@@ -123,7 +123,7 @@ export const SPOKEN = { mimeType: "audio/mpeg", base64: "SUQzAAAA" };
 export function turn(overrides: Partial<VoiceTurnSuccess> = {}): VoiceTurnSuccess {
   return {
     ok: true,
-    transcript: "garbage near the horse",
+    transcript: "pothole near Hindmata",
     languageCode: "en-IN",
     fields: {},
     pinProposal: null,

@@ -174,7 +174,7 @@ describe("the voice-first report page", () => {
     expect(hidden("description")).toBe("It is dark at night.");
   });
 
-  it("puts the pin where the phone is, and says so when that is outside Kala Ghoda", async () => {
+  it("puts the pin where the phone is, and says so when that is outside Mumbai's wards", async () => {
     let position = { latitude: 18.9283, longitude: 72.8319 };
     const getCurrentPosition = vi.fn((ok: PositionCallback) => ok({ coords: position } as GeolocationPosition));
     Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
@@ -188,7 +188,7 @@ describe("the voice-first report page", () => {
 
     position = { latitude: 19.076, longitude: 72.8777 }; // Bandra, well outside the precinct
     await tap(user, "Use my location");
-    expect(screen.getByRole("alert")).toHaveTextContent(/outside Kala Ghoda/);
+    expect(screen.getByRole("alert")).toHaveTextContent(/outside Mumbai's wards/);
     expect(Number(hidden("lat"))).toBe(18.9283);
   });
 

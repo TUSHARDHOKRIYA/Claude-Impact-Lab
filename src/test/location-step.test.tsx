@@ -12,8 +12,8 @@ import { LocationStep } from "@/components/report/LocationStep";
 import { CITY, LANDMARKS } from "@/lib/city";
 
 const CENTER = { lat: 18.9298, lng: 72.8324 };
-const horse = LANDMARKS.find((item) => item.id === "black-horse");
-if (!horse) throw new Error("black-horse landmark missing");
+const hindmata = LANDMARKS.find((item) => item.id === "loc-hindmata");
+if (!hindmata) throw new Error("Hindmata area missing");
 
 type PendingGeo = { ok: PositionCallback; err?: PositionErrorCallback };
 
@@ -51,8 +51,8 @@ describe("LocationStep", () => {
         onConfirm={vi.fn()}
       />,
     );
-    await user.click(screen.getByRole("button", { name: horse.name }));
-    expect(onChange).toHaveBeenCalledWith({ lat: horse.lat, lng: horse.lng });
+    await user.click(screen.getByRole("button", { name: hindmata.name }));
+    expect(onChange).toHaveBeenCalledWith({ lat: hindmata.lat, lng: hindmata.lng });
     expect(screen.getByLabelText("Latitude")).toBeInTheDocument();
     expect(screen.getByLabelText("Longitude")).toBeInTheDocument();
   });
@@ -93,7 +93,7 @@ describe("LocationStep", () => {
     const locate = screen.getByRole("button", { name: "Use my location" });
     await user.click(locate);
     expect(onChange).not.toHaveBeenCalled();
-    expect(screen.getByRole("alert")).toHaveTextContent("Place the pin inside Kala Ghoda.");
+    expect(screen.getByRole("alert")).toHaveTextContent("Place the pin inside a BMC ward in Mumbai.");
     expect(locate).toHaveAttribute("aria-describedby", "use-location-error");
     expect(screen.getByLabelText("Latitude")).not.toHaveAttribute("aria-invalid");
   });
@@ -210,7 +210,7 @@ describe("LocationStep", () => {
     });
     expect(locate).toBeDisabled();
     expect(pending).toHaveLength(2);
-    pending[0]?.ok(coords(horse.lat, horse.lng));
+    pending[0]?.ok(coords(hindmata.lat, hindmata.lng));
     expect(onChange).not.toHaveBeenCalled();
     pending[1]?.ok(coords(18.9277, 72.83185));
     expect(onChange).toHaveBeenCalledTimes(1);
@@ -231,11 +231,11 @@ describe("LocationStep", () => {
       />,
     );
     await user.click(screen.getByRole("button", { name: "Use my location" }));
-    await user.click(screen.getByRole("button", { name: horse.name }));
+    await user.click(screen.getByRole("button", { name: hindmata.name }));
     expect(onChange).toHaveBeenCalledTimes(1);
     pending[0]?.ok(coords(18.9277, 72.83185));
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith({ lat: horse.lat, lng: horse.lng });
+    expect(onChange).toHaveBeenCalledWith({ lat: hindmata.lat, lng: hindmata.lng });
   });
 
   it("does not apply a locate callback after unmount", async () => {
@@ -253,7 +253,7 @@ describe("LocationStep", () => {
     );
     await user.click(screen.getByRole("button", { name: "Use my location" }));
     view.unmount();
-    pending[0]?.ok(coords(horse.lat, horse.lng));
+    pending[0]?.ok(coords(hindmata.lat, hindmata.lng));
     expect(onChange).not.toHaveBeenCalled();
   });
 

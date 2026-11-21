@@ -1,7 +1,7 @@
 import "server-only";
 
 import { getRepository } from "@/lib/repo/context";
-import type { KhabarRepository } from "@/lib/repo/port";
+import type { RastabaazRepository } from "@/lib/repo/port";
 import type {
   CreateReportInput,
   CreateReportResult,
@@ -9,20 +9,20 @@ import type {
   UpdateReportInput,
 } from "@/lib/types";
 
-function resolveRepo(repo?: KhabarRepository): KhabarRepository {
+function resolveRepo(repo?: RastabaazRepository): RastabaazRepository {
   return repo ?? getRepository();
 }
 
 export async function createReport(
   input: CreateReportInput,
-  repo?: KhabarRepository,
+  repo?: RastabaazRepository,
 ): Promise<CreateReportResult> {
   return resolveRepo(repo).createReport(input);
 }
 
 export async function updateReport(
   input: UpdateReportInput,
-  repo?: KhabarRepository,
+  repo?: RastabaazRepository,
 ): Promise<ReportRecord | null> {
   return resolveRepo(repo).updateReport(input);
 }

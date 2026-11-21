@@ -13,7 +13,7 @@ const send = vi.fn();
 
 vi.mock("@/lib/repo/dynamo-client", () => ({
   getDocClient: () => ({ send }),
-  getTableName: () => "khabar-test",
+  getTableName: () => "rastabaaz-test",
 }));
 
 const AWS_PACKAGES = ["@aws-sdk/client-dynamodb", "@aws-sdk/lib-dynamodb"] as const;
@@ -51,7 +51,7 @@ const REPORT_ITEM = {
   createdAt: "2026-01-01T00:00:00.000Z",
 };
 
-let DynamoKhabarRepository: typeof import("@/lib/repo/dynamo").DynamoKhabarRepository;
+let DynamoRastabaazRepository: typeof import("@/lib/repo/dynamo").DynamoRastabaazRepository;
 let QueryCommand: typeof import("@aws-sdk/lib-dynamodb").QueryCommand;
 
 async function requireAwsPackages(): Promise<void> {
@@ -106,11 +106,11 @@ function projectedNames(input: Record<string, unknown>): string[] {
     .map((token) => names[token] ?? token.replace(/^#/, ""));
 }
 
-describe("DynamoKhabarRepository", () => {
+describe("DynamoRastabaazRepository", () => {
   beforeAll(async () => {
     await requireAwsPackages();
     ({ QueryCommand } = await import("@aws-sdk/lib-dynamodb"));
-    ({ DynamoKhabarRepository } = await import("@/lib/repo/dynamo"));
+    ({ DynamoRastabaazRepository } = await import("@/lib/repo/dynamo"));
   });
 
   beforeEach(() => {
@@ -140,7 +140,7 @@ describe("DynamoKhabarRepository", () => {
     const older = { ...REPORT_ITEM, id: "rpt_old", noticedAt: "2026-01-01", createdAt: "2026-01-01T00:00:00.000Z" };
     const newer = { ...REPORT_ITEM, id: "rpt_new", noticedAt: "2026-03-01", createdAt: "2026-03-01T00:00:00.000Z" };
     send.mockResolvedValueOnce({ Items: [older, newer], LastEvaluatedKey: undefined });
-    const rows = await new DynamoKhabarRepository().listReportsForLocation("loc_1");
+    const rows = await new DynamoRastabaazRepository().listReportsForLocation("loc_1");
     const command = send.mock.calls[0]?.[0];
     expect(command).toBeInstanceOf(QueryCommand);
     const { input } = sentCommand();
@@ -160,7 +160,7 @@ describe("DynamoKhabarRepository", () => {
   });
 
   it("rejects a sample path as a citizen photo before writing", async () => {
-    await expect(new DynamoKhabarRepository().createReport(citizenInput({ photo: "/samples/paving.svg" }))).rejects.toThrow(
+    await expect(new DynamoRastabaazRepository().createReport(citizenInput({ photo: "/samples/paving.svg" }))).rejects.toThrow(
       /JPEG, PNG, or WebP/,
     );
     expect(send).not.toHaveBeenCalled();
@@ -168,7 +168,7 @@ describe("DynamoKhabarRepository", () => {
 
   it("rejects an item over 400 KiB before writing", async () => {
     await expect(
-      new DynamoKhabarRepository().createReport(citizenInput({ description: "x".repeat(410000) })),
+      new DynamoRastabaazRepository().createReport(citizenInput({ description: "x".repeat(410000) })),
     ).rejects.toThrow(/too large/);
     expect(send).not.toHaveBeenCalled();
   });
@@ -181,7 +181,7 @@ describe("DynamoKhabarRepository", () => {
       .mockResolvedValueOnce({ Item: { photo: retired.photo } })
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce({});
-    await new DynamoKhabarRepository().putSeedItems([{ entity: "retire_report", record: retired }]);
+    await new DynamoRastabaazRepository().putSeedItems([{ entity: "retire_report", record: retired }]);
     const inputs = send.mock.calls.map(([command]) => command.input);
     const [notes, , del, photoDelete] = inputs;
     expect(notes).toMatchObject({ IndexName: "gsi1", ExpressionAttributeValues: { ":pk": `RPT#${retired.id}`, ":upd": "UPD#" } });
@@ -197,7 +197,7 @@ describe("DynamoKhabarRepository", () => {
 
     send.mockReset();
     send.mockResolvedValueOnce({ Count: 1 });
-    await new DynamoKhabarRepository().putSeedItems([{ entity: "retire_report", record: retired }]);
+    await new DynamoRastabaazRepository().putSeedItems([{ entity: "retire_report", record: retired }]);
     expect(send).toHaveBeenCalledTimes(1);
   });
 });

@@ -141,7 +141,7 @@ export const VOICE_TOOLS: ChatTool[] = [
         type: "string",
         enum: LANDMARK_IDS,
         description:
-          "One of the known Kala Ghoda landmark ids. Never raw latitude or longitude; there is no coordinate parameter on purpose.",
+          "One of the known Mumbai area ids. Never raw latitude or longitude; there is no coordinate parameter on purpose.",
       },
     },
   ),

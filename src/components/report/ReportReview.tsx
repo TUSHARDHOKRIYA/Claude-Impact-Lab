@@ -50,11 +50,11 @@ export function ReportReview({
   const ward = wardAt(lat, lng);
 
   return (
-    <section className="rh-step" lang={lang}>
-      <h2 id="report-step-heading" tabIndex={-1} className="rh-step-heading ux4g-title-l-strong">
+    <section className="rb-step" lang={lang}>
+      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
         {copy.heading}
       </h2>
-      <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-xs rh-measure">
+      <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
         {copy.anonymous}{lang === "hi" ? "।" : "."} {copy.publicNote}
       </p>
       {ward ? (
@@ -81,7 +81,7 @@ export function ReportReview({
         />
       )}
       <article className="ux4g-card ux4g-card-solid ux4g-card-vertical ux4g-mt-xl">
-        <dl className="ux4g-card-body rh-review-list">
+        <dl className="ux4g-card-body rb-review-list">
         <div>
           <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">{copy.fields.issueType}</dt>
           <dd className="ux4g-body-m-strong">{issueTypeLabel(lang, issueType)}</dd>

@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { siteOrigin } from "@/lib/site-url";
 import "./globals.css";
 
-const title = "Rasta Hisaab";
+const title = "Rastabaaz";
 const description =
   "Follow the rupee on Mumbai's monsoon roads. Report a pothole, see where each ward's repair money went, and whether the fix held.";
 
@@ -12,7 +12,7 @@ const baseMetadata: Metadata = {
   title,
   description,
   openGraph: {
-    siteName: "Rasta Hisaab",
+    siteName: "Rastabaaz",
     type: "website",
     locale: "en_IN",
     title,

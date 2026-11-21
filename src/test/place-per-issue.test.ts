@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { CITY } from "@/lib/city";
-import { MemoryKhabarRepository } from "@/lib/repo/memory";
+import { MemoryRastabaazRepository } from "@/lib/repo/memory";
 import type { CreateReportInput } from "@/lib/types";
 
 import { sampleJpegDataUrl } from "./sample-jpeg";
@@ -22,7 +22,7 @@ function submission(overrides: Partial<CreateReportInput> = {}): CreateReportInp
 
 describe("a place is one problem at one spot", () => {
   it("keeps two issue types at the same pin as two places", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const road = await repo.createReport(submission({ issueType: "road" }));
     const waste = await repo.createReport(submission({ issueType: "waste" }));
 
@@ -34,7 +34,7 @@ describe("a place is one problem at one spot", () => {
   });
 
   it("still connects the same issue type at the same pin", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const first = await repo.createReport(submission({ issueType: "road" }));
     const second = await repo.createReport(submission({ issueType: "road" }));
 
@@ -43,7 +43,7 @@ describe("a place is one problem at one spot", () => {
   });
 
   it("never files a report under a place named for another problem", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const road = await repo.createReport(submission({ issueType: "road" }));
     const waste = await repo.createReport(submission({ issueType: "waste" }));
 
@@ -54,7 +54,7 @@ describe("a place is one problem at one spot", () => {
   });
 
   it("matches a nearby place only when the problem matches", async () => {
-    const repo = new MemoryKhabarRepository({ strictPhoto: false });
+    const repo = new MemoryRastabaazRepository({ strictPhoto: false });
     const { location } = await repo.createReport(submission({ issueType: "road" }));
     const { lat, lng } = CITY.center;
 

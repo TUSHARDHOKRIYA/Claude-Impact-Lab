@@ -14,10 +14,10 @@ afterEach(() => {
   window.matchMedia = originalMatchMedia;
 });
 
-vi.mock("@/components/map/KalaGhodaMap", async () => {
+vi.mock("@/components/map/CityMap", async () => {
   const { PlacePreview: Preview } = await import("@/components/map/PlacePreview");
   return {
-    KalaGhodaMap: ({
+    CityMap: ({
       places,
       selectedId,
       onSelect,
@@ -30,7 +30,7 @@ vi.mock("@/components/map/KalaGhodaMap", async () => {
     }) => {
       const selected = places.find((item) => item.location.id === selectedId);
       return (
-        <div data-testid="kg-map-enhancement">
+        <div data-testid="rb-map-enhancement">
           {selected && onSelect ? (
             <Preview
               place={selected}
@@ -49,12 +49,12 @@ vi.mock("@/components/map/KalaGhodaMap", async () => {
 const place: PlaceSummary = {
   location: {
     id: "loc_1",
-    name: "K Dubash Marg footpath, Kala Ghoda Part 2",
-    slug: "k-dubash-marg-kala-ghoda-part-2-footpath",
+    name: "Pothole on Dr Ambedkar Road, Parel",
+    slug: "dr-ambedkar-road-parel-pothole",
     issueType: "footpath",
     lat: 18.9298,
     lng: 72.8328,
-    street: "K Dubash Marg",
+    street: "Dr Ambedkar Road",
     ward: "A Ward",
     createdAt: "2022-08-18",
   },
@@ -108,8 +108,8 @@ describe("PlaceList", () => {
   it("lists places as links without requiring the map", async () => {
     const user = userEvent.setup();
     render(<PlaceList places={[place]} selectedId={null} onSelect={() => undefined} />);
-    const link = screen.getByRole("link", { name: /K Dubash Marg footpath/i });
-    expect(link).toHaveAttribute("href", "/places/k-dubash-marg-kala-ghoda-part-2-footpath");
+    const link = screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i });
+    expect(link).toHaveAttribute("href", "/places/dr-ambedkar-road-parel-pothole");
     expect(link.className).toMatch(/touch-target/);
     await user.tab();
     expect(link).toHaveFocus();
@@ -124,9 +124,9 @@ describe("PlaceList", () => {
     const list = within(container).getByRole("list");
     expect(list.className).toMatch(/ux4g-list/);
     expect(container.querySelector(".ux4g-list-item")).not.toBeNull();
-    const link = within(container).getByRole("link", { name: /K Dubash Marg footpath/i });
+    const link = within(container).getByRole("link", { name: /Pothole on Dr Ambedkar Road/i });
     expect(link).toHaveAttribute("aria-current", "true");
-    expect(within(link).getByText("K Dubash Marg")).toBeInTheDocument();
+    expect(within(link).getByText("Dr Ambedkar Road")).toBeInTheDocument();
     expect(within(link).getByText("4 reports")).toBeInTheDocument();
     expect(within(link).getByText("Footpath")).toBeInTheDocument();
     await user.click(link);
@@ -177,9 +177,9 @@ describe("PlacePreview", () => {
 describe("MapFilters", () => {
   it("always offers the place list and always renders the map", async () => {
     render(<MapFilters points={[point]} places={[place]} />);
-    expect(screen.getByRole("link", { name: /K Dubash Marg footpath/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i })).toBeInTheDocument();
     expect(screen.queryByText("Show the map")).not.toBeInTheDocument();
-    expect(await screen.findByTestId("kg-map-enhancement")).toBeInTheDocument();
+    expect(await screen.findByTestId("rb-map-enhancement")).toBeInTheDocument();
     expect(screen.getByLabelText("Issue type").tagName).toBe("SELECT");
     expect(screen.getByRole("radio", { name: "All time" })).toBeChecked();
     expect(screen.getByRole("radio", { name: "Past year" })).toBeInTheDocument();
@@ -188,10 +188,10 @@ describe("MapFilters", () => {
   it("leads with the map in the DOM so a phone meets it before the list", async () => {
     const map = render(<MapFilters points={[point]} places={[place]} />);
     void map;
-    const canvas = await screen.findByTestId("kg-map-enhancement");
-    const panel = canvas.closest(".kg-map-panel");
+    const canvas = await screen.findByTestId("rb-map-enhancement");
+    const panel = canvas.closest(".rb-map-panel");
     expect(panel).not.toBeNull();
-    const split = panel?.closest(".kg-map-split");
+    const split = panel?.closest(".rb-map-split");
     expect(split).not.toBeNull();
     expect(split?.firstElementChild).toBe(panel);
   });
@@ -199,7 +199,7 @@ describe("MapFilters", () => {
   it("mounts the map on a narrow viewport with no toggle to press", async () => {
     stubMatchMedia(false);
     render(<MapFilters points={[point]} places={[place]} />);
-    expect(await screen.findByTestId("kg-map-enhancement")).toBeInTheDocument();
+    expect(await screen.findByTestId("rb-map-enhancement")).toBeInTheDocument();
     expect(document.querySelector("details")).toBeNull();
   });
 
@@ -207,8 +207,8 @@ describe("MapFilters", () => {
     stubMatchMedia(true);
     const user = userEvent.setup();
     render(<MapFilters points={[point]} places={[place]} />);
-    await screen.findByTestId("kg-map-enhancement");
-    const link = screen.getByRole("link", { name: /K Dubash Marg footpath/i });
+    await screen.findByTestId("rb-map-enhancement");
+    const link = screen.getByRole("link", { name: /Pothole on Dr Ambedkar Road/i });
     await user.click(link);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     screen.getByRole("button", { name: /close this place preview/i }).focus();

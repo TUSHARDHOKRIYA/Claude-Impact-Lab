@@ -80,7 +80,7 @@ export function ensureReportLayers(map: MapLibreMap) {
     layout: {
       "text-field": ["get", "point_count_abbreviated"],
       "text-size": 12,
-      "text-font": ["Open Sans Regular"],
+      "text-font": ["Open Sans Semibold"],
     },
     paint: { "text-color": mark.card },
   });

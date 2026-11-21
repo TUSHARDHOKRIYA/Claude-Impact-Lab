@@ -159,7 +159,7 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
     return true;
   }
 
-  async putSeedItems(items: SeedItem[]): Promise<void> {
+  putSeedItemsSync(items: SeedItem[]): void {
     for (const item of items) {
       if (item.entity === "retire_report") {
         const held = this.reports.get(item.record.id);
@@ -192,6 +192,10 @@ export class MemoryRastabaazRepository implements RastabaazRepository {
       this.reports.set(record.id, record);
       this.photos.set(record.id, photo);
     }
+  }
+
+  async putSeedItems(items: SeedItem[]): Promise<void> {
+    this.putSeedItemsSync(items);
   }
 
   private repairHeldSeedReport(record: SeedReport): void {

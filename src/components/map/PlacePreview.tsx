@@ -3,7 +3,8 @@
 import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
 import { GovBadge } from "@/components/gov/GovBadge";
-import { GovButton } from "@/components/gov/GovButton";
+import { placeTitle } from "@/components/map/place-title";
+import { CloseIcon } from "@/components/report/flow-icons";
 import { noticedWhen } from "@/lib/noticed-label";
 import { ISSUE_TYPE_LABELS, type PlaceSummary } from "@/lib/types";
 
@@ -12,12 +13,15 @@ export function PlacePreview({
   onClose,
   openerRef,
   yourReportId,
+  inline = false,
 }: {
   place: PlaceSummary;
   onClose: () => void;
   openerRef?: RefObject<HTMLElement | null>;
   /** Set when the preview was opened from `?report=`. */
   yourReportId?: string;
+  /** Drawn inside the results panel instead of floating over the map. */
+  inline?: boolean;
 }) {
   const latest = place.latestReport;
   const issue = ISSUE_TYPE_LABELS[place.location.issueType];
@@ -44,24 +48,33 @@ export function PlacePreview({
       role="dialog"
       aria-modal="false"
       aria-labelledby="place-preview-title"
-      className="ux4g-card ux4g-card-solid ux4g-card-vertical pointer-events-auto absolute inset-x-3 bottom-3 z-10 max-w-sm sm:inset-x-auto sm:right-4 sm:bottom-12"
+      className={
+        inline
+          ? "ux4g-card ux4g-card-solid ux4g-card-vertical rb-sheet-preview"
+          : "ux4g-card ux4g-card-solid ux4g-card-vertical pointer-events-auto absolute inset-x-3 bottom-3 z-10 max-w-sm sm:inset-x-auto sm:right-4 sm:bottom-12"
+      }
     >
-      <div className="ux4g-card-header flex items-start justify-between gap-3">
-        <p className="ux4g-card-sub-title">Place</p>
-        <GovButton variant="ghost" onClick={restoreToOpener}>
-          Close this place preview
-        </GovButton>
+      <div className="rb-preview-head">
+        <div className="min-w-0">
+          <h3 id="place-preview-title" className="ux4g-heading-xs-strong">
+            {placeTitle(place)}
+          </h3>
+          <p className="ux4g-body-s-default ux4g-text-neutral-secondary">
+            {place.location.ward} ward
+          </p>
+        </div>
+        <button
+          type="button"
+          className="rb-icon-btn touch-target"
+          aria-label="Close this place preview"
+          onClick={restoreToOpener}
+        >
+          <CloseIcon />
+        </button>
       </div>
 
       <div className="ux4g-card-body">
-        <h3 id="place-preview-title" className="ux4g-card-title">
-          {place.location.name}
-        </h3>
-        <p className="ux4g-text ux4g-text-neutral-secondary">
-          {place.location.street} · {place.location.ward}
-        </p>
-
-        <p className="mt-3 flex items-baseline gap-2">
+        <p className="flex items-baseline gap-2">
           <span className="ux4g-heading-l-strong">{place.reportCount}</span>
           <span className="ux4g-text ux4g-text-neutral-secondary">
             {place.reportCount === 1 ? "report" : "reports"}
@@ -73,9 +86,11 @@ export function PlacePreview({
           <GovBadge tone="info">{issue}</GovBadge>
         </p>
 
-        {latest ? <p className="ux4g-text mt-3">{noticedWhen(latest)}</p> : null}
+        {latest ? (
+          <p className="ux4g-text mt-3">{noticedWhen(latest)}</p>
+        ) : null}
 
-        <p className="mt-4 flex flex-wrap gap-2">
+        <p className="rb-preview-actions">
           <Link
             href={
               yourReportId

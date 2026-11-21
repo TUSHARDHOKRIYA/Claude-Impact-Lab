@@ -1,9 +1,35 @@
 /* Ward money trail. UX4G draws the cards, tables, tags, list and accordion;
  * this file adds the outcome bar (UX4G has no stacked bar) and page layout. */
 
-.rb-page { padding-top: var(--ux4g-padding-l); }
-.rb-section { margin-top: var(--ux4g-margin-3xl); }
-.rb-num { text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rb-page {
+  padding-top: var(--ux4g-padding-l);
+}
+
+.rb-section {
+  margin-top: var(--ux4g-margin-3xl);
+}
+
+.rb-voices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ux4g-margin-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rb-voices li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ux4g-margin-2xs);
+}
+
+.rb-num {
+  text-align: end;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .rb-table tbody tr:last-child > *,
 .rb-outcome-table tbody tr:last-child > * { border-bottom: 0; }
 .rb-table th[scope="row"],
@@ -47,13 +73,6 @@
   display: flex;
   align-items: center;
   gap: var(--ux4g-gap-column-xs);
-}
-
-.rb-outcome-table th[scope="row"] {
-  color: var(--ux4g-text-neutral-primary);
-  font-size: var(--ux4g-fs-14);
-  font-weight: var(--ux4g-fw-medium);
-  white-space: normal;
 }
 
 .rb-key {

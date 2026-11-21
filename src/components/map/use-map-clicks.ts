@@ -55,7 +55,9 @@ export function useMapClicks(
     if (!map) return;
 
     const onClick = (event: MapLayerMouseEvent) => {
-      const layers = [CLUSTER_LAYER, POINT_LAYER].filter((id) => map.getLayer(id));
+      const layers = [CLUSTER_LAYER, POINT_LAYER].filter((id) =>
+        map.getLayer(id),
+      );
       const hits = map.queryRenderedFeatures(event.point, { layers });
       if (hits.length === 0) {
         onPlaceRef.current(null);

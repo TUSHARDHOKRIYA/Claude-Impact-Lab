@@ -36,8 +36,8 @@ export const SUBMITTED_BANNER: Record<LabelLanguage, string> = {
 
 export const SUBMITTED_COPY: Record<LabelLanguage, SubmittedCopy> = {
   en: {
-    heading: "Submitted",
-    body: "Your report is on the map and on the ward record now.",
+    heading: "Thanks for letting us know!",
+    body: "Your report is on the map and on the ward's record now, next to what the ward spent on this road.",
     map: "See it on the map",
     report: "Open the report page",
     again: "Report another problem",

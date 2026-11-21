@@ -6,17 +6,18 @@ import { Suspense } from "react";
 import { FlagList } from "@/components/rupee/FlagList";
 import { NextRupeeList } from "@/components/rupee/NextRupeeList";
 import { OutcomeBar } from "@/components/rupee/OutcomeBar";
-import { BandBadge } from "@/components/rupee/ScoreMeter";
+import { SpendCategories } from "@/components/rupee/SpendCategories";
 import { WardBrief, WardBriefLoading } from "@/components/rupee/WardBrief";
+import { WardVoices, WardVoicesLoading } from "@/components/rupee/WardVoices";
 import { getRepository } from "@/lib/repo/context";
 import { formatInr, formatInrShort, getRupee, nextRupee } from "@/lib/rupee";
 import { getScorecards } from "@/lib/rupee/scorecard";
-import { pct, wardFromSlug, wardSlug } from "@/lib/rupee/slug";
-import type { SpendSlice } from "@/lib/rupee/types";
+import { moneyScore, pct, scoreBand, wardFromSlug, wardSlug } from "@/lib/rupee/slug";
 
 export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ code: string }> };
+type PageProps = Params & { searchParams: Promise<{ by?: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { code } = await params;
@@ -28,62 +29,59 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-function SliceTable({ caption, rows, firstColumn }: { caption: string; rows: SpendSlice[]; firstColumn: string }) {
-  return (
-    <div className="ux4g-table-responsive">
-      <table className="ux4g-table ux4g-table-s rb-table">
-        <caption className="sr-only">{caption}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{firstColumn}</th>
-            <th scope="col" className="rb-num">Spent</th>
-            <th scope="col" className="rb-num">Jobs</th>
-            <th scope="col" className="rb-num">Re-opened</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.key}>
-              <th scope="row">{row.label}</th>
-              <td className="rb-num">{formatInrShort(row.spentInr)}</td>
-              <td className="rb-num">{row.orders}</td>
-              <td className="rb-num">{pct(row.reopenRate)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const VIEWS = [
+  { key: "problem", label: "Problem" },
+  { key: "method", label: "Method" },
+  { key: "contractor", label: "Contractor" },
+] as const;
 
-async function citizenReportCount(code: string): Promise<{ places: number; reports: number }> {
+type View = (typeof VIEWS)[number]["key"];
+
+async function citizenReportCount(
+  code: string,
+): Promise<{ places: number; reports: number }> {
   try {
     const catalog = await getRepository().loadCatalog();
-    const ids = new Set(catalog.locations.filter((loc) => loc.ward === code).map((loc) => loc.id));
-    return { places: ids.size, reports: catalog.reports.filter((r) => ids.has(r.locationId)).length };
+    const ids = new Set(
+      catalog.locations.filter((loc) => loc.ward === code).map((loc) => loc.id),
+    );
+    return {
+      places: ids.size,
+      reports: catalog.reports.filter((r) => ids.has(r.locationId)).length,
+    };
   } catch {
     return { places: 0, reports: 0 };
   }
 }
 
-export default async function WardPage({ params }: Params) {
+export default async function WardPage({ params, searchParams }: PageProps) {
   const { code } = await params;
+  const asked = (await searchParams).by;
+  const view: View = VIEWS.some((option) => option.key === asked)
+    ? (asked as View)
+    : "problem";
   const rupee = getRupee();
   const ledger = wardFromSlug(rupee.ledgers, code);
   if (!ledger) notFound();
 
   const { ward, outcome, complaints, context } = ledger;
   const next = nextRupee(rupee.ds, rupee.flags, ward.code, 5);
-  const scoreById = new Map(rupee.scores.map((score) => [score.contractor.id, score]));
-  const cardById = new Map(getScorecards().cards.map((card) => [card.id, card]));
+  const scoreById = new Map(
+    rupee.scores.map((score) => [score.contractor.id, score]),
+  );
   const citizen = await citizenReportCount(ward.code);
+  const score = moneyScore(ledger);
+  const rank = 1 + rupee.ledgers.filter((row) => moneyScore(row) > score).length;
   const index = rupee.ledgers.findIndex((row) => row.ward.code === ward.code);
   const prev = rupee.ledgers[index - 1];
   const after = rupee.ledgers[index + 1];
 
   return (
     <div className="shell-narrow rb-page">
-      <nav className="ux4g-breadcrumb ux4g-breadcrumb-divider" aria-label="Breadcrumb">
+      <nav
+        className="ux4g-breadcrumb ux4g-breadcrumb-divider"
+        aria-label="Breadcrumb"
+      >
         <ol className="ux4g-breadcrumb-list flex">
           <li className="ux4g-breadcrumb-item">
             <Link href="/wards" className="ux4g-breadcrumb-link touch-target">
@@ -97,7 +95,21 @@ export default async function WardPage({ params }: Params) {
       </nav>
 
       <h1 className="ux4g-display-xs-strong ux4g-mt-xs">{ward.code} ward</h1>
-      <p className="ux4g-body-l-default ux4g-text-neutral-secondary">{ward.name}</p>
+      <p className="ux4g-body-l-default ux4g-text-neutral-secondary">
+        {ward.name}
+      </p>
+      <p className="rb-ward-score ux4g-mt-xs">
+        <span className={`rb-rank-score rb-score-${scoreBand(score)}`}>
+          <span className="rb-rank-score-n">{score}</span>
+          <span className="rb-rank-score-w">Score</span>
+        </span>
+        <span className="ux4g-body-m-default">
+          Ranked <strong>{rank} of {rupee.ledgers.length}</strong> wards.{" "}
+          <Link href="/wards" className="ux4g-text-link-m">
+            See the ranking
+          </Link>
+        </span>
+      </p>
 
       <div className="ux4g-mt-m">
         <Suspense fallback={<WardBriefLoading />}>
@@ -105,7 +117,10 @@ export default async function WardPage({ params }: Params) {
         </Suspense>
       </div>
 
-      <section className="ux4g-card ux4g-card-solid ux4g-card-vertical ux4g-mt-l" aria-labelledby="money-heading">
+      <section
+        className="ux4g-card ux4g-card-solid ux4g-card-vertical ux4g-mt-l"
+        aria-labelledby="money-heading"
+      >
         <div className="ux4g-card-header">
           <h2 id="money-heading" className="ux4g-heading-xs-strong">
             {formatInrShort(ledger.spentInr)} spent on {ledger.orders} jobs
@@ -123,72 +138,60 @@ export default async function WardPage({ params }: Params) {
 
       <section className="rb-section" aria-labelledby="held-heading">
         <h2 id="held-heading" className="ux4g-title-l-strong">
-          Did the fix last?
+          Where the money went, and did it last?
         </h2>
         <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
-          {pct(ledger.reopenRate)} of jobs were re-opened within 30 days. {pct(ledger.slaRate)} were finished on
-          time.
+          {pct(ledger.reopenRate)} of jobs were re-opened within 30 days.{" "}
+          {pct(ledger.slaRate)} were finished on time.
+          {view === "contractor"
+            ? ` Fair is the re-open rate expected for the same work in equally flood-prone wards (${context.floodHotspots} flood ${context.floodHotspots === 1 ? "hotspot" : "hotspots"} here).`
+            : ""}
         </p>
+        <nav className="rb-tabs ux4g-mt-s" aria-label="Split the spend by">
+          {VIEWS.map((option) => (
+            <Link
+              key={option.key}
+              href={
+                option.key === "problem"
+                  ? `/wards/${wardSlug(ward.code)}#held-heading`
+                  : `/wards/${wardSlug(ward.code)}?by=${option.key}#held-heading`
+              }
+              aria-current={view === option.key ? "true" : undefined}
+              scroll={false}
+            >
+              {option.label}
+            </Link>
+          ))}
+        </nav>
         <div className="ux4g-mt-s">
-          <SliceTable caption="Durability by type of problem" rows={ledger.byWorkType} firstColumn="Problem" />
-        </div>
-        <details className="rb-more ux4g-mt-s">
-          <summary className="ux4g-btn-text-primary ux4g-btn-m touch-target">By repair method</summary>
-          <div className="ux4g-mt-xs">
-            <SliceTable caption="Durability by repair method" rows={ledger.byMethod} firstColumn="Method" />
-          </div>
-        </details>
-      </section>
-
-      <section className="rb-section" aria-labelledby="who-heading">
-        <h2 id="who-heading" className="ux4g-title-l-strong">
-          Who did the work
-        </h2>
-        <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
-          Fair is the re-open rate expected for the same work in equally flood-prone wards
-          ({context.floodHotspots} flood {context.floodHotspots === 1 ? "hotspot" : "hotspots"} here, low-lying
-          index {ward.lowLyingIndex.toFixed(2)}).
-        </p>
-        <div className="ux4g-table-responsive ux4g-mt-s">
-          <table className="ux4g-table ux4g-table-s rb-table">
-            <caption className="sr-only">Contractors working in {ward.code} ward</caption>
-            <thead>
-              <tr>
-                <th scope="col">Contractor</th>
-                <th scope="col" className="rb-num">Score</th>
-                <th scope="col" className="rb-num">Spent</th>
-                <th scope="col" className="rb-num">Re-opened</th>
-                <th scope="col" className="rb-num">Fair</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ledger.byContractor.map((row) => {
-                const fair = scoreById.get(row.key)?.expectedReopenRate ?? 0;
-                const card = cardById.get(row.key);
-                return (
-                  <tr key={row.key}>
-                    <th scope="row">
-                      <Link href={`/contractors/${row.key}`} className="ux4g-text-link-s">
-                        {row.label.replace(" (synthetic)", "")}
-                      </Link>
-                    </th>
-                    <td className="rb-num">
-                      {card ? (
-                        <>
-                          {card.overall.toFixed(0)} <BandBadge band={card.band} small />
-                        </>
-                      ) : (
-                        "–"
-                      )}
-                    </td>
-                    <td className="rb-num">{formatInrShort(row.spentInr)}</td>
-                    <td className={row.reopenRate > fair + 0.05 ? "rb-num rb-worse" : "rb-num"}>{pct(row.reopenRate)}</td>
-                    <td className="rb-num">{pct(fair)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {view === "problem" ? (
+            <SpendCategories
+              caption="By problem"
+              rows={ledger.byWorkType}
+              totalInr={ledger.spentInr}
+            />
+          ) : view === "method" ? (
+            <SpendCategories
+              caption="By repair method"
+              rows={ledger.byMethod}
+              totalInr={ledger.spentInr}
+            />
+          ) : (
+            <SpendCategories
+              caption="By contractor"
+              rows={ledger.byContractor}
+              totalInr={ledger.spentInr}
+              scorecards={new Map(getScorecards().cards.map((card) => [card.id, card]))}
+              fairRate={
+                new Map(
+                  ledger.byContractor.map((row) => [
+                    row.key,
+                    scoreById.get(row.key)?.expectedReopenRate ?? 0,
+                  ]),
+                )
+              }
+            />
+          )}
         </div>
         <p className="ux4g-body-s-default ux4g-mt-s">
           <Link href="/contractors" className="ux4g-text-link-s">
@@ -203,7 +206,8 @@ export default async function WardPage({ params }: Params) {
         </h2>
         <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
           {formatInr(outcome.flaggedInr)} sits on {ledger.flags.length} flagged{" "}
-          {ledger.flags.length === 1 ? "bill" : "bills"}. A flag is a question for the ward office, not proof of wrongdoing.
+          {ledger.flags.length === 1 ? "bill" : "bills"}. A flag is a question
+          for the ward office, not proof of wrongdoing.
         </p>
         <div className="ux4g-mt-s">
           <FlagList flags={ledger.flags} />
@@ -215,7 +219,8 @@ export default async function WardPage({ params }: Params) {
           Where the next rupee should go
         </h2>
         <p className="ux4g-body-m-default ux4g-text-neutral-secondary ux4g-mt-2xs rb-measure">
-          Ranked by open complaints, accidents, flooding, traffic, and schools or hospitals on the road.
+          Ranked by open complaints, accidents, flooding, traffic, and schools
+          or hospitals on the road.
         </p>
         <div className="ux4g-mt-s">
           <NextRupeeList items={next} />
@@ -227,17 +232,26 @@ export default async function WardPage({ params }: Params) {
           What people reported
         </h2>
         <p className="ux4g-body-m-default ux4g-mt-2xs rb-measure">
-          {complaints.total} complaints this season. {complaints.linked} led to a work order;{" "}
+          {complaints.total} complaints this season. {complaints.linked} led to
+          a work order;{" "}
           <strong>{complaints.stillOpen} are still open with none</strong>.{" "}
           {citizen.reports > 0
             ? `${citizen.reports} photo ${citizen.reports === 1 ? "report has" : "reports have"} been filed here.`
             : "No photo reports filed here yet."}
         </p>
+        <div className="ux4g-mt-s">
+          <Suspense fallback={<WardVoicesLoading />}>
+            <WardVoices ds={rupee.ds} ward={ward.code} />
+          </Suspense>
+        </div>
         <div className="rb-actions ux4g-mt-m">
           <Link href="/" className="ux4g-btn-primary ux4g-btn-m touch-target">
             Report a road problem
           </Link>
-          <Link href="/map" className="ux4g-btn-outline-primary ux4g-btn-m touch-target">
+          <Link
+            href="/map"
+            className="ux4g-btn-outline-primary ux4g-btn-m touch-target"
+          >
             See reports on the map
           </Link>
         </div>
@@ -245,14 +259,20 @@ export default async function WardPage({ params }: Params) {
 
       <nav className="rb-pager ux4g-mt-2xl" aria-label="Other wards">
         {prev ? (
-          <Link href={`/wards/${wardSlug(prev.ward.code)}`} className="ux4g-text-link-m touch-target">
+          <Link
+            href={`/wards/${wardSlug(prev.ward.code)}`}
+            className="ux4g-text-link-m touch-target"
+          >
             Previous: {prev.ward.code} ward
           </Link>
         ) : (
           <span />
         )}
         {after ? (
-          <Link href={`/wards/${wardSlug(after.ward.code)}`} className="ux4g-text-link-m touch-target">
+          <Link
+            href={`/wards/${wardSlug(after.ward.code)}`}
+            className="ux4g-text-link-m touch-target"
+          >
             Next: {after.ward.code} ward
           </Link>
         ) : null}

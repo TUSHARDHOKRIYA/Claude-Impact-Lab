@@ -7,7 +7,7 @@ function baseDs(): Dataset {
   return {
     wards: [], roads: [], workOrders: [], contractors: [], rateCard: [],
     complaints: [], floodHotspots: [], rainfall: [], tides: [], traffic: [],
-    accidents: [], facilities: [],
+    accidents: [], facilities: [], socialPosts: [],
   };
 }
 

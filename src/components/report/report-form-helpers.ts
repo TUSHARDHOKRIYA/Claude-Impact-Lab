@@ -1,13 +1,18 @@
-import type { DetailsErrors } from "@/components/report/ReportDetailsFields";
 import { isInsideCity } from "@/lib/city";
 import { ACCIDENT_SEEN, NOTICED_WINDOWS } from "@/lib/types";
+
+export type DetailsErrors = {
+  noticedWindow?: string;
+  recurs?: string;
+  accident?: string;
+};
 
 export const FORM_ALERT_ID = "report-form-alert";
 
 export const REPORT_MSG = {
   issue: "Choose what kind of road problem this is.",
   photo: "Take or choose a photo of the problem.",
-  location: "Put the pin inside a BMC ward in Mumbai.",
+  location: "Search for the area or use your location, then move the map so the pin sits on the spot.",
   noticedWindow: "Say when you first noticed it.",
   recurs: "Say whether it was repaired before and came back.",
   accident: "Say whether you have seen an accident or a fall here.",

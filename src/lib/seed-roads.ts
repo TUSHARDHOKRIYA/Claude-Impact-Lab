@@ -29,9 +29,10 @@ const PHOTO: Record<IssueType, string> = {
 };
 
 /**
- * Seeded reports are app complaints from the synthetic dataset
- * (`data/rupee/complaints.csv`), up to four per ward. Built by
- * `node scripts/build-geo.mjs`.
+ * Seeded reports are complaints from the synthetic dataset
+ * (`data/rupee/complaints.csv`) that have coordinates or a locality
+ * match. Built by `node scripts/build-geo.mjs`. A point outside every
+ * ward polygon is dropped here.
  */
 export function seedRoads(): SeedItem[] {
   const items: SeedItem[] = [];

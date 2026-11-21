@@ -69,7 +69,9 @@ writeFileSync(join(out, "localities.data.json"), JSON.stringify(localities));
 writeFileSync(join(out, "wards.data.json"), JSON.stringify(wards));
 console.log(`roads ${roads.length}, localities ${localities.length}, wards ${wards.length}`);
 
-// Seed reports: app complaints with GPS, a few per ward, open ones first.
+// Seed reports: every complaint that already has a point, or whose locality
+// text contains a locality name or alias (longest match). No channel, language,
+// or per-ward cap. Unmapped categories become "other".
 const CATEGORY_TYPE = {
   Pothole: "pothole",
   Waterlogging: "waterlogging",
@@ -78,24 +80,63 @@ const CATEGORY_TYPE = {
   "Road cave-in": "road_cave_in",
   "Broken paver blocks": "broken_paver_blocks",
 };
-const complaints = csv("complaints.csv").filter(
-  (c) => c.channel === "MyBMC App" && c.lat && c.ward_code && CATEGORY_TYPE[c.category_reported] && c.language === "en",
+const TOKEN = /\p{L}|\p{M}|\p{N}/u;
+const norm = (value) => value.normalize("NFC").toLowerCase().replace(/\s+/g, " ").trim();
+const placeKeys = localities.flatMap((loc) =>
+  [loc.name, ...loc.aliases].map((label) => ({ key: norm(label), lat: loc.lat, lng: loc.lng })).filter((place) => place.key),
 );
-const rank = (c) => (c.status === "Open" || c.status === "In Progress" ? 0 : 1);
-complaints.sort((a, b) => rank(a) - rank(b) || Number(b.upvotes) - Number(a.upvotes));
-const perWard = new Map();
+placeKeys.sort((a, b) => b.key.length - a.key.length);
+
+function hasCoord(value) {
+  return value.trim() !== "" && Number.isFinite(Number(value));
+}
+
+function bounded(hay, key, at) {
+  const before = at > 0 ? hay[at - 1] : "";
+  const afterAt = at + key.length;
+  const after = afterAt < hay.length ? hay[afterAt] : "";
+  return (before === "" || !TOKEN.test(before)) && (after === "" || !TOKEN.test(after));
+}
+
+function localityPoint(text) {
+  const hay = norm(text);
+  if (!hay) return null;
+  for (const place of placeKeys) {
+    let from = 0;
+    while (from <= hay.length - place.key.length) {
+      const at = hay.indexOf(place.key, from);
+      if (at < 0) break;
+      if (bounded(hay, place.key, at)) return place;
+      from = at + 1;
+    }
+  }
+  return null;
+}
+
+const complaints = csv("complaints.csv");
 const seeds = [];
+let skippedNoPlace = 0;
 for (const c of complaints) {
-  const n = perWard.get(c.ward_code) ?? 0;
-  if (n >= 4) continue;
-  perWard.set(c.ward_code, n + 1);
-  const issueType = CATEGORY_TYPE[c.category_reported];
+  let lat;
+  let lng;
+  if (hasCoord(c.lat) && hasCoord(c.lon)) {
+    lat = round(c.lat);
+    lng = round(c.lon);
+  } else {
+    const place = localityPoint(c.locality_text);
+    if (!place) {
+      skippedNoPlace += 1;
+      continue;
+    }
+    lat = place.lat;
+    lng = place.lng;
+  }
   seeds.push({
     id: `rpt_seed_${c.complaint_id.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
     complaintId: c.complaint_id,
-    issueType,
-    lat: round(c.lat),
-    lng: round(c.lon),
+    issueType: CATEGORY_TYPE[c.category_reported] ?? "other",
+    lat,
+    lng,
     noticedAt: c.received_at.slice(0, 10),
     recurs: Number(c.upvotes) >= 20,
     accident: Number(c.upvotes) >= 40 ? "near_miss" : "not_sure",
@@ -104,4 +145,4 @@ for (const c of complaints) {
   });
 }
 writeFileSync(join(out, "seed-reports.data.json"), JSON.stringify(seeds));
-console.log(`seed reports ${seeds.length}`);
+console.log(`complaints ${complaints.length}, seed reports ${seeds.length}, skipped no place ${skippedNoPlace}`);

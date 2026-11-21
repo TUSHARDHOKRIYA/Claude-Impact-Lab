@@ -3,24 +3,15 @@
 import { useRef } from "react";
 
 import { GovAlert } from "@/components/gov/GovAlert";
+import { GovBadge } from "@/components/gov/GovBadge";
+import { CameraIcon, ImageIcon } from "@/components/report/flow-icons";
 
 const ACCEPT = "image/jpeg,image/jpg,image/png,image/webp";
 
-function CameraIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" focusable="false">
-      <path
-        fill="currentColor"
-        d="M9.4 4h5.2l1.5 2H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2.9l1.5-2Zm2.6 4a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"
-      />
-    </svg>
-  );
-}
-
 /**
- * The camera is the first thing on the page: one large target that opens the
- * rear camera (`capture="environment"`). The gallery is a second, quieter way
- * in. Native file inputs stay in the DOM, visually hidden.
+ * One photo, one short instruction, two ways in: the rear camera
+ * (`capture="environment"`) or the gallery. Native file inputs stay in the DOM,
+ * visually hidden, so the buttons are the only targets.
  */
 export function ReportPhotoField({
   preview,
@@ -37,54 +28,58 @@ export function ReportPhotoField({
 }) {
   const cameraRef = useRef<HTMLInputElement>(null);
   const libraryRef = useRef<HTMLInputElement>(null);
-  const openCamera = () => cameraRef.current?.click();
 
   return (
     <div>
-      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading ux4g-title-l-strong">
+      <h2 id="report-step-heading" tabIndex={-1} className="rb-step-heading rb-q">
         Photograph the problem
       </h2>
-      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rb-measure">Get the road and a shop sign or landmark in the frame.</p>
+      <p className="ux4g-body-m-default ux4g-text-neutral-secondary rb-measure ux4g-mt-xs">
+        A photo is what makes a report hard to ignore. It goes on the ward&apos;s record with your answers.
+      </p>
 
-      {preview ? (
-        <figure className="rb-viewfinder rb-viewfinder-filled">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={preview} alt="Preview of the street photo" />
-        </figure>
-      ) : (
-        <button
-          id="photo-take"
-          type="button"
-          className="rb-viewfinder"
-          aria-describedby={error ? "photo-error" : undefined}
-          aria-busy={busy || undefined}
-          onClick={openCamera}
-        >
-          <CameraIcon />
-          <span className="ux4g-title-l-strong">{busy ? "Preparing photo…" : "Take a photo"}</span>
-          <span className="ux4g-body-s-default rb-viewfinder-sub" aria-hidden="true">Opens your camera</span>
-        </button>
-      )}
+      <section className="rb-photo-block" aria-labelledby="photo-label">
+        <p className="rb-photo-label">
+          <span id="photo-label" className="ux4g-heading-xs-strong">
+            Road photo
+          </span>
+          <GovBadge tone="neutral" small>
+            Required
+          </GovBadge>
+        </p>
+        <p className="ux4g-body-m-default ux4g-text-neutral-secondary">
+          Get the road and a shop sign or landmark in the frame. A slipper or bottle beside a pothole shows its size.
+        </p>
 
-      <div className="rb-photo-actions">
         {preview ? (
+          <figure className="rb-photo-thumb">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={preview} alt="Preview of the street photo" />
+          </figure>
+        ) : null}
+
+        <div className="rb-photo-actions">
           <button
             id="photo-take"
             type="button"
-            className="ux4g-btn-outline-primary ux4g-btn-l touch-target"
-            onClick={openCamera}
+            className="ux4g-btn ux4g-btn-m ux4g-btn-primary touch-target rb-btn-icon"
+            aria-describedby={error ? "photo-error" : undefined}
+            aria-busy={busy || undefined}
+            onClick={() => cameraRef.current?.click()}
           >
-            Retake
+            <CameraIcon />
+            {busy ? "Preparing photo…" : preview ? "Retake" : "Take a photo"}
           </button>
-        ) : null}
-        <button
-          type="button"
-          className="ux4g-btn-text-primary ux4g-btn-l touch-target"
-          onClick={() => libraryRef.current?.click()}
-        >
-          {preview ? "Choose a different photo" : "Choose from library"}
-        </button>
-      </div>
+          <button
+            type="button"
+            className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary touch-target rb-btn-icon"
+            onClick={() => libraryRef.current?.click()}
+          >
+            <ImageIcon />
+            {preview ? "Pick another" : "From gallery"}
+          </button>
+        </div>
+      </section>
 
       <input
         id="photo-file"
@@ -94,7 +89,7 @@ export function ReportPhotoField({
         accept={ACCEPT}
         capture="environment"
         tabIndex={-1}
-        aria-label="A photo of what you can see"
+        aria-labelledby="photo-label"
         aria-invalid={error ? true : undefined}
         onChange={(event) => {
           onPhoto(event.target.files?.[0]);
@@ -116,7 +111,7 @@ export function ReportPhotoField({
       />
       <div aria-live="polite">
         {error ? (
-          <div className="mt-3">
+          <div className="ux4g-mt-s">
             <GovAlert variant="error">
               <span id="photo-error">{error}</span>
             </GovAlert>
@@ -125,9 +120,6 @@ export function ReportPhotoField({
           <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-s">{status}</p>
         ) : null}
       </div>
-      <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-m">
-        A slipper or bottle beside a pothole shows how big it is.
-      </p>
     </div>
   );
 }

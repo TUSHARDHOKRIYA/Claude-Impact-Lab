@@ -64,8 +64,15 @@ export function GovChoice({
         <span className={isRadio ? "ux4g-radiomark" : "ux4g-checkmark"} />
       </span>
       <span className={isRadio ? "ux4g-radio-content" : "ux4g-checkbox-content"}>
-        <span className="ux4g-radio-label">{label}</span>
-        {description ? <span className="ux4g-radio-description">{description}</span> : null}
+        {/* Inner spans carry the type: UX4G forces both slots to inherit the card's size and weight. */}
+        <span className="ux4g-radio-label">
+          <span className="rb-choice-label">{label}</span>
+        </span>
+        {description ? (
+          <span className="ux4g-radio-description">
+            <span className="rb-choice-desc">{description}</span>
+          </span>
+        ) : null}
       </span>
     </label>
   );

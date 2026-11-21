@@ -88,6 +88,15 @@ export type Facility = {
   ambulanceEntryRoad: string;
 };
 
+export type SocialPost = {
+  id: string;
+  postedAt: string;
+  source: string;
+  text: string;
+  hasMedia: boolean;
+  likes: number;
+};
+
 export type Dataset = {
   wards: Ward[];
   roads: Road[];
@@ -101,6 +110,7 @@ export type Dataset = {
   traffic: Traffic[];
   accidents: Accident[];
   facilities: Facility[];
+  socialPosts: SocialPost[];
 };
 
 const DATA_DIR = path.join(process.cwd(), "data", "rupee");
@@ -274,6 +284,16 @@ function loadAll(): Dataset {
     emergencyServices: yes(r.emergency_services),
     ambulanceEntryRoad: r.ambulance_entry_road,
   }));
+
+  const socialPosts: SocialPost[] = readRows("social_posts.csv").map((r) => ({
+    id: r.post_id,
+    postedAt: r.posted_at,
+    source: r.source,
+    text: r.text,
+    hasMedia: yes(r.has_media),
+    likes: num(r.likes_or_forwards),
+  }));
+
   return {
     wards,
     roads,
@@ -287,6 +307,7 @@ function loadAll(): Dataset {
     traffic,
     accidents,
     facilities,
+    socialPosts,
   };
 }
 

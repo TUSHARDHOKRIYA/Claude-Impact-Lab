@@ -1,15 +1,68 @@
-/* Report flow, phone first. UX4G supplies the type, cards, stepper and form
- * controls; this file only lays them out for one-handed use. */
+/* Report flow, phone first. One question per screen, answers as full-width
+ * rows with the radio on the right, a thin segmented progress bar on top and
+ * a round Back plus a wide pill at the bottom. UX4G supplies type, colour
+ * tokens and the form controls; this file lays them out for one hand. */
+
+.rb-flow-title {
+  margin-top: var(--ux4g-margin-s);
+  text-align: center;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  color: var(--ux4g-text-neutral-primary);
+}
+
 .rb-report {
-  margin-top: var(--ux4g-margin-l);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 8.5rem);
+  margin-top: var(--ux4g-margin-s);
+}
+
+/* Segmented progress: one thin bar per screen, filled up to the current one. */
+.rb-report .ux4g-stepper-progress {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.rb-report .ux4g-stepper-progress-track {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+
+.rb-report .ux4g-stepper-progress-segment {
+  flex: 1;
+  height: 4px;
+  margin: 0;
+  border-radius: 2px;
+  background: var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-report .ux4g-stepper-progress-segment-active {
+  background: var(--ux4g-bg-primary-strong);
 }
 
 .rb-step {
   margin-top: var(--ux4g-margin-xl);
+  margin-bottom: var(--ux4g-margin-xl);
 }
 
 .rb-step-heading:focus {
   outline: none;
+}
+
+/* The question is the heading: big, tight, and nothing above it. */
+.rb-q {
+  font-size: 1.625rem;
+  line-height: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ux4g-text-neutral-primary);
+  text-wrap: balance;
 }
 
 .rb-legend {
@@ -25,42 +78,69 @@
   margin-bottom: var(--ux4g-margin-s);
 }
 
+/* Answer rows: white on the grey page, radio on the right, a purple ring when chosen. */
 .rb-options {
   display: grid;
-  gap: var(--ux4g-gap-row-xs);
+  gap: 0.625rem;
 }
 
-@media (min-width: 30rem) {
-  .rb-options-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* UX4G option cards: let long labels wrap, keep a 56 px target, show focus,
- * and give checkbox cards the same selected state as radio cards. */
 .rb-options .ux4g-aadhaar-option-card {
+  flex-direction: row-reverse;
   align-items: center;
-  min-height: 3.5rem;
+  justify-content: space-between;
+  gap: var(--ux4g-gap-column-m);
+  min-height: 3.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 0.875rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: none;
+  font-size: 1rem;
+  line-height: 1.375rem;
   -webkit-tap-highlight-color: transparent;
 }
 
-.rb-options .ux4g-aadhaar-option-card .ux4g-radio-label,
-.rb-options .ux4g-aadhaar-option-card .ux4g-radio-description {
-  white-space: normal;
+.rb-options .ux4g-aadhaar-option-card:hover {
+  background: var(--ux4g-bg-neutral-elevated);
+  border-color: var(--ux4g-border-color-neutral-default);
+}
+
+.rb-options .ux4g-aadhaar-option-card .ux4g-radio-control,
+.rb-options .ux4g-aadhaar-option-card .ux4g-checkbox-control {
+  margin-top: 0;
 }
 
 .rb-options .ux4g-aadhaar-option-card .ux4g-radio-content,
 .rb-options .ux4g-aadhaar-option-card .ux4g-checkbox-content {
   display: flex;
   flex-direction: column;
-  gap: var(--ux4g-gap-row-2xs);
+  gap: 2px;
   min-width: 0;
 }
 
-.rb-options .ux4g-aadhaar-option-card:has(.ux4g-checkbox-input:checked) {
-  background-color: var(--ux4g-bg-primary);
-  border-color: var(--ux4g-border-color-primary-default);
-  box-shadow: 0 0 0 1px var(--ux4g-bg-primary-strong);
+.rb-choice-label {
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 600;
+  color: var(--ux4g-text-neutral-primary);
+}
+
+.rb-choice-desc {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+.rb-options .ux4g-aadhaar-option-card:has(input:checked) .rb-choice-label {
+  color: var(--ux4g-bg-primary-strong);
+}
+
+.rb-options .ux4g-aadhaar-option-card:has(input:checked) {
+  background: var(--ux4g-bg-neutral-elevated);
+  border-color: var(--ux4g-bg-primary-strong);
+  box-shadow: inset 0 0 0 1px var(--ux4g-bg-primary-strong);
 }
 
 .rb-options .ux4g-aadhaar-option-card:has(input:focus-visible) {
@@ -73,102 +153,321 @@
   border-color: var(--ux4g-border-color-error-strong);
 }
 
-/* Camera target: a viewfinder with the lane marking as its frame. */
-.rb-viewfinder {
-  position: relative;
+/* Bottom bar: round Back, wide pill. It sits at the bottom of the screen even when the step is short. */
+.rb-actionbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
   display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: auto;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+  background: var(--paper);
+}
+
+.rb-actionbar-stack {
   flex-direction: column;
+  align-items: stretch;
+  margin-top: var(--ux4g-margin-xl);
+}
+
+.rb-back {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: 0;
+  border-radius: var(--ux4g-radius-md);
+  background: var(--ux4g-bg-primary-soft);
+  color: var(--ux4g-bg-primary-strong);
+  cursor: pointer;
+}
+
+.rb-forward {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ux4g-gap-row-xs);
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 60vh;
-  margin-top: var(--ux4g-margin-m);
+  flex: 1;
+  min-height: 3.25rem;
+  padding: 0 1.25rem;
   border: 0;
-  border-radius: var(--ux4g-radius-lg);
-  background: var(--asphalt);
+  border-radius: var(--ux4g-radius-md);
+  background: var(--ux4g-bg-primary-strong);
   color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
 }
 
-button.rb-viewfinder {
-  border: 4px dashed var(--lane);
-  background: var(--asphalt);
+.rb-forward[data-ready="false"] {
+  background: var(--ux4g-border-color-neutral-subtle);
+  color: var(--ux4g-text-neutral-secondary);
 }
 
-button.rb-viewfinder:active {
-  background: var(--asphalt-lane);
+.rb-back:disabled,
+.rb-forward:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
-button.rb-viewfinder:focus-visible {
+.rb-back:focus-visible,
+.rb-forward:focus-visible {
   outline: 3px solid var(--ux4g-bg-primary-strong);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
-.rb-viewfinder svg {
-  color: var(--lane);
+.rb-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.rb-viewfinder-sub {
-  color: var(--ux4g-color-neutral-300);
+/* Photo: a labelled block, a thumbnail once taken, two buttons. */
+.rb-photo-block {
+  margin-top: var(--ux4g-margin-2xl);
 }
 
-.rb-viewfinder-filled {
-  border: 0;
+.rb-photo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.rb-photo-thumb {
+  width: 9rem;
+  aspect-ratio: 1;
+  margin-top: var(--ux4g-margin-m);
+  border-radius: 0.875rem;
+  overflow: hidden;
   background: var(--asphalt);
 }
 
-.rb-viewfinder-filled img {
+.rb-photo-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .rb-photo-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-
-.rb-tips {
-  margin-top: var(--ux4g-margin-l);
-  padding-left: var(--ux4g-padding-l);
-  list-style: disc;
-}
-
-.rb-tips li + li {
-  margin-top: 0.25rem;
-}
-
-/* Thumb-reach actions that stay above the keyboard and the home indicator. */
-.rb-actionbar {
-  position: sticky;
-  bottom: 0;
-  z-index: 30;
   display: grid;
-  gap: var(--ux4g-gap-column-xs);
-  margin-top: var(--ux4g-margin-2xl);
-  margin-inline: calc(var(--gutter) * -1);
-  padding: var(--ux4g-padding-s) var(--gutter) calc(var(--ux4g-padding-s) + env(safe-area-inset-bottom));
-  background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: var(--ux4g-shadow-l2);
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: var(--ux4g-margin-m);
 }
 
-.rb-actionbar-split {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-}
-
-.rb-actionbar .ux4g-btn-primary,
-.rb-actionbar .ux4g-btn-outline-primary {
+.rb-photo-actions .ux4g-btn {
   justify-content: center;
+  padding-inline: 0.75rem;
+  white-space: nowrap;
 }
 
-/* Place step. */
+/* Place: the map runs edge to edge with the pin fixed in its centre. */
+.rb-place {
+  position: relative;
+  height: calc(100dvh - 19rem);
+  min-height: 26rem;
+  margin-top: var(--ux4g-margin-m);
+  margin-inline: calc(var(--gutter) * -1);
+  overflow: hidden;
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rb-place-canvas {
+  position: absolute;
+  inset: 0;
+  background: var(--ux4g-bg-neutral-subtle);
+}
+
+.rb-place-top {
+  position: absolute;
+  top: 0.75rem;
+  left: var(--gutter);
+  right: var(--gutter);
+  z-index: 5;
+}
+
+.rb-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 0.5rem 0 0.875rem;
+  border-radius: 0.75rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.14);
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+.rb-search:focus-within {
+  outline: 2px solid var(--ux4g-bg-primary-strong);
+}
+
+.rb-search input {
+  flex: 1;
+  min-width: 0;
+  height: 3rem;
+  border: 0;
+  background: transparent;
+  color: var(--ux4g-text-neutral-primary);
+  font-size: 1rem;
+  outline: none;
+}
+
+.rb-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.rb-search-icon {
+  flex: none;
+}
+
+.rb-search-clear {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+}
+
+.rb-search-results {
+  max-height: 16rem;
+  margin-top: 0.375rem;
+  overflow-y: auto;
+  border-radius: 0.75rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.14);
+}
+
+.rb-search-results .ux4g-list-item-row {
+  width: 100%;
+  justify-content: space-between;
+  text-align: start;
+}
+
+.rb-search-empty {
+  padding: 0.75rem 1rem;
+  color: var(--ux4g-text-neutral-secondary);
+}
+
+.rb-place-chips {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rb-place-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.rb-chip {
+  flex: none;
+  min-height: 2.25rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  color: var(--ux4g-text-neutral-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rb-place-pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.rb-place-tip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--asphalt);
+  color: #fff;
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.rb-place-tip::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: var(--asphalt);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.rb-place-tip strong {
+  font-weight: 700;
+}
+
+.rb-place-locate {
+  position: absolute;
+  right: var(--gutter);
+  top: 7.25rem;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.18);
+  color: var(--ux4g-bg-primary-strong);
+}
+
+.rb-place-card {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 1.75rem;
+  z-index: 5;
+  padding: 0.875rem 1rem;
+  border-radius: 1rem;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: 0 4px 18px rgb(0 0 0 / 0.18);
+}
+
+.rb-place-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rb-place-gps {
+  margin-top: 0.25rem;
+  margin-left: -0.75rem;
+}
+
+/* Voice chat's small pin map. */
 .rb-pinmap {
   border: 1px solid var(--ux4g-border-color-neutral-default);
   border-radius: var(--ux4g-radius-md);
@@ -176,37 +475,79 @@ button.rb-viewfinder:focus-visible {
   background: var(--ux4g-bg-neutral-subtle);
 }
 
-.rb-suggest {
-  margin-top: var(--ux4g-margin-xs);
-}
-
-.rb-suggest .ux4g-list-item-row {
-  width: 100%;
-  justify-content: space-between;
-  text-align: start;
-}
-
-.rb-quickpicks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-
-.rb-pin-readout {
-  margin-top: var(--ux4g-margin-s);
-}
-
-.rb-details {
-  margin-top: var(--ux4g-margin-m);
-}
-
-.rb-review-list {
+/* Check and the receipt: grouped answers in cards, each group with an Edit link. */
+.rb-sum {
   display: grid;
-  gap: var(--ux4g-gap-row-s);
+  gap: 1.25rem;
+  margin-top: var(--ux4g-margin-l);
 }
 
-/* After the photo, the intro gives way so the question sits near the top. */
-.rb-home:has(.rb-report:not([data-step="1"])) .rb-intro {
-  display: none;
+.rb-sum-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+
+.rb-sum-edit {
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--ux4g-bg-primary-strong);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rb-sum-card {
+  padding: 0 1rem;
+  border: 1px solid var(--ux4g-border-color-neutral-subtle);
+  border-radius: 0.875rem;
+  background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rb-sum-row {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--ux4g-border-color-neutral-subtle);
+}
+
+.rb-sum-row:last-child {
+  border-bottom: 0;
+}
+
+.rb-sum-row dd {
+  margin-top: 0.125rem;
+}
+
+.rb-sum-photo img {
+  width: 100%;
+  max-height: 13rem;
+  border-radius: 0.625rem;
+  object-fit: cover;
+}
+
+/* Sent: a centred tick, then the receipt. */
+.rb-done {
+  margin-top: var(--ux4g-margin-xl);
+}
+
+.rb-done-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: var(--ux4g-padding-l) 0;
+  text-align: center;
+}
+
+.rb-done-tick {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 0.5rem;
+  border-radius: 999px;
+  background: var(--ux4g-bg-primary-strong);
+  color: #fff;
 }

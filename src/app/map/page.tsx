@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 
-import { InsightStrip } from "@/components/insights/InsightStrip";
 import { MapFilters } from "@/components/map/MapFilters";
 import { toLabelLanguage } from "@/lib/chip-labels";
 import { isReportId } from "@/lib/id";
-import { insightsFromPlaces, listMapPoints, listPlaces, readReportPlace, readReportPoint } from "@/lib/queries";
+import { listMapPoints, listPlaces, readReportPlace, readReportPoint } from "@/lib/queries";
 import { SUBMITTED_BANNER } from "@/lib/review-copy";
 import type { MapReportPoint } from "@/lib/types";
 
@@ -59,8 +58,7 @@ export default async function MapPage({ searchParams }: MapPageProps) {
 
   return (
     <>
-      <h1 className="shell ux4g-heading-l-strong pt-8">Map of reports</h1>
-      <InsightStrip insights={insightsFromPlaces(places)} />
+      <h1 className="sr-only">Map of reports</h1>
       <MapFilters
         points={points}
         places={places}

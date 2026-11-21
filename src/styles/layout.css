@@ -225,3 +225,21 @@
   padding-top: var(--ux4g-padding-l);
 }
 
+
+/* UX4G ships no textarea style: give it the same box as its inputs. */
+.ux4g-input-container textarea {
+  width: 100%;
+  min-height: 7.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ux4g-border-color-neutral-default);
+  border-radius: var(--ux4g-radius-md);
+  background: var(--ux4g-bg-neutral-elevated);
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.ux4g-input-container textarea:focus-visible {
+  outline: 2px solid var(--ux4g-bg-primary-strong);
+  outline-offset: 0;
+  border-color: var(--ux4g-bg-primary-strong);
+}

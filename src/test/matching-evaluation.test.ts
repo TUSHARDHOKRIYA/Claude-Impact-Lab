@@ -24,7 +24,7 @@ function baseDataset(): Dataset {
   return {
     wards: [dummyWard], roads: [dummyRoad, dummyRoadAndheri], workOrders: [],
     contractors: [], rateCard: [], complaints: [], floodHotspots: [],
-    rainfall: [], tides: [], traffic: [], accidents: [], facilities: [],
+    rainfall: [], tides: [], traffic: [], accidents: [], facilities: [], socialPosts: [],
   };
 }
 

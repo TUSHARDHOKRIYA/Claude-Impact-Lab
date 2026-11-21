@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Mumbai ward repair budgets</title>
+<style>
+  #mumbai-budget {
+    color-scheme: light dark;
+    --ink: var(--foreground, light-dark(#152530, #ecf2f5));
+    --subtle: var(--muted-foreground, light-dark(#4b5e6a, #afbec8));
+    --line: var(--border, light-dark(#cfdbdf, #495861));
+    --panel: var(--card, light-dark(#fff, #1c282e));
+    --map: light-dark(#f2f6f7, #19252c);
+    --teal: light-dark(#166e65, #73c9bc);
+    --rust: light-dark(#a34425, #ffa982);
+    --teal-fill: light-dark(#dcefea, #234139);
+    --rust-fill: light-dark(#f6e1d6, #522d23);
+    --radius-local: var(--radius, 12px);
+    max-width: 900px;
+    margin: 18px auto;
+    color: var(--ink);
+    font: 15px/1.45 var(--font-sans, system-ui, sans-serif);
+  }
+  #mumbai-budget *, #mumbai-budget *::before, #mumbai-budget *::after { box-sizing: border-box; }
+  #mumbai-budget [hidden] { display: none !important; }
+  #mumbai-budget h1, #mumbai-budget h2, #mumbai-budget p, #mumbai-budget dl, #mumbai-budget dd, #mumbai-budget figure { margin: 0; }
+  #mumbai-budget h1 { font-size: clamp(26px, 5vw, 38px); line-height: 1.12; letter-spacing: -.035em; }
+  #mumbai-budget h2 { font-size: 19px; line-height: 1.2; }
+  #mumbai-budget button { font: inherit; color: inherit; cursor: pointer; }
+  #mumbai-budget :is(button, [role="button"]):focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #mumbai-budget .period, #mumbai-budget .footnote, #mumbai-budget .legend, #mumbai-budget .area { color: var(--subtle); }
+  #mumbai-budget .period { font-size: 13px; margin-bottom: 5px; }
+  #mumbai-budget .totals { margin-top: 8px; font-size: 14px; }
+  #mumbai-budget .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 13px; margin: 16px 0 10px; }
+  #mumbai-budget .switch { display: inline-flex; flex-wrap: wrap; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; }
+  #mumbai-budget .switch button { min-height: 36px; padding: 4px 10px; border: 0; border-radius: 6px; background: transparent; font-size: 13px; }
+  #mumbai-budget .switch button[aria-pressed="true"] { color: var(--panel); background: var(--ink); }
+  #mumbai-budget .view-caption { font-size: 12px; color: var(--subtle); }
+  #mumbai-budget .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(235px, .64fr); gap: 15px; align-items: start; }
+  #mumbai-budget .map-field { position: relative; min-width: 0; background: var(--map); border: 1px solid var(--line); border-radius: var(--radius-local); padding: 10px 12px 13px; }
+  #mumbai-budget .map-field::before { content: "↑ N"; position: absolute; inset: 12px 13px auto auto; color: var(--subtle); font-size: 12px; pointer-events: none; }
+  #mumbai-budget .tile-map {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: repeat(12, 44px);
+    gap: 4px;
+    max-width: 386px;
+    margin-inline: auto;
+  }
+  #mumbai-budget .ward-tile, #mumbai-budget .geo-ward { --status: var(--teal); --status-fill: var(--teal-fill); }
+  #mumbai-budget .at { --status: var(--subtle); --status-fill: var(--map); }
+  #mumbai-budget .over { --status: var(--rust); --status-fill: var(--rust-fill); }
+  #mumbai-budget .ward-tile {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 1px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    padding: 2px;
+    min-width: 0;
+    background: var(--status-fill);
+    line-height: 1.08;
+    font-variant-numeric: tabular-nums;
+  }
+  #mumbai-budget .ward-tile:hover { border-color: var(--status); }
+  #mumbai-budget .ward-tile[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  #mumbai-budget .ward-tile strong { font-size: 13px; }
+  #mumbai-budget .ward-tile .percentage { font-size: 11px; }
+  #mumbai-budget .meter { display: block; position: relative; width: 76%; height: 4px; margin-top: 2px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 15%, transparent); }
+  #mumbai-budget .meter::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--used); border-radius: 2px; background: var(--status); }
+  #mumbai-budget .meter::after { content: ""; position: absolute; inset: -1px auto -1px var(--budget-mark); width: 1px; background: var(--ink); }
+  #mumbai-budget .boundary-map { display: block; width: 100%; height: 572px; }
+  #mumbai-budget .geo-ward { cursor: pointer; }
+  #mumbai-budget .geo-ward path { fill: var(--status-fill); stroke: var(--status); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  #mumbai-budget .geo-ward:hover path, #mumbai-budget .geo-ward[aria-pressed="true"] path { stroke: var(--ink); stroke-width: 2; }
+  #mumbai-budget .geo-ward text { fill: var(--ink); text-anchor: middle; dominant-baseline: central; font-size: 13px; font-weight: 650; pointer-events: none; }
+  #mumbai-budget .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 12px; margin: 9px 0 0; font-size: 12px; }
+  #mumbai-budget .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  #mumbai-budget .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--teal); background: var(--teal-fill); }
+  #mumbai-budget .swatch.over { border-color: var(--rust); background: var(--rust-fill); }
+  #mumbai-budget .tick { display: inline-block; width: 13px; height: 9px; border-radius: 2px; background: linear-gradient(90deg, var(--line) 65%, var(--ink) 65% 76%, var(--line) 76%); }
+  #mumbai-budget .details { background: var(--panel); padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-local); min-width: 0; }
+  #mumbai-budget .detail-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; }
+  #mumbai-budget .area { margin-block: 4px 10px; font-size: 13px; }
+  #mumbai-budget .share { font-size: 13px; color: var(--subtle); }
+  #mumbai-budget .amounts { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  #mumbai-budget .amounts div { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0 8px; }
+  #mumbai-budget .amounts dt { font-size: 13px; color: var(--subtle); }
+  #mumbai-budget .amounts dd { font-weight: 600; }
+  #mumbai-budget .footnote { margin-top: 13px; font-size: 12px; }
+  #mumbai-budget .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 570px) {
+    #mumbai-budget .layout { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    #mumbai-budget .details { grid-row: 1; min-height: 150px; }
+    #mumbai-budget .map-field { padding-inline: 7px; }
+    #mumbai-budget .boundary-map { height: 510px; }
+    #mumbai-budget .toolbar { margin-top: 12px; }
+  }
+  @media (pointer: coarse) {
+    #mumbai-budget .switch button { min-height: 44px; }
+  }
+</style>
+</head>
+<body>
+<main id="mumbai-budget">
+  <header>
+    <p class="period">2025 monsoon repairs</p>
+    <h1>Mumbai ward repair budgets</h1>
+    <p class="totals" id="mumbai-totals"></p>
+  </header>
+  <div class="toolbar">
+    <div class="switch" role="group" aria-label="Map view">
+      <button type="button" data-view="tiles" aria-pressed="true" aria-controls="mumbai-tiles">Ward tiles</button>
+      <button type="button" data-view="boundaries" aria-pressed="false" aria-controls="mumbai-boundaries">Ward boundaries</button>
+    </div>
+    <span class="view-caption" id="mumbai-caption">Equal-sized tiles arranged roughly by location</span>
+  </div>
+
+  <div class="layout">
+    <figure aria-label="Mumbai wards by share of budget spent">
+      <div class="map-field">
+        <div id="mumbai-tiles" class="tile-map" role="group" aria-label="Select a ward tile"></div>
+        <svg id="mumbai-boundaries" class="boundary-map" viewBox="0 0 290 572" role="group" aria-label="Select a ward on the approximate boundary map" hidden></svg>
+      </div>
+      <figcaption class="legend">
+        <span><i class="swatch" aria-hidden="true"></i> Under budget</span>
+        <span><i class="swatch over" aria-hidden="true"></i> Over budget</span>
+        <span id="mumbai-meter-key"><i class="tick" aria-hidden="true"></i> 100% budget mark</span>
+      </figcaption>
+    </figure>
+
+    <section class="details" aria-labelledby="mumbai-selected-ward">
+      <div class="detail-head">
+        <h2 id="mumbai-selected-ward"></h2>
+        <p class="share" id="mumbai-share"></p>
+      </div>
+      <p class="area" id="mumbai-area"></p>
+      <dl class="amounts">
+        <div><dt>Budget</dt><dd id="mumbai-ward-budget"></dd></div>
+        <div><dt>Spent</dt><dd id="mumbai-ward-spend"></dd></div>
+        <div><dt id="mumbai-difference-label"></dt><dd id="mumbai-difference"></dd></div>
+      </dl>
+      <p class="visually-hidden" role="status" id="mumbai-selection-status"></p>
+    </section>
+  </div>
+  <p class="footnote">Synthetic data and approximate ward boundaries. Spend includes all 2,499 work orders, including entries assigned in October.</p>
+</main>
+<!-- Budgets and names from wards.csv, spend from work_orders.csv, and projected paths from wards.geojson. -->
+<script type="application/json" id="mumbai-data">
+[
+  {"code": "R/N", "name": "Dahisar", "budget": 4800000, "spend": 3533838, "row": 0, "col": 2, "x": 123.9, "y": 39.4, "path": "M200.3,60.3L188.5,74.8L58.2,48.5L68.9,8L131.2,8Z"},
+  {"code": "R/C", "name": "Borivali", "budget": 2900000, "spend": 3312447, "row": 1, "col": 2, "x": 116.1, "y": 76.8, "path": "M188.5,74.8L172,103.6L49.4,81.9L58.2,48.5Z"},
+  {"code": "R/S", "name": "Kandivali", "budget": 6600000, "spend": 6642234, "row": 2, "col": 2, "x": 112, "y": 111.2, "path": "M172,103.6L160.2,139.6L155.8,145L145.1,143.9L43.5,104.3L49.4,81.9Z"},
+  {"code": "P/N", "name": "Malad", "budget": 7700000, "spend": 7006462, "row": 3, "col": 1, "x": 72.5, "y": 136.1, "path": "M43.5,104.3L145.1,143.9L28.8,160Z"},
+  {"code": "T", "name": "Mulund", "budget": 5100000, "spend": 3953564, "row": 3, "col": 5, "x": 226, "y": 138.2, "path": "M271.9,224.6L160.2,139.6L172,103.6L188.5,74.8L200.3,60.3L276.4,117.8L276.4,205.7Z"},
+  {"code": "P/S", "name": "Goregaon", "budget": 4800000, "spend": 4349997, "row": 4, "col": 1, "x": 94.6, "y": 173, "path": "M145.1,143.9L155.8,145L142.9,189.7L98.9,205.6L23.6,179.6L28.8,160Z"},
+  {"code": "S", "name": "Bhandup, Powai, Kanjurmarg", "budget": 9500000, "spend": 7489270, "row": 4, "col": 4, "x": 202.7, "y": 210, "path": "M261.8,267.3L253,267.1L157.9,230.8L142.9,189.7L155.8,145L160.2,139.6L271.9,224.6Z"},
+  {"code": "K/W", "name": "Andheri West, Juhu, Vile Parle West", "budget": 8900000, "spend": 7845240, "row": 5, "col": 0, "x": 55.3, "y": 228, "path": "M23.6,179.6L98.9,205.6L77.9,272.3L77.3,272.6L27.8,268.2L20.6,191Z"},
+  {"code": "K/E", "name": "Andheri East, Vile Parle East, Jogeshwari East", "budget": 9100000, "spend": 8264048, "row": 5, "col": 1, "x": 119.5, "y": 237, "path": "M142.9,189.7L157.9,230.8L140.3,265.9L115.2,278.2L77.9,272.3L98.9,205.6Z"},
+  {"code": "N", "name": "Ghatkopar, Vikhroli", "budget": 6200000, "spend": 5999557, "row": 5, "col": 4, "x": 185.9, "y": 269.4, "path": "M157.9,230.8L253,267.1L176.2,307.7L163.8,303.3L140.3,265.9Z"},
+  {"code": "H/W", "name": "Bandra West, Khar West, Santacruz West", "budget": 4300000, "spend": 4245242, "row": 6, "col": 0, "x": 54, "y": 306.1, "path": "M27.8,268.2L77.3,272.6L82.8,327.2L31.9,355.2L31.9,355.2L34.4,337.4Z"},
+  {"code": "H/E", "name": "Bandra East, Santacruz East, Khar East", "budget": 8200000, "spend": 6145533, "row": 6, "col": 1, "x": 100.1, "y": 305.8, "path": "M115.2,278.2L123.6,337.6L103.2,338.8L82.8,327.2L77.3,272.6L77.9,272.3Z"},
+  {"code": "L", "name": "Kurla", "budget": 11900000, "spend": 13043418, "row": 6, "col": 2, "x": 136, "y": 299.7, "path": "M140.3,265.9L163.8,303.3L125.6,338.9L123.6,337.6L115.2,278.2Z"},
+  {"code": "M/W", "name": "Chembur", "budget": 4400000, "spend": 4689823, "row": 6, "col": 3, "x": 161, "y": 353.6, "path": "M165.9,407L125.6,338.9L163.8,303.3L176.2,307.7L185.5,399.7Z"},
+  {"code": "M/E", "name": "Govandi, Mankhurd, Deonar", "budget": 9100000, "spend": 7235685, "row": 6, "col": 4, "x": 215.7, "y": 332.8, "path": "M185.5,399.7L176.2,307.7L253,267.1L261.8,267.3L234.9,381.2Z"},
+  {"code": "G/N", "name": "Dadar West, Mahim, Dharavi", "budget": 8400000, "spend": 6755738, "row": 7, "col": 1, "x": 71.1, "y": 354.2, "path": "M31.9,355.2L82.8,327.2L103.2,338.8L79.6,381.2L69,381Z"},
+  {"code": "F/N", "name": "Matunga, Sion, Wadala", "budget": 10500000, "spend": 9412574, "row": 7, "col": 2, "x": 121.8, "y": 378.5, "path": "M137.1,417.7L79.6,381.2L103.2,338.8L123.6,337.6L125.6,338.9L165.9,407Z"},
+  {"code": "G/S", "name": "Worli, Lower Parel, Prabhadevi", "budget": 3200000, "spend": 2821986, "row": 8, "col": 0, "x": 43.5, "y": 398.4, "path": "M31.9,355.2L31.9,355.2L69,381L59.8,423.7L34.4,434.5L21.1,431Z"},
+  {"code": "F/S", "name": "Parel, Lalbaug, Sewri", "budget": 9800000, "spend": 8026151, "row": 8, "col": 1, "x": 92.2, "y": 413.1, "path": "M111.3,445.5L59.8,423.7L69,381L79.6,381.2L137.1,417.7L117.3,425.1Z"},
+  {"code": "D", "name": "Grant Road, Malabar Hill, Tardeo", "budget": 1600000, "spend": 1272300, "row": 9, "col": 0, "x": 29.4, "y": 469.9, "path": "M21.1,431L34.4,434.5L52.1,463.2L24.8,512.2L19.2,515.8L13.6,483.6Z"},
+  {"code": "E", "name": "Byculla, Agripada, Mumbai Central", "budget": 5300000, "spend": 6322991, "row": 9, "col": 1, "x": 68.7, "y": 444, "path": "M109.8,450.3L53.5,463.5L52.1,463.2L34.4,434.5L59.8,423.7L111.3,445.5Z"},
+  {"code": "B", "name": "Dongri, Masjid Bunder", "budget": 4300000, "spend": 3507952, "row": 9, "col": 2, "x": 84.1, "y": 474.8, "path": "M94.3,502.2L77.8,500.2L53.5,463.5L109.8,450.3Z"},
+  {"code": "C", "name": "Kalbadevi, Bhuleshwar, Marine Lines", "budget": 900000, "spend": 796803, "row": 10, "col": 1, "x": 51.7, "y": 491.5, "path": "M24.8,512.2L52.1,463.2L53.5,463.5L77.8,500.2Z"},
+  {"code": "A", "name": "Colaba, Fort, Churchgate", "budget": 1600000, "spend": 1655330, "row": 11, "col": 1, "x": 55.6, "y": 532.6, "path": "M27.5,564L19.2,515.8L24.8,512.2L77.8,500.2L94.3,502.2L75.9,564Z"}
+]
+</script>
+<script>
+(() => {
+  const root = document.getElementById("mumbai-budget");
+  const wards = JSON.parse(document.getElementById("mumbai-data").textContent);
+  const format = new Intl.NumberFormat("en-IN");
+  const rupees = value => "₹" + format.format(value);
+  const crore = value => "₹" + (value / 1e7).toFixed(2) + " cr";
+  const differenceLabel = ward => ({over: "Over budget", under: "Under budget", at: "At budget"})[ward.status];
+  const get = id => root.querySelector("#mumbai-" + id);
+  const tiles = get("tiles");
+  const boundaries = get("boundaries");
+  const controls = root.querySelectorAll("[data-view]");
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  let budgetTotal = 0;
+  let spendTotal = 0;
+  let overCount = 0;
+  const meterMax = Math.max(125, Math.ceil(Math.max(...wards.map(ward => 100 * ward.spend / ward.budget)) / 5) * 5);
+  root.style.setProperty("--budget-mark", (100 / meterMax) * 100 + "%");
+
+  for (const ward of wards) {
+    budgetTotal += ward.budget;
+    spendTotal += ward.spend;
+    ward.share = 100 * ward.spend / ward.budget;
+    ward.status = ward.spend > ward.budget ? "over" : ward.spend < ward.budget ? "under" : "at";
+    overCount += Number(ward.status === "over");
+    const label = "Ward " + ward.code + ", " + ward.name + ", " + ward.share.toFixed(1) + "% of budget spent, " + differenceLabel(ward).toLowerCase();
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ward-tile " + ward.status;
+    button.style.gridArea = (ward.row + 1) + " / " + (ward.col + 1);
+    button.style.setProperty("--used", (ward.share / meterMax) * 100 + "%");
+    button.dataset.ward = ward.code;
+    button.setAttribute("aria-label", label);
+
+    const code = document.createElement("strong");
+    code.textContent = ward.code;
+    const share = document.createElement("span");
+    share.className = "percentage";
+    share.textContent = Math.round(ward.share) + "%";
+    const meter = document.createElement("span");
+    meter.className = "meter";
+    meter.setAttribute("aria-hidden", "true");
+    button.append(code, share, meter);
+    tiles.append(button);
+
+    const group = document.createElementNS(svgNS, "g");
+    group.classList.add("geo-ward", ward.status);
+    group.dataset.ward = ward.code;
+    group.setAttribute("role", "button");
+    group.setAttribute("tabindex", "0");
+    group.setAttribute("aria-label", label);
+    const path = document.createElementNS(svgNS, "path");
+    path.setAttribute("d", ward.path);
+    const mapLabel = document.createElementNS(svgNS, "text");
+    mapLabel.setAttribute("x", ward.x);
+    mapLabel.setAttribute("y", ward.y);
+    mapLabel.setAttribute("aria-hidden", "true");
+    mapLabel.textContent = ward.code;
+    group.append(path, mapLabel);
+    boundaries.append(group);
+    ward.marks = [button, group];
+  }
+
+  get("totals").textContent = crore(spendTotal) + " spent of " + crore(budgetTotal) + " budget · " + overCount + " of " + wards.length + " wards over budget";
+
+  function selectWard(ward, announce) {
+    for (const item of wards) {
+      for (const mark of item.marks) mark.setAttribute("aria-pressed", String(item === ward));
+    }
+    get("selected-ward").textContent = "Ward " + ward.code;
+    get("area").textContent = ward.name;
+    get("share").textContent = ward.share.toFixed(1) + "% of budget spent";
+    get("ward-budget").textContent = rupees(ward.budget);
+    get("ward-spend").textContent = rupees(ward.spend);
+    get("difference-label").textContent = differenceLabel(ward);
+    get("difference").textContent = rupees(Math.abs(ward.spend - ward.budget));
+    if (announce) {
+      get("selection-status").textContent = "Ward " + ward.code + " details. " + rupees(ward.spend) + " spent of " + rupees(ward.budget) + " budget.";
+    }
+  }
+
+  function selectMark(mark) {
+    if (!mark) return;
+    selectWard(wards.find(ward => ward.code === mark.dataset.ward), true);
+  }
+
+  root.addEventListener("click", event => {
+    const control = event.target.closest("[data-view]");
+    if (control) {
+      const showTiles = control.dataset.view === "tiles";
+      tiles.hidden = !showTiles;
+      boundaries.toggleAttribute("hidden", showTiles);
+      get("meter-key").hidden = !showTiles;
+      get("caption").textContent = showTiles ? "Equal-sized tiles arranged roughly by location" : "Approximate boundaries from the dataset";
+      for (const button of controls) button.setAttribute("aria-pressed", String(button === control));
+      return;
+    }
+    selectMark(event.target.closest("[data-ward]"));
+  });
+
+  boundaries.addEventListener("keydown", event => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    selectMark(event.target.closest("[data-ward]"));
+  });
+
+  selectWard(wards.reduce((highest, ward) => ward.share > highest.share ? ward : highest), false);
+})();
+</script>
+</body>
+</html>

@@ -24,8 +24,18 @@ export function paintSelectedLocation(
       ? ["==", ["get", "id"], reportId]
       : ["==", ["get", "locationId"], locationId ?? ""]
   ) as ExpressionSpecification;
-  map.setPaintProperty(POINT_LAYER, "circle-radius", ["case", marked, 12, 7] as ExpressionSpecification);
-  map.setPaintProperty(POINT_LAYER, "circle-stroke-width", ["case", marked, 4, 2] as ExpressionSpecification);
+  map.setPaintProperty(POINT_LAYER, "circle-radius", [
+    "case",
+    marked,
+    12,
+    7,
+  ] as ExpressionSpecification);
+  map.setPaintProperty(POINT_LAYER, "circle-stroke-width", [
+    "case",
+    marked,
+    4,
+    2,
+  ] as ExpressionSpecification);
 }
 
 export function ensureReportLayers(map: MapLibreMap) {

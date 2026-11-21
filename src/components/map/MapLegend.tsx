@@ -23,7 +23,9 @@ export function MapLegend() {
                 boxShadow: `0 0 0 2px ${mark.marking}`,
               }}
             />
-            <span className="ux4g-text ux4g-text-neutral-secondary">{item.label}</span>
+            <span className="ux4g-text ux4g-text-neutral-secondary">
+              {item.label}
+            </span>
           </li>
         ))}
       </ul>

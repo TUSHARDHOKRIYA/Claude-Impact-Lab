@@ -2,9 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { GovChoice } from "@/components/gov/GovChoice";
-import { GovField } from "@/components/gov/GovField";
 import { PlaceList } from "@/components/map/PlaceList";
+import { PlacePreview } from "@/components/map/PlacePreview";
+import { CloseIcon, SearchIcon } from "@/components/report/flow-icons";
 import { kolkataTodayStamp } from "@/lib/noticed-date";
 import {
   ISSUE_TYPE_LABELS,
@@ -29,14 +29,80 @@ export type IssueFilter = IssueType | "all";
  */
 const CityMap = dynamic(
   () => import("@/components/map/CityMap").then((mod) => mod.CityMap),
-  { ssr: false, loading: () => <div className="rb-map-placeholder" aria-hidden="true" /> },
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full bg-paper" aria-hidden="true" />
+    ),
+  },
 );
 
 const TIME_OPTIONS: { value: TimeWindow; label: string }[] = [
-  { value: "all", label: "All time" },
+  { value: "all", label: "Any time" },
   { value: "1y", label: "Past year" },
   { value: "5y", label: "Past five years" },
 ];
+
+type View = "map" | "list";
+
+function matchesQuery(place: PlaceSummary, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  const { name, street, ward } = place.location;
+  return [name, street, ward].some((field) => field.toLowerCase().includes(q));
+}
+
+function ListIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" />
+    </svg>
+  );
+}
+
+function MapIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2Z M9 4v14M15 6v14" />
+    </svg>
+  );
+}
+
+function ChevronIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
 
 function sinceFor(time: TimeWindow, now = new Date()): string | null {
   if (time === "all") return null;
@@ -61,6 +127,11 @@ export function filterMapPoints(
   });
 }
 
+/**
+ * The map fills the screen. Search and two filter chips float on top, and the
+ * places sit in a panel that peeks up from the bottom; the list/map switch
+ * pulls it up over the map or back down. On a wide screen it is a side panel.
+ */
 export function MapFilters({
   points,
   places,
@@ -79,11 +150,13 @@ export function MapFilters({
   focusZoom?: number;
   highlightReportId?: string;
   highlightLocationId?: string;
-  /** A line shown just above the map, such as after a report is recorded. */
+  /** A line shown over the map, such as after a report is recorded. */
   notice?: string;
 }) {
   const [issue, setIssue] = useState<IssueFilter>("all");
   const [time, setTime] = useState<TimeWindow>("all");
+  const [query, setQuery] = useState("");
+  const [view, setView] = useState<View>("map");
   const [selectedId, setSelectedId] = useState<string | null>(
     initialLocationId ?? null,
   );
@@ -95,112 +168,211 @@ export function MapFilters({
     if (!url.searchParams.has("new") && !url.searchParams.has("lang")) return;
     url.searchParams.delete("new");
     url.searchParams.delete("lang");
-    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${url.pathname}${url.search}${url.hash}`,
+    );
   }, [notice]);
 
-  const filtered = useMemo(
-    () => filterMapPoints(points, issue, time),
-    [points, issue, time],
-  );
-
   const visiblePlaces = useMemo(() => {
-    const ids = new Set(filtered.map((point) => point.locationId));
-    return places.filter((place) => ids.has(place.location.id));
-  }, [filtered, places]);
+    const ids = new Set(
+      filterMapPoints(points, issue, time).map((point) => point.locationId),
+    );
+    return places
+      .filter(
+        (place) => ids.has(place.location.id) && matchesQuery(place, query),
+      )
+      .sort((a, b) => b.reportCount - a.reportCount);
+  }, [points, places, issue, time, query]);
+
+  const filtered = useMemo(() => {
+    const ids = new Set(visiblePlaces.map((place) => place.location.id));
+    return filterMapPoints(points, issue, time).filter((point) =>
+      ids.has(point.locationId),
+    );
+  }, [points, issue, time, visiblePlaces]);
+
+  const selected = visiblePlaces.find(
+    (place) => place.location.id === selectedId,
+  );
 
   const selectFromList = (locationId: string, opener: HTMLElement) => {
     openerRef.current = opener;
     setSelectedId(locationId);
+    setView("map");
   };
 
   return (
-    <section aria-labelledby="map-heading" className="bg-paper">
-      <div className="shell py-12 sm:py-14">
-        <h2 id="map-heading" className="ux4g-heading-l-strong">
-          Reported road problems
-        </h2>
-        <p className="ux4g-text mt-3 max-w-3xl">
-          Filter by what people recorded and when they noticed it. The list
-          always works without the map.
-        </p>
+    <section aria-labelledby="map-heading" className="rb-explore">
+      <h2 id="map-heading" className="sr-only">
+        Reported road problems
+      </h2>
+      <div className="rb-explore-map">
+        <CityMap
+          bare
+          points={filtered}
+          places={visiblePlaces}
+          initialLocationId={initialLocationId}
+          focusPoint={focusPoint}
+          focusZoom={focusZoom}
+          highlightReportId={highlightReportId}
+          highlightLocationId={highlightLocationId}
+          selectedId={selectedId}
+          onSelect={(id) => {
+            setSelectedId(id);
+            if (id) setView("map");
+          }}
+          openerRef={openerRef}
+        />
+      </div>
 
-        <p
-          className="mt-6 flex flex-none items-baseline gap-3"
-          aria-live="polite"
-        >
-          <span className="ux4g-heading-xl-strong">{filtered.length}</span>
-          <span className="ux4g-text ux4g-text-neutral-secondary">
-            {filtered.length === 1 ? "report" : "reports"} in this filter
-          </span>
-        </p>
-
-        <div className="ux4g-card ux4g-card-outline mt-8 flex flex-col gap-6 p-4 sm:p-5 lg:flex-row lg:items-start lg:gap-10">
-          <GovField
-            label="Issue type"
-            as="select"
-            value={issue}
-            onChange={(event) => setIssue(event.target.value as IssueFilter)}
-            className="w-full lg:max-w-72"
-          >
-            <option value="all">All issue types</option>
-            {ISSUE_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {ISSUE_TYPE_LABELS[type]}
-              </option>
-            ))}
-          </GovField>
-
-          <fieldset className="ux4g-form-group min-w-0">
-            <legend className="ux4g-heading-xs-strong mb-2">Time noticed</legend>
-            <div className="flex flex-wrap gap-2">
-              {TIME_OPTIONS.map((option) => (
-                <GovChoice
-                  key={option.value}
-                  type="radio"
-                  name="map-time"
-                  value={option.value}
-                  checked={time === option.value}
-                  onChange={() => setTime(option.value)}
-                  label={option.label}
-                />
-              ))}
-            </div>
-            {time !== "all" ? (
-              <p className="ux4g-text ux4g-text-neutral-secondary mt-2">
-                Reports marked “More than six months ago” have no exact date.
-                Choose All time to include them.
-              </p>
-            ) : null}
-          </fieldset>
+      <div className="rb-explore-top">
+        <div className="rb-search">
+          <SearchIcon className="rb-search-icon" />
+          <input
+            type="search"
+            autoComplete="off"
+            aria-label="Search a road, area or ward"
+            placeholder="Search a road, area or ward"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          {query ? (
+            <button
+              type="button"
+              className="rb-search-clear"
+              aria-label="Clear search"
+              onClick={() => setQuery("")}
+            >
+              <CloseIcon size={18} />
+            </button>
+          ) : null}
         </div>
-
+        <div className="rb-explore-filters">
+          <label
+            className={
+              issue === "all"
+                ? "rb-select-chip"
+                : "rb-select-chip rb-select-chip-on"
+            }
+          >
+            <span className="sr-only">Problem type</span>
+            <select
+              value={issue}
+              onChange={(event) => setIssue(event.target.value as IssueFilter)}
+            >
+              <option value="all">All problems</option>
+              {ISSUE_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {ISSUE_TYPE_LABELS[type]}
+                </option>
+              ))}
+            </select>
+            <ChevronIcon />
+          </label>
+          <label
+            className={
+              time === "all"
+                ? "rb-select-chip"
+                : "rb-select-chip rb-select-chip-on"
+            }
+          >
+            <span className="sr-only">Time noticed</span>
+            <select
+              value={time}
+              onChange={(event) => setTime(event.target.value as TimeWindow)}
+            >
+              {TIME_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <ChevronIcon />
+          </label>
+          <div className="rb-view-toggle" role="group" aria-label="Show">
+            <button
+              type="button"
+              aria-pressed={view === "list"}
+              aria-label="List"
+              onClick={() => setView("list")}
+            >
+              <ListIcon />
+            </button>
+            <button
+              type="button"
+              aria-pressed={view === "map"}
+              aria-label="Map"
+              onClick={() => setView("map")}
+            >
+              <MapIcon />
+            </button>
+          </div>
+        </div>
         {notice ? (
-          <p className="ux4g-text mt-6" role="status">
+          <p className="rb-explore-notice" role="status">
             {notice}
           </p>
         ) : null}
+      </div>
 
-        <div className="rb-map-split">
-          <div className="rb-map-panel">
-            <CityMap
-              points={filtered}
-              places={visiblePlaces}
-              initialLocationId={initialLocationId}
-              focusPoint={focusPoint}
-              focusZoom={focusZoom}
-              highlightReportId={highlightReportId}
-              highlightLocationId={highlightLocationId}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
+      <div
+        className="rb-sheet"
+        data-view={view}
+        data-selected={selected ? "true" : undefined}
+      >
+        <button
+          type="button"
+          className="rb-sheet-handle"
+          aria-label={
+            view === "list" ? "Show more of the map" : "Show the full list"
+          }
+          onClick={() => setView(view === "list" ? "map" : "list")}
+        >
+          <span aria-hidden="true" />
+        </button>
+        {selected ? (
+          <div className="rb-sheet-selected">
+            <PlacePreview
+              inline
+              place={selected}
+              onClose={() => setSelectedId(null)}
               openerRef={openerRef}
+              yourReportId={
+                highlightReportId &&
+                selected.location.id === highlightLocationId
+                  ? highlightReportId
+                  : undefined
+              }
             />
           </div>
-          <PlaceList
-            places={visiblePlaces}
-            selectedId={selectedId}
-            onSelect={selectFromList}
-          />
-        </div>
+        ) : null}
+        {selected ? null : (
+          <>
+            <div className="rb-sheet-head" aria-live="polite">
+              <h3 className="ux4g-heading-xs-strong">Most reported first</h3>
+              <p className="ux4g-body-s-default ux4g-text-neutral-secondary">
+                {visiblePlaces.length}{" "}
+                {visiblePlaces.length === 1 ? "place" : "places"},{" "}
+                {filtered.length} {filtered.length === 1 ? "report" : "reports"}
+              </p>
+            </div>
+            {time !== "all" ? (
+              <p className="rb-sheet-note ux4g-body-s-default ux4g-text-neutral-secondary">
+                Reports marked “More than six months ago” have no exact date, so
+                they only show under Any time.
+              </p>
+            ) : null}
+            <div className="rb-sheet-body">
+              <PlaceList
+                places={visiblePlaces}
+                selectedId={selectedId}
+                onSelect={selectFromList}
+              />
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

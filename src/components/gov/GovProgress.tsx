@@ -16,12 +16,10 @@ export function GovProgress({
   const currentLabel = labels[current - 1];
   return (
     <nav aria-label="Report steps" className={["ux4g-stepper-progress", className].filter(Boolean).join(" ")}>
-      <div className="ux4g-stepper-progress-actions-between ux4g-mb-none">
-        <span className="ux4g-stepper-progress-count ux4g-mb-none">
-          Step {current} of {total}
-        </span>
-        {currentLabel ? <span className="ux4g-stepper-progress-label">{currentLabel}</span> : null}
-      </div>
+      <p className="sr-only">
+        Step {current} of {total}
+        {currentLabel ? `: ${currentLabel}` : ""}
+      </p>
       <ol className="ux4g-stepper-progress-track">
         {labels.map((label, index) => {
           const step = index + 1;

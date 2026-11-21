@@ -1,5 +1,5 @@
 import { GovAlert } from "@/components/gov/GovAlert";
-import { GovButton } from "@/components/gov/GovButton";
+import { ArrowLeftIcon } from "@/components/report/flow-icons";
 import { FORM_ALERT_ID } from "@/components/report/report-form-helpers";
 
 type ReportFormFooterProps = {
@@ -19,10 +19,14 @@ type ReportFormFooterProps = {
   busy: boolean;
   chatting: boolean;
   showRecord: boolean;
+  /** The current screen has its answer, so the main button reads as ready. */
+  ready: boolean;
+  continueLabel: string;
   onBack: () => void;
   onContinue: () => void;
 };
 
+/** A round back button and one wide pill, pinned to the bottom within thumb reach. */
 export function ReportFormFooter(props: ReportFormFooterProps) {
   return (
     <>
@@ -47,27 +51,40 @@ export function ReportFormFooter(props: ReportFormFooterProps) {
         style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
       />
       {props.formError ? (
-        <div className="mt-6">
+        <div className="ux4g-mt-l">
           <GovAlert variant="error" id={FORM_ALERT_ID} tabIndex={-1}>
             {props.formError}
           </GovAlert>
         </div>
       ) : null}
-      <div className={props.showBack ? "rb-actionbar rb-actionbar-split" : "rb-actionbar"}>
+      <div className="rb-actionbar">
         {props.showBack ? (
-          <GovButton type="button" variant="secondary" className="w-full" disabled={props.pending} onClick={props.onBack}>
-            Back
-          </GovButton>
+          <button
+            type="button"
+            className="rb-back touch-target"
+            aria-label="Back"
+            disabled={props.pending}
+            onClick={props.onBack}
+          >
+            <ArrowLeftIcon size={22} />
+          </button>
         ) : null}
         {/* Distinct keys: reusing one node let the Continue click submit once React made it type=submit. */}
         {props.chatting ? null : props.showRecord ? (
-          <GovButton key="record" type="submit" className="w-full" disabled={props.busy}>
+          <button key="record" type="submit" className="rb-forward touch-target" disabled={props.busy}>
             {props.pending ? "Sending…" : "Send report"}
-          </GovButton>
+          </button>
         ) : (
-          <GovButton key="continue" type="button" className="w-full" disabled={props.busy} onClick={props.onContinue}>
-            Continue
-          </GovButton>
+          <button
+            key="continue"
+            type="button"
+            className="rb-forward touch-target"
+            data-ready={props.ready ? "true" : "false"}
+            disabled={props.busy}
+            onClick={props.onContinue}
+          >
+            {props.continueLabel}
+          </button>
         )}
       </div>
     </>

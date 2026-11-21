@@ -17,6 +17,8 @@ const CONTENT_SECURITY_POLICY = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // Lets a phone on the same Wi-Fi load the dev server (dev only).
+  allowedDevOrigins: ["10.*.*.*", "192.168.*.*", "*.local"],
   // The dev-only badge sat on the voice dock's Replay button when testing on a phone.
   devIndicators: false,
   experimental: {

@@ -4,11 +4,18 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import { maplibregl } from "@/components/map/maplibre";
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { HeatLayer, REPORT_SOURCE, pointsToGeoJSON } from "@/components/map/HeatLayer";
+import {
+  HeatLayer,
+  REPORT_SOURCE,
+  pointsToGeoJSON,
+} from "@/components/map/HeatLayer";
 import { MapLegend } from "@/components/map/MapLegend";
 import { PlacePreview } from "@/components/map/PlacePreview";
 import { goTo } from "@/components/map/map-camera";
-import { ensureReportLayers, paintSelectedLocation } from "@/components/map/map-layers";
+import {
+  ensureReportLayers,
+  paintSelectedLocation,
+} from "@/components/map/map-layers";
 import { osmStyle } from "@/components/map/map-style";
 import { useMapClicks } from "@/components/map/use-map-clicks";
 import { CITY } from "@/lib/city";
@@ -27,6 +34,7 @@ export function CityMap({
   selectedId: selectedIdProp,
   onSelect,
   openerRef,
+  bare = false,
 }: {
   points: MapReportPoint[];
   places: PlaceSummary[];
@@ -39,12 +47,15 @@ export function CityMap({
   selectedId?: string | null;
   onSelect?: (locationId: string | null) => void;
   openerRef?: RefObject<HTMLElement | null>;
+  /** Full-screen use: no card, legend or hint, one-finger panning, and the place preview is drawn by the parent. */
+  bare?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const focusedRef = useRef(false);
   const localOpenerRef = useRef<HTMLElement | null>(null);
   const previewOpenerRef = openerRef ?? localOpenerRef;
   const [map, setMap] = useState<MapLibreMap | null>(null);
+  const bareAtMount = useRef(bare);
   const [internalId, setInternalId] = useState<string | null>(
     initialLocationId ?? null,
   );
@@ -64,20 +75,21 @@ export function CityMap({
         [CITY.bounds.east, CITY.bounds.north],
       ],
       fitBoundsOptions: { padding: 8 },
-      minZoom: 9,
+      // Allow a regional view after the initial city fit.
+      minZoom: 7,
       maxZoom: 19,
-      maxBounds: [
-        [CITY.bounds.west, CITY.bounds.south],
-        [CITY.bounds.east, CITY.bounds.north],
-      ],
       attributionControl: { compact: true },
-      cooperativeGestures: true,
+      cooperativeGestures: !bareAtMount.current,
+      dragRotate: false,
     });
+    instance.touchZoomRotate.disableRotation();
 
-    instance.addControl(
-      new maplibregl.NavigationControl({ showCompass: false }),
-      "top-right",
-    );
+    if (!bareAtMount.current) {
+      instance.addControl(
+        new maplibregl.NavigationControl({ showCompass: false }),
+        "top-right",
+      );
+    }
 
     let cancelled = false;
     instance.on("load", () => {
@@ -108,7 +120,11 @@ export function CityMap({
   });
 
   useEffect(() => {
-    if (!map || !containerRef.current || typeof ResizeObserver === "undefined") {
+    if (
+      !map ||
+      !containerRef.current ||
+      typeof ResizeObserver === "undefined"
+    ) {
       return;
     }
     const observer = new ResizeObserver(() => {
@@ -122,7 +138,10 @@ export function CityMap({
     if (!map || focusedRef.current) return;
     if (focusPoint) {
       focusedRef.current = true;
-      if (initialLocationId && places.some((item) => item.location.id === initialLocationId)) {
+      if (
+        initialLocationId &&
+        places.some((item) => item.location.id === initialLocationId)
+      ) {
         setSelectedId(initialLocationId);
       }
       goTo(map, [focusPoint.lng, focusPoint.lat], focusZoom);
@@ -137,7 +156,10 @@ export function CityMap({
   }, [map, focusPoint, initialLocationId, places, setSelectedId, focusZoom]);
 
   useEffect(() => {
-    if (selectedId && !points.some((point) => point.locationId === selectedId)) {
+    if (
+      selectedId &&
+      !points.some((point) => point.locationId === selectedId)
+    ) {
       setSelectedId(null);
     }
   }, [points, selectedId, setSelectedId]);
@@ -146,15 +168,35 @@ export function CityMap({
     if (!map) return;
     // The submitted report's own dot stands out only while its place is the
     // selected one; picking another place highlights that place as usual.
-    const ownDot = selectedId !== null && selectedId === highlightLocationId ? (highlightReportId ?? null) : null;
+    const ownDot =
+      selectedId !== null && selectedId === highlightLocationId
+        ? (highlightReportId ?? null)
+        : null;
     paintSelectedLocation(map, selectedId, ownDot);
   }, [map, selectedId, highlightReportId, highlightLocationId]);
 
   const selected = places.find((place) => place.location.id === selectedId);
 
+  if (bare) {
+    return (
+      <>
+        <div
+          ref={containerRef}
+          className="rb-map h-full w-full bg-paper"
+          role="region"
+          aria-label="Map of road reports in Mumbai. The same places are listed in the panel."
+        />
+        <HeatLayer map={map} points={points} />
+      </>
+    );
+  }
+
   return (
     <div className="ux4g-card ux4g-card-outline ux4g-card-vertical">
-      <p id={MAP_HINT_ID} className="ux4g-text ux4g-text-neutral-secondary px-4 pt-3">
+      <p
+        id={MAP_HINT_ID}
+        className="ux4g-text ux4g-text-neutral-secondary px-4 pt-3"
+      >
         A list of the same places sits next to this map.
       </p>
       <div className="relative">

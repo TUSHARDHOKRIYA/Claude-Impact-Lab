@@ -102,7 +102,7 @@ export const VOICE_COPY: Record<LabelLanguage, VoiceCopy> = {
     fields: {
       issueType: "Type",
       noticedAt: "Noticed",
-      recurs: "Recurs",
+      recurs: "Fixed before and came back",
       description: "Description",
     },
   },

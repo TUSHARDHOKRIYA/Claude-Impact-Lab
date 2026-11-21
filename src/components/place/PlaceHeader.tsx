@@ -1,35 +1,60 @@
+import { placeArea, placeTitle } from "@/components/map/place-title";
 import { GovBadge } from "@/components/gov/GovBadge";
-import { ISSUE_TYPE_LABELS, type LocationRecord } from "@/lib/types";
+import { noticedWhen } from "@/lib/noticed-label";
+import {
+  ISSUE_TYPE_LABELS,
+  type LocationRecord,
+  type PlaceSummary,
+} from "@/lib/types";
 
-function formatCoords(lat: number, lng: number): string {
-  const ns = lat >= 0 ? "N" : "S";
-  const ew = lng >= 0 ? "E" : "W";
-  return `${Math.abs(lat).toFixed(5)}° ${ns} · ${Math.abs(lng).toFixed(5)}° ${ew}`;
-}
-
-export function PlaceHeader({ location }: { location: LocationRecord }) {
+/**
+ * The road is the headline, the problem is a tag, and the three facts people
+ * look for (how many reports, does it come back, when last) sit in one row.
+ */
+export function PlaceHeader({
+  location,
+  place,
+}: {
+  location: LocationRecord;
+  place: PlaceSummary;
+}) {
+  const title = placeTitle({ location });
+  const area = placeArea(location);
   const issue = ISSUE_TYPE_LABELS[location.issueType];
-  const streetLine = location.name.includes(location.street)
-    ? location.ward
-    : `${location.street}, ${location.ward}`;
+  const latest = place.latestReport;
+  const where = [area && area !== title ? area : null, `${location.ward} ward`]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
-    <header className="ux4g-card ux4g-card-solid ux4g-card-vertical min-w-0">
-      <div className="ux4g-card-header">
-        <div className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-          <p className="ux4g-card-sub-title">{location.ward}</p>
-          <p className="ux4g-text ux4g-text-neutral-tertiary min-w-0 break-all">{location.slug}</p>
+    <header className="rb-place-head">
+      <p className="rb-place-tags">
+        <GovBadge tone="info">{issue}</GovBadge>
+        {place.recurring ? (
+          <GovBadge tone="error">Keeps coming back</GovBadge>
+        ) : null}
+      </p>
+      <h1 className="ux4g-heading-l-strong ux4g-mt-xs break-words">{title}</h1>
+      <p className="ux4g-body-m-default ux4g-text-neutral-secondary">{where}</p>
+
+      <dl className="rb-place-stats">
+        <div>
+          <dt>Reports</dt>
+          <dd>{place.reportCount}</dd>
         </div>
-        <h1 className="ux4g-heading-xl-strong mt-3 break-words">{location.name}</h1>
-        <p className="ux4g-text ux4g-text-neutral-secondary mt-1">{streetLine}</p>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="ux4g-text ux4g-text-neutral-secondary">
-            <span className="sr-only">Coordinates: </span>
-            {formatCoords(location.lat, location.lng)}
-          </p>
-          <GovBadge tone="info">{issue}</GovBadge>
+        <div>
+          <dt>Recurring</dt>
+          <dd>{place.recurring ? "Yes" : "No"}</dd>
         </div>
-      </div>
+        <div>
+          <dt>Last noticed</dt>
+          <dd className="rb-place-stat-s">
+            {latest
+              ? noticedWhen(latest).replace(/^Noticed (on |in )?/, "")
+              : "—"}
+          </dd>
+        </div>
+      </dl>
     </header>
   );
 }

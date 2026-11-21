@@ -201,7 +201,7 @@ describe("map page", () => {
     expect(readReportPlace).toHaveBeenCalledWith("rpt_fresh");
     const preview = within(screen.getByRole("dialog"));
     expect(preview.getByText("5")).toBeInTheDocument();
-    expect(preview.getByText(/reports · recurring/)).toBeInTheDocument();
+    expect(preview.getByText(/reports, and it keeps coming back/)).toBeInTheDocument();
     expect(screen.queryByText("4")).not.toBeInTheDocument();
   });
 

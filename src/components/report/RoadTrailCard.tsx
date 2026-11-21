@@ -50,7 +50,7 @@ export function RoadTrailCard({
           {trail.reopenedCount > 0
             ? ` (${trail.reopenedCount} failed within 30 days)`
             : ""}
-          {trail.flagCount > 0 ? ` · ${trail.flagCount} audit flags` : ""}.
+          {trail.flagCount > 0 ? `, with ${trail.flagCount} ${trail.flagCount === 1 ? "bill" : "bills"} flagged` : ""}.
           {trail.lastContractorName ? (
             <>
               {" "}

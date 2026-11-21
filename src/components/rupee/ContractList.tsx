@@ -68,7 +68,7 @@ export function ContractList({
         Showing {shown.length} of {orders.length} {orders.length === total ? "jobs" : `matching jobs (${total} in all)`}.
       </p>
       <div className="ux4g-table-responsive ux4g-mt-xs">
-        <table className="ux4g-table ux4g-table-s rb-table">
+        <table className="ux4g-table ux4g-table-s rb-table rb-stack">
           <caption className="sr-only">Contracts, newest first</caption>
           <thead>
             <tr>
@@ -87,16 +87,16 @@ export function ContractList({
                   {order.id}
                   <span className="ux4g-body-xs-default ux4g-text-neutral-secondary"> {order.completedAt.slice(0, 10)}</span>
                 </th>
-                <td>
+                <td className="rb-full">
                   {order.roadName}{" "}
                   <Link href={`/wards/${wardSlug(order.ward)}`} className="ux4g-text-link-s">
                     {order.ward}
                   </Link>
                 </td>
-                <td>{order.method}</td>
-                <td className="rb-num">{formatInr(order.costInr)}</td>
-                <td className="rb-num">{formatInr(Math.round(order.expectedCostInr))}</td>
-                <td className="rb-notes">
+                <td className="rb-full rb-sub">{order.method}</td>
+                <td data-label="Billed" className="rb-num rb-half">{formatInr(order.costInr)}</td>
+                <td data-label="Rate card" className="rb-num rb-half">{formatInr(Math.round(order.expectedCostInr))}</td>
+                <td className="rb-notes rb-full">
                   {marks(order).map((mark) => (
                     <GovBadge key={mark.text} tone={mark.tone} small>
                       {mark.text}
@@ -111,11 +111,11 @@ export function ContractList({
       {orders.length > shown.length ? (
         <p className="ux4g-mt-s">
           <Link
-            href={query({ ...(filter === "all" ? {} : { show: filter }), n: String(limit + 50) })}
+            href={query({ ...(filter === "all" ? {} : { show: filter }), n: String(limit + 25) })}
             className="ux4g-btn-outline-primary ux4g-btn-m touch-target"
             scroll={false}
           >
-            Show {Math.min(50, orders.length - shown.length)} more
+            Show {Math.min(25, orders.length - shown.length)} more
           </Link>
         </p>
       ) : null}

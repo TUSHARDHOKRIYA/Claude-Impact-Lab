@@ -98,7 +98,7 @@ export function WardRankList({
                   />
                   <span className="rb-rank-sub">
                     {formatInrShort(row.spentInr)} spent
-                    {row.flagCount > 0 ? ` · ${row.flagCount} ${row.flagCount === 1 ? "flag" : "flags"}` : ""}
+                    {row.flagCount > 0 ? `, ${row.flagCount} ${row.flagCount === 1 ? "bill" : "bills"} flagged` : ""}
                   </span>
                 </span>
                 <span className={`rb-rank-score rb-score-${band}`}>

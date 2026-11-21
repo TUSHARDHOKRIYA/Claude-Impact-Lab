@@ -212,22 +212,45 @@
   line-height: 1.25rem;
 }
 
-.rb-tranche[data-status="funded"] {
-  background: var(--ux4g-bg-success-subtle, #e3f5ea);
-  color: var(--ux4g-text-success, #146c3a);
-}
-
-.rb-tranche[data-status="next"] {
-  background: var(--ux4g-bg-neutral-subtle, rgb(0 0 0 / 0.06));
-  color: var(--ux4g-text-neutral-secondary);
-}
-
 .rb-tranche[data-status="dlp"] {
   background: var(--enamel-soft);
   color: var(--enamel);
 }
 
-.rb-tranche[data-dark="true"] {
-  margin-left: 0.5rem;
+.rb-tranche[data-status="next"] {
   background: rgb(255 255 255 / 0.92);
+  color: var(--ux4g-text-neutral-primary);
+}
+
+.rb-tranche[data-dark="true"] {
+  background: rgb(255 255 255 / 0.92);
+}
+
+/* Where the money runs out: the road's own lane marking, the one other place
+ * the header stripe appears. */
+.rb-cutoff {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: var(--ux4g-bg-neutral-base, #f4f4f4);
+}
+
+.rb-next-queue > li.rb-cutoff {
+  display: flex;
+}
+
+.rb-cutoff-line {
+  flex: 1;
+  height: 6px;
+  /* Same marking as the header's .rb-lane. */
+  background: repeating-linear-gradient(90deg, var(--lane) 0 28px, transparent 28px 46px) center / 100% 2px no-repeat,
+    var(--asphalt);
+}
+
+.rb-cutoff-text {
+  flex: none;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }

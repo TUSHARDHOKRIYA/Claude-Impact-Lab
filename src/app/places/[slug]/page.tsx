@@ -28,7 +28,7 @@ export async function generateMetadata({
   const report = firstParam((await searchParams).report);
   const data = await getPlacePage(slug, undefined, report);
   if (!data) return { title: "Place" };
-  return { title: `${data.location.name} · ${data.location.street}` };
+  return { title: `${data.location.name}, ${data.location.street}` };
 }
 
 export default async function PlacePage({ params, searchParams }: PageProps) {

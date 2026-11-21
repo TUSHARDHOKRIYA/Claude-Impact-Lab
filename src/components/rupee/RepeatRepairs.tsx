@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { GovBadge } from "@/components/gov/GovBadge";
+import { FoldRows } from "@/components/rupee/FoldRows";
 import { formatInrShort } from "@/lib/rupee/format";
 import { REPEAT_WINDOW_DAYS } from "@/lib/rupee/scorecard";
 import type { Repeats } from "@/lib/rupee/scorecard";
@@ -16,20 +17,42 @@ function gapText(days: number): string {
  * data has no pothole-level coordinates, so "again" means the same kind of
  * problem on the same road segment within a short window.
  */
-export function RepeatRepairs({ repeats, contractorName }: { repeats: Repeats; contractorName: string }) {
+export function RepeatRepairs({
+  repeats,
+  contractorName,
+}: {
+  repeats: Repeats;
+  contractorName: string;
+}) {
   const facts: Array<[string, string, string]> = [
-    ["Came back in 30 days", String(repeats.reopened), `${formatInrShort(repeats.reopenedInr)} spent on them`],
-    ["Fixed again", String(repeats.repeatJobs), `${formatInrShort(repeats.repeatInr)} within ${REPEAT_WINDOW_DAYS} days of an earlier fix`],
-    ["Roads fixed twice or more", String(repeats.roadsFixedTwice), `${repeats.roadsFixedThreePlus} fixed three times or more`],
+    [
+      "Came back in 30 days",
+      String(repeats.reopened),
+      `${formatInrShort(repeats.reopenedInr)} spent on them`,
+    ],
+    [
+      "Fixed again",
+      String(repeats.repeatJobs),
+      `${formatInrShort(repeats.repeatInr)} within ${REPEAT_WINDOW_DAYS} days of an earlier fix`,
+    ],
+    [
+      "Roads fixed twice or more",
+      String(repeats.roadsFixedTwice),
+      `${repeats.roadsFixedThreePlus} fixed three times or more`,
+    ],
   ];
   return (
     <>
       <dl className="rb-facts-row">
         {facts.map(([term, value, note]) => (
           <div key={term} className="rb-fact">
-            <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">{term}</dt>
+            <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">
+              {term}
+            </dt>
             <dd className="ux4g-heading-m-strong">{value}</dd>
-            <dd className="ux4g-body-xs-default ux4g-text-neutral-secondary">{note}</dd>
+            <dd className="ux4g-body-xs-default ux4g-text-neutral-secondary">
+              {note}
+            </dd>
           </div>
         ))}
       </dl>
@@ -37,82 +60,124 @@ export function RepeatRepairs({ repeats, contractorName }: { repeats: Repeats; c
       {repeats.examples.length > 0 ? (
         <>
           <h3 className="ux4g-title-m-strong ux4g-mt-l">Quickest repeats</h3>
-          <div className="ux4g-table-responsive ux4g-mt-xs">
-            <table className="ux4g-table ux4g-table-s rb-table">
-              <caption className="sr-only">Same problem fixed again on the same road, quickest first</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Road</th>
-                  <th scope="col">Problem</th>
-                  <th scope="col" className="rb-num">Gap</th>
-                  <th scope="col">Work orders</th>
-                </tr>
-              </thead>
-              <tbody>
-                {repeats.examples.map((row) => (
-                  <tr key={row.workOrderId}>
-                    <th scope="row">
-                      {row.roadName}
-                      <span className="ux4g-body-xs-default ux4g-text-neutral-secondary">
-                        {" "}
-                        <Link href={`/wards/${wardSlug(row.ward)}`} className="ux4g-text-link-s">
-                          {row.roadId}, {row.ward}
-                        </Link>
-                      </span>
+          <FoldRows total={repeats.examples.length} noun="repeats">
+            <div className="ux4g-table-responsive ux4g-mt-xs">
+              <table className="ux4g-table ux4g-table-s rb-table rb-stack">
+                <caption className="sr-only">
+                  Same problem fixed again on the same road, quickest first
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Road</th>
+                    <th scope="col">Problem</th>
+                    <th scope="col" className="rb-num">
+                      Gap
                     </th>
-                    <td>{row.workType}</td>
-                    <td className="rb-num">{gapText(row.days)}</td>
-                    <td>
-                      {row.earlierWorkOrderId} then {row.workOrderId}{" "}
-                      {row.sameContractor ? null : (
-                        <GovBadge tone="info" small>
-                          earlier fix by someone else
-                        </GovBadge>
-                      )}
-                    </td>
+                    <th scope="col">Work orders</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {repeats.examples.map((row) => (
+                    <tr key={row.workOrderId}>
+                      <th scope="row">
+                        {row.roadName}
+                        <span className="ux4g-body-xs-default ux4g-text-neutral-secondary">
+                          {" "}
+                          <Link
+                            href={`/wards/${wardSlug(row.ward)}`}
+                            className="ux4g-text-link-s"
+                          >
+                            {row.roadId}, {row.ward}
+                          </Link>
+                        </span>
+                      </th>
+                      <td data-label="Problem" className="rb-half">
+                        {row.workType}
+                      </td>
+                      <td
+                        data-label="Came back after"
+                        className="rb-num rb-half"
+                      >
+                        {gapText(row.days)}
+                      </td>
+                      <td data-label="Work orders" className="rb-full">
+                        {row.earlierWorkOrderId} then {row.workOrderId}{" "}
+                        {row.sameContractor ? null : (
+                          <GovBadge tone="info" small>
+                            earlier fix by someone else
+                          </GovBadge>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </FoldRows>
           <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
-            For example, {repeats.examples[0].roadName} ({repeats.examples[0].roadId}) had the same kind of problem
-            fixed again {repeats.examples[0].days === 0 ? "on the same day" : `${repeats.examples[0].days} days later`}, in{" "}
-            {repeats.examples[0].workOrderId}, a job given to {contractorName}. A repeat can be bad luck, a busy road, a
-            poor fix or a duplicate order. This list is where to ask.
+            For example, {repeats.examples[0].roadName} (
+            {repeats.examples[0].roadId}) had the same kind of problem fixed
+            again{" "}
+            {repeats.examples[0].days === 0
+              ? "on the same day"
+              : `${repeats.examples[0].days} days later`}
+            , in {repeats.examples[0].workOrderId}, a job given to{" "}
+            {contractorName}. A repeat can be bad luck, a busy road, a poor fix
+            or a duplicate order. This list is where to ask.
           </p>
         </>
       ) : null}
 
       {repeats.topRoads.length > 0 ? (
         <>
-          <h3 className="ux4g-title-m-strong ux4g-mt-l">Roads fixed most often</h3>
-          <div className="ux4g-table-responsive ux4g-mt-xs">
-            <table className="ux4g-table ux4g-table-s rb-table">
-              <caption className="sr-only">Road segments this contractor repaired more than once</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Road</th>
-                  <th scope="col" className="rb-num">Jobs</th>
-                  <th scope="col" className="rb-num">Came back</th>
-                  <th scope="col" className="rb-num">Billed</th>
-                </tr>
-              </thead>
-              <tbody>
-                {repeats.topRoads.map((road) => (
-                  <tr key={road.roadId}>
-                    <th scope="row">
-                      {road.roadName}
-                      <span className="ux4g-body-xs-default ux4g-text-neutral-secondary"> {road.roadId}, {road.ward}</span>
+          <h3 className="ux4g-title-m-strong ux4g-mt-l">
+            Roads fixed most often
+          </h3>
+          <FoldRows total={repeats.topRoads.length} noun="roads">
+            <div className="ux4g-table-responsive ux4g-mt-xs">
+              <table className="ux4g-table ux4g-table-s rb-table rb-stack">
+                <caption className="sr-only">
+                  Road segments this contractor repaired more than once
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Road</th>
+                    <th scope="col" className="rb-num">
+                      Jobs
                     </th>
-                    <td className="rb-num">{road.jobs}</td>
-                    <td className="rb-num">{road.reopened}</td>
-                    <td className="rb-num">{formatInrShort(road.costInr)}</td>
+                    <th scope="col" className="rb-num">
+                      Came back
+                    </th>
+                    <th scope="col" className="rb-num">
+                      Billed
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {repeats.topRoads.map((road) => (
+                    <tr key={road.roadId}>
+                      <th scope="row">
+                        {road.roadName}
+                        <span className="ux4g-body-xs-default ux4g-text-neutral-secondary">
+                          {" "}
+                          {road.roadId}, {road.ward}
+                        </span>
+                      </th>
+                      <td data-label="Jobs" className="rb-num">
+                        {road.jobs}
+                      </td>
+                      <td data-label="Came back" className="rb-num">
+                        {road.reopened}
+                      </td>
+                      <td data-label="Billed" className="rb-num">
+                        {formatInrShort(road.costInr)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </FoldRows>
         </>
       ) : null}
     </>

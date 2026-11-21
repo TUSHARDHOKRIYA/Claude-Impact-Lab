@@ -1,0 +1,158 @@
+/* Data tables on phones: each row becomes a block. The row header is the
+ * title, every cell shows its column name above the figure, and the cells
+ * sit in a six-track grid (thirds by default, halves and full rows by
+ * class), so nothing scrolls sideways. */
+
+/* "8% vs 23% expected": the comparison sits beside the figure. */
+.rb-vs {
+  color: var(--ux4g-text-neutral-secondary);
+  font-weight: 400;
+}
+
+@media (max-width: 39.99rem) {
+  .rb-stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .rb-stack,
+  .rb-stack tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .rb-stack tr {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.625rem 0.75rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--ux4g-border-color-neutral-subtle);
+  }
+
+  .rb-stack tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .rb-stack tr > th[scope="row"],
+  .rb-stack tr > td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    text-align: start;
+    white-space: normal;
+  }
+
+  .rb-stack tr > th[scope="row"] {
+    grid-column: 1 / -1;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .rb-stack tr > td {
+    grid-column: span 2;
+    font-size: 0.9375rem;
+  }
+
+  .rb-stack tr > td.rb-half {
+    grid-column: span 3;
+  }
+
+  .rb-stack tr > td.rb-full {
+    grid-column: 1 / -1;
+  }
+
+  .rb-stack tr > td:empty {
+    display: none;
+  }
+
+  .rb-stack td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.0625rem;
+    color: var(--ux4g-text-neutral-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1rem;
+  }
+}
+
+/* ---- Long tables fold to their first six rows (FoldRows). ---- */
+.rb-fold[data-folded="true"] tbody tr:nth-child(n + 7) {
+  display: none;
+}
+
+.rb-fold-btn {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 39.99rem) {
+  .rb-stack tr > th[scope="row"] {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .rb-stack tr > td {
+    height: auto;
+    min-height: 0;
+  }
+
+  .rb-stack tr > td.rb-notes {
+    display: flex;
+  }
+
+  .rb-stack tr > td.rb-notes:empty {
+    display: none;
+  }
+
+  /* Method under the road, no label: it reads as one line of "what was done". */
+  .rb-stack tr > td.rb-sub {
+    margin-top: -0.5rem;
+    color: var(--ux4g-text-neutral-secondary);
+  }
+
+  /* Three facts share one box instead of three stacked boxes. */
+  .rb-facts-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--ux4g-border-color-neutral-subtle);
+    border-radius: 1rem;
+    background: var(--ux4g-bg-neutral-elevated);
+  }
+
+  .rb-facts-row > .rb-fact {
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .rb-facts-row > .rb-fact + .rb-fact {
+    border-left: 1px solid var(--ux4g-border-color-neutral-subtle);
+  }
+
+  /* Score part facts side by side: "Came back 9%" next to "Expected 24%". */
+  .rb-part-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0.75rem;
+  }
+}
+
+@media (min-width: 40rem) {
+  /* Row names (ward with its areas, road with its segment) get room to sit on one or two lines. */
+  .rb-stack th[scope="row"] {
+    min-width: 10rem;
+  }
+}
+
+/* Long column names wrap instead of pushing the table wider than the page. */
+.rb-stack thead th {
+  white-space: normal;
+  vertical-align: bottom;
+}

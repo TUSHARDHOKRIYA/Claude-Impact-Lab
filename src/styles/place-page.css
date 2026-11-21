@@ -106,14 +106,14 @@ a.rb-rrow:hover > svg {
 }
 
 /* ---- Report page. ---- */
+/* The reporter's own words: set larger, with a rule, and no fill, so the ask
+ * card stays the only tinted block on the page. */
 .rb-report-words {
   margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border-left: 4px solid var(--enamel);
-  border-radius: 0 0.75rem 0.75rem 0;
-  background: var(--enamel-soft);
-  font-size: 1.0625rem;
-  line-height: 1.625rem;
+  padding: 0.125rem 0 0.125rem 1rem;
+  border-left: 3px solid var(--enamel);
+  font-size: 1.1875rem;
+  line-height: 1.75rem;
   overflow-wrap: anywhere;
 }
 

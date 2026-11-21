@@ -37,7 +37,7 @@ export default async function ContractorPage({ params, searchParams }: Props) {
   if (!card) notFound();
   const query = await searchParams;
   const filter = contractFilterOf(query.show);
-  const limit = Math.min(Math.max(Number(query.n) || 25, 25), 500);
+  const limit = Math.min(Math.max(Number(query.n) || 10, 10), 500);
 
   const { flags } = getRupee();
   const ownFlags = flags.filter((flag) => flag.contractorId === card.id);

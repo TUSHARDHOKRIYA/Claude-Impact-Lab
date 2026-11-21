@@ -9,20 +9,28 @@ import type { NextRupeeItem } from "@/lib/rupee/types";
 const STEP = 5_000;
 const roundUp = (inr: number) => Math.ceil(inr / 10_000) * 10_000;
 
-/** Fund roads in rank order until the money runs out. Roads under guarantee cost BMC nothing. */
+/**
+ * Fund roads strictly in risk order until the next one does not fit: a
+ * riskier road is never skipped for a cheaper one further down. Roads still
+ * under guarantee cost BMC nothing and are sent back to the contractor.
+ */
 export function allocate(items: NextRupeeItem[], budgetInr: number) {
   const status = new Map<string, TrancheStatus>();
   let usedInr = 0;
+  let stopped = false;
   for (const item of items) {
     if (item.underDlp) {
       status.set(item.roadId, "dlp");
       continue;
     }
     const cost = Math.max(0, item.estCostInr);
-    if (usedInr + cost <= budgetInr) {
+    if (!stopped && usedInr + cost <= budgetInr) {
       status.set(item.roadId, "funded");
       usedInr += cost;
-    } else status.set(item.roadId, "next");
+    } else {
+      stopped = true;
+      status.set(item.roadId, "next");
+    }
   }
   const count = (s: TrancheStatus) => [...status.values()].filter((v) => v === s).length;
   return { status, usedInr, funded: count("funded"), dlp: count("dlp"), next: count("next") };
@@ -58,7 +66,7 @@ export function BudgetSimulator({ wardCode, items }: { wardCode: string; items: 
           </output>
         </div>
         <p className="ux4g-body-s-default ux4g-text-neutral-secondary">
-          The paid fixes below cost about {formatInrShort(totalInr)} in all. Slide to see which roads the money reaches.
+          The paid fixes below cost about {formatInrShort(totalInr)} in all. Money goes to the riskiest road first.
         </p>
         <input
           id="ward-budget-cap"
@@ -102,14 +110,14 @@ export function BudgetSimulator({ wardCode, items }: { wardCode: string; items: 
             <dt>Has to wait</dt>
             <dd>
               {plan.next} {plan.next === 1 ? "road" : "roads"}
-              <span>next tranche</span>
+              <span>for the next round</span>
             </dd>
           </div>
         </dl>
       </div>
 
       <div className="ux4g-mt-m">
-        <NextRupeeList items={items} status={plan.status} />
+        <NextRupeeList items={items} plan={{ status: plan.status, budget: formatInrShort(budgetInr) }} />
       </div>
     </div>
   );

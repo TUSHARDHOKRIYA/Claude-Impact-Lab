@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { formatInr } from "@/lib/rupee/format";
 import { pct } from "@/lib/rupee/slug";
 import type { NextRupeeItem } from "@/lib/rupee/types";
@@ -5,18 +7,31 @@ import type { NextRupeeItem } from "@/lib/rupee/types";
 /** Where a road lands under a budget cap, when one is being tried. */
 export type TrancheStatus = "funded" | "next" | "dlp";
 
-const STATUS_LABEL: Record<TrancheStatus, string> = {
-  funded: "Fits the budget",
-  next: "Waits for next tranche",
-  dlp: "₹0, contractor's guarantee",
+/** Only the exceptions get a tag: free roads anywhere, and a first road the money misses. */
+const STATUS_LABEL: Partial<Record<TrancheStatus, string>> = {
+  next: "Not reached at this budget",
+  dlp: "Free: still under guarantee",
 };
 
 function StatusTag({ status, onDark = false }: { status?: TrancheStatus; onDark?: boolean }) {
-  if (!status) return null;
+  const label = status ? STATUS_LABEL[status] : undefined;
+  if (!label) return null;
   return (
     <span className="rb-tranche" data-status={status} data-dark={onDark ? "true" : undefined}>
-      {STATUS_LABEL[status]}
+      {label}
     </span>
+  );
+}
+
+/** The lane marking: where the money runs out. */
+function Cutoff({ budget }: { budget: string }) {
+  return (
+    <li className="rb-cutoff" role="separator" aria-label={`${budget} runs out here. Roads below wait.`}>
+      <span className="rb-cutoff-line" aria-hidden="true" />
+      <span className="rb-cutoff-text" aria-hidden="true">
+        {budget} runs out here
+      </span>
+    </li>
   );
 }
 
@@ -32,17 +47,24 @@ function Fix({ item }: { item: NextRupeeItem }) {
  */
 export function NextRupeeList({
   items,
-  status,
+  plan,
 }: {
   items: NextRupeeItem[];
-  status?: Map<string, TrancheStatus>;
+  /** From the budget simulator: where each road lands, and the amount tried. */
+  plan?: { status: Map<string, TrancheStatus>; budget: string };
 }) {
+  const status = plan?.status;
   const [first, ...rest] = items;
   if (!first) {
     return (
       <p className="ux4g-body-m-default ux4g-text-neutral-secondary">No open risks ranked for this ward.</p>
     );
   }
+  // The line goes above the first queued road the money misses. When even the
+  // first road is missed, its card says so and no line is drawn.
+  const cutAt =
+    status && status.get(first.roadId) !== "next" ? rest.findIndex((r) => status.get(r.roadId) === "next") : -1;
+
   return (
     <div className="rb-next">
       <article className="rb-fixfirst rb-fixfirst-l" aria-labelledby="fix-first-road">
@@ -71,8 +93,10 @@ export function NextRupeeList({
         <>
           <h3 className="ux4g-heading-xs-strong ux4g-mt-m">Next in line</h3>
           <ol className="rb-next-queue" start={2}>
-            {rest.map((item) => (
-              <li key={item.roadId}>
+            {rest.map((item, i) => (
+              <Fragment key={item.roadId}>
+              {plan && i === cutAt ? <Cutoff budget={plan.budget} /> : null}
+              <li>
                 <span className="rb-next-no" aria-hidden="true">
                   {item.rank}
                 </span>
@@ -83,15 +107,15 @@ export function NextRupeeList({
                     {item.underDlp
                       ? "Under guarantee: contractor fixes it free"
                       : `${item.suggestedMethod}, about ${formatInr(item.estCostInr)}`}
-                    <span className="ux4g-text-neutral-secondary"> · segment {item.roadId}</span>
                   </p>
-                  <StatusTag status={status?.get(item.roadId)} />
+                  {status?.get(item.roadId) === "dlp" ? <StatusTag status="dlp" /> : null}
                 </div>
                 <span className="rb-next-risk">
                   {item.score}
                   <span className="sr-only"> risk of 100</span>
                 </span>
               </li>
+              </Fragment>
             ))}
           </ol>
         </>

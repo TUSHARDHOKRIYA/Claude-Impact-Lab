@@ -36,8 +36,8 @@ export function ContractorRankList({ cards, flagsById }: { cards: ContractorScor
               <span className="rb-crank-main">
                 <span className="rb-crank-name">{card.name}</span>
                 <span className="rb-rank-sub">
-                  {card.volume.jobs} jobs · {card.volume.wards} wards · {formatInrShort(card.volume.billedInr)} billed
-                  {flagged ? ` · ${flagged} flagged` : ""}
+                  {card.volume.jobs} jobs in {card.volume.wards} wards, {formatInrShort(card.volume.billedInr)} billed
+                  {flagged ? `, ${flagged} ${flagged === 1 ? "bill" : "bills"} flagged` : ""}
                 </span>
               </span>
               <span className={`rb-rank-score ${BAND_CLASS[card.band]}`}>

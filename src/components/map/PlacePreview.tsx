@@ -78,7 +78,7 @@ export function PlacePreview({
           <span className="ux4g-heading-l-strong">{place.reportCount}</span>
           <span className="ux4g-text ux4g-text-neutral-secondary">
             {place.reportCount === 1 ? "report" : "reports"}
-            {place.recurring ? " · recurring" : ""}
+            {place.recurring ? ", and it keeps coming back" : ""}
           </span>
         </p>
 

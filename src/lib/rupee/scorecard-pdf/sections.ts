@@ -2,7 +2,6 @@
 
 import { OUTLIER_FACTOR, PRIOR_JOBS, WEIGHTS } from "@/lib/rupee/scorecard";
 import type { ContractorScorecard } from "@/lib/rupee/scorecard";
-import { BAND_LINE, weakestPart } from "@/lib/rupee/scorecard/summary";
 
 import { ACCENT, CONTENT_W, Cursor, INK, MUTED, type RenderContext } from "./layout";
 import { generatedDate, pct } from "./text";
@@ -24,7 +23,6 @@ export function drawOverall(cur: Cursor, card: ContractorScorecard): void {
   cur.heading("Overall score");
   cur.line(String(Math.round(card.overall)), { size: 40, bold: true, color: ACCENT });
   cur.line(`out of 100  ·  ${card.band}`, { size: 11, bold: true });
-  cur.paragraph(BAND_LINE[card.band], { size: 10 });
   cur.move(6);
   cur.scoreBar(card.overall, 8);
   const count =
@@ -33,7 +31,17 @@ export function drawOverall(cur: Cursor, card: ContractorScorecard): void {
     `50 means exactly as expected. 60 and above is Strong, 40 to 60 is As expected, under 40 Needs attention. ${count}`,
     { size: 8.5, color: MUTED },
   );
-  cur.paragraph(`Of the three parts, the lowest is ${weakestPart(card).label}.`, { size: 9, color: INK });
+  cur.paragraph(`Of the three parts, the lowest is ${lowestPart(card)}.`, { size: 9, color: INK });
+}
+
+/** The lowest of the three part scores, named in plain words, straight from the computed scores. */
+function lowestPart(card: ContractorScorecard): string {
+  const parts = [
+    { label: "how long repairs lasted", score: card.durability.score },
+    { label: "billing against the rate card", score: card.cost.score },
+    { label: "finishing within the time limit", score: card.speed.score },
+  ];
+  return parts.reduce((low, part) => (part.score < low.score ? part : low)).label;
 }
 
 type PartLine = { title: string; weight: number; score: number; fact: string };

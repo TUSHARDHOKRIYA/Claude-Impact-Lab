@@ -4,7 +4,6 @@ import Link from "next/link";
 import { BandBadge, ScoreMeter } from "@/components/rupee/ScoreMeter";
 import { formatInrShort, getRupee } from "@/lib/rupee";
 import { getScorecards } from "@/lib/rupee/scorecard";
-import { BAND_LINE } from "@/lib/rupee/scorecard/summary";
 import { pct } from "@/lib/rupee/slug";
 
 export const metadata: Metadata = {
@@ -54,8 +53,7 @@ export default function ContractorsPage() {
               </div>
               <div className="ux4g-card-body">
                 <ScoreMeter score={card.overall} label={`${card.name} overall score`} />
-                <p className="ux4g-body-s-default ux4g-mt-xs">{BAND_LINE[card.band]}</p>
-                <dl className="rb-score-facts ux4g-mt-s">
+                <dl className="rb-score-facts ux4g-mt-xs">
                   <div>
                     <dt className="ux4g-body-xs-default ux4g-text-neutral-secondary">Repairs that came back</dt>
                     <dd className="ux4g-body-m-strong">

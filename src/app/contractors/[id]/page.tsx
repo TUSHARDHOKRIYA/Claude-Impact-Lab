@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
+import { ContractorBrief, ContractorBriefLoading } from "@/components/rupee/ContractorBrief";
 import { ContractorMethod } from "@/components/rupee/ContractorMethod";
 import { MethodTable, WardTable } from "@/components/rupee/ContractorBreakdowns";
 import { CONTRACT_FILTERS, ContractList, contractFilterOf } from "@/components/rupee/ContractList";
@@ -11,7 +13,6 @@ import { BandBadge, ScoreMeter } from "@/components/rupee/ScoreMeter";
 import { ScoreParts } from "@/components/rupee/ScoreParts";
 import { formatInr, formatInrShort, getRupee } from "@/lib/rupee";
 import { getScorecards, PRIOR_JOBS } from "@/lib/rupee/scorecard";
-import { BAND_LINE, scorecardSummary, weakestPart } from "@/lib/rupee/scorecard/summary";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -45,7 +46,6 @@ export default async function ContractorPage({ params, searchParams }: Props) {
   const test = CONTRACT_FILTERS.find((f) => f.key === filter)!.test;
   const matching = card.orders.filter(test);
   const { cards } = getScorecards();
-  const weak = weakestPart(card);
   const basePath = `/contractors/${card.id}`;
 
   return (
@@ -79,8 +79,7 @@ export default async function ContractorPage({ params, searchParams }: Props) {
           </div>
           <div className="rb-hero-copy">
             <ScoreMeter score={card.overall} label={`${card.name} overall score`} large />
-            <p className="ux4g-body-l-strong ux4g-mt-s">{BAND_LINE[card.band]}</p>
-            <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-xs">
+            <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-s">
               50 means exactly as expected. 60 and above is Strong, 40 to 60 is As expected, under 40 Needs attention.
               {card.volume.jobs >= PRIOR_JOBS
                 ? ` ${card.volume.jobs} jobs counted.`
@@ -94,16 +93,11 @@ export default async function ContractorPage({ params, searchParams }: Props) {
         <h2 id="summary-heading" className="ux4g-title-l-strong">
           In plain words
         </h2>
-        <ul className="rb-plain ux4g-mt-xs rb-measure">
-          {scorecardSummary(card).map((line) => (
-            <li key={line} className="ux4g-body-m-default">
-              {line}
-            </li>
-          ))}
-        </ul>
-        <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
-          Of the three parts, the lowest is {weak.label}.
-        </p>
+        <div className="ux4g-mt-xs">
+          <Suspense fallback={<ContractorBriefLoading />}>
+            <ContractorBrief card={card} />
+          </Suspense>
+        </div>
       </section>
 
       <section className="rb-section" aria-labelledby="parts-heading">

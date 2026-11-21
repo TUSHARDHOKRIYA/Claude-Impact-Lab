@@ -7,11 +7,12 @@ const NAV = [
   { href: "/", label: "Report" },
   { href: "/map", label: "Map" },
   { href: "/wards", label: "Wards" },
+  { href: "/contractors", label: "Contractors" },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/" || pathname.startsWith("/report");
-  return pathname === href || pathname.startsWith(`${href}/`) || (href === "/wards" && pathname.startsWith("/contractors"));
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 /** UX4G navbar, with the road's lane marking along its lower edge. */

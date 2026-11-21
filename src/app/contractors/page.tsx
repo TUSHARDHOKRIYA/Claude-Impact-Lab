@@ -1,108 +1,95 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { GovBadge } from "@/components/gov/GovBadge";
-import { FLAG_LABELS } from "@/components/rupee/FlagList";
+import { BandBadge, ScoreMeter } from "@/components/rupee/ScoreMeter";
 import { formatInrShort, getRupee } from "@/lib/rupee";
+import { getScorecards } from "@/lib/rupee/scorecard";
+import { BAND_LINE } from "@/lib/rupee/scorecard/summary";
 import { pct } from "@/lib/rupee/slug";
-import type { AuditFlagKind } from "@/lib/rupee/types";
 
 export const metadata: Metadata = {
   title: "Contractor scorecards",
   description:
-    "How each road contractor's monsoon repairs held up, compared with what is fair for the wards and work they took on.",
+    "Each road contractor scored on whether repairs lasted, whether bills matched the rate card, and whether work finished on time, against what is fair for the work and conditions they took on.",
 };
 
-function ratioLabel(ratio: number): string {
-  const diff = Math.round((ratio - 1) * 100);
-  if (diff === 0) return "On the rate card";
-  return diff > 0 ? `${diff}% above the rate card` : `${-diff}% below the rate card`;
-}
-
 export default function ContractorsPage() {
-  const { scores } = getRupee();
-  const rows = [...scores].sort(
-    (a, b) => b.reopenRate - b.expectedReopenRate - (a.reopenRate - a.expectedReopenRate),
-  );
+  const { cards, city } = getScorecards();
+  const { flags } = getRupee();
 
   return (
     <div className="shell rb-page">
-      <nav className="ux4g-breadcrumb ux4g-breadcrumb-divider" aria-label="Breadcrumb">
-        <ol className="ux4g-breadcrumb-list flex">
-          <li className="ux4g-breadcrumb-item">
-            <Link href="/wards" className="ux4g-breadcrumb-link touch-target">
-              Wards
-            </Link>
-          </li>
-          <li className="ux4g-breadcrumb-item active" aria-current="page">
-            Contractors
-          </li>
-        </ol>
-      </nav>
-      <h1 className="ux4g-display-xs-strong ux4g-mt-xs">Who did the work, and did it hold?</h1>
+      <h1 className="ux4g-display-xs-strong">Who did the work, and did it hold?</h1>
       <p className="ux4g-body-l-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
-        Each contractor&apos;s re-open rate sits next to a fair one: what we would expect for the same kinds of job in
-        equally flood-prone wards. The furthest above fair come first.
+        Every contractor is scored against what is fair for the same repair methods in the same conditions: heavy rain,
+        flood spots and busy roads. 50 means exactly as expected. Doing the most work is never a reason for a lower
+        score.
+      </p>
+      <p className="ux4g-body-s-default ux4g-text-neutral-secondary ux4g-mt-xs rb-measure">
+        Across the city, {pct(city.reopenRate)} of repairs came back within 30 days and {pct(city.slaMissRate)} missed
+        the time limit, from {city.jobs.toLocaleString("en-IN")} jobs.
       </p>
 
-      <ul className="rb-score-grid ux4g-mt-l">
-        {rows.map((score) => {
-          const gap = score.reopenRate - score.expectedReopenRate;
-          const flagKinds = (Object.keys(score.flags) as AuditFlagKind[]).filter((kind) => score.flags[kind] > 0);
+      <ol className="rb-score-grid ux4g-mt-l">
+        {cards.map((card) => {
+          const flagged = flags.filter((f) => f.contractorId === card.id).length;
           return (
-            <li key={score.contractor.id} className="ux4g-card ux4g-card-solid ux4g-card-vertical">
-              <div className="ux4g-card-header">
-                <p className="ux4g-card-title">{score.contractor.name.replace(" (synthetic)", "")}</p>
-                <p className="ux4g-body-s-default ux4g-text-neutral-secondary">
-                  Empanelled {score.contractor.empanelledSince}. {score.orders} jobs in {score.wards.length} wards,{" "}
-                  {formatInrShort(score.spentInr)} billed.
-                </p>
+            <li key={card.id} className="ux4g-card ux4g-card-solid ux4g-card-vertical">
+              <div className="ux4g-card-header rb-score-head">
+                <div>
+                  <p className="ux4g-body-xs-default ux4g-text-neutral-secondary">Rank {card.rank}</p>
+                  <p className="ux4g-card-title">
+                    <Link href={`/contractors/${card.id}`} className="rb-card-link">
+                      {card.name}
+                    </Link>
+                  </p>
+                  <p className="ux4g-body-s-default ux4g-text-neutral-secondary">
+                    {card.volume.jobs} jobs in {card.volume.wards} wards, {formatInrShort(card.volume.billedInr)} billed.
+                  </p>
+                </div>
+                <div className="rb-score-badge">
+                  <span className="ux4g-display-xs-strong">{card.overall.toFixed(0)}</span>
+                  <BandBadge band={card.band} small />
+                </div>
               </div>
               <div className="ux4g-card-body">
-                <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="ux4g-heading-m-strong">{pct(score.reopenRate)}</span>
-                  <span className="ux4g-body-s-default ux4g-text-neutral-secondary">
-                    came back, against {pct(score.expectedReopenRate)} fair
-                  </span>
-                  {gap > 0.05 ? (
-                    <GovBadge tone="error" small>Worse than fair</GovBadge>
-                  ) : gap < -0.05 ? (
-                    <GovBadge tone="success" small>Better than fair</GovBadge>
-                  ) : (
-                    <GovBadge tone="neutral" small>About fair</GovBadge>
-                  )}
-                </div>
+                <ScoreMeter score={card.overall} label={`${card.name} overall score`} />
+                <p className="ux4g-body-s-default ux4g-mt-xs">{BAND_LINE[card.band]}</p>
                 <dl className="rb-score-facts ux4g-mt-s">
                   <div>
-                    <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">Finished on time</dt>
-                    <dd className="ux4g-body-m-strong">{pct(score.slaRate)}</dd>
+                    <dt className="ux4g-body-xs-default ux4g-text-neutral-secondary">Repairs that came back</dt>
+                    <dd className="ux4g-body-m-strong">
+                      {pct(card.durability.actualRate)}{" "}
+                      <span className="ux4g-body-xs-default ux4g-text-neutral-secondary">of {pct(card.durability.expectedRate)} expected</span>
+                    </dd>
                   </div>
                   <div>
-                    <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">Typical bill</dt>
-                    <dd className="ux4g-body-m-strong">{ratioLabel(score.medianCostRatio)}</dd>
+                    <dt className="ux4g-body-xs-default ux4g-text-neutral-secondary">Average bill</dt>
+                    <dd className="ux4g-body-m-strong">{card.cost.avgCostRatio.toFixed(2)}× the rate card</dd>
                   </div>
                   <div>
-                    <dt className="ux4g-body-s-default ux4g-text-neutral-secondary">Flagged bills</dt>
-                    <dd className="ux4g-body-m-strong">{formatInrShort(score.flaggedInr)}</dd>
+                    <dt className="ux4g-body-xs-default ux4g-text-neutral-secondary">Missed the time limit</dt>
+                    <dd className="ux4g-body-m-strong">
+                      {pct(card.speed.actualRate)}{" "}
+                      <span className="ux4g-body-xs-default ux4g-text-neutral-secondary">of {pct(card.speed.expectedRate)} expected</span>
+                    </dd>
                   </div>
                 </dl>
-                {flagKinds.length ? (
-                  <ul className="ux4g-body-s-default rb-score-flags ux4g-mt-s">
-                    {flagKinds.map((kind) => (
-                      <li key={kind}>
-                        {FLAG_LABELS[kind]}: {score.flags[kind]}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
               </div>
-              <div className="ux4g-card-footer">
-                <p className="ux4g-body-xs-default ux4g-text-neutral-secondary">{score.contextNote}</p>
+              <div className="ux4g-card-footer rb-score-foot">
+                <p className="ux4g-body-xs-default ux4g-text-neutral-secondary">
+                  {pct(card.volume.highStressShare)} of their jobs were in high-stress conditions. {card.repeats.repeatJobs} fixed
+                  the same kind of problem again on the same road.
+                  {flagged > 0 ? ` ${flagged} bills flagged.` : ""}
+                </p>
+                <Link href={`/contractors/${card.id}`} className="ux4g-btn-outline-primary ux4g-btn-m touch-target">
+                  Full record
+                </Link>
               </div>
             </li>
           );
         })}
-      </ul>
+      </ol>
     </div>
   );
 }

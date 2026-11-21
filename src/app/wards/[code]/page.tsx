@@ -6,9 +6,11 @@ import { Suspense } from "react";
 import { FlagList } from "@/components/rupee/FlagList";
 import { NextRupeeList } from "@/components/rupee/NextRupeeList";
 import { OutcomeBar } from "@/components/rupee/OutcomeBar";
+import { BandBadge } from "@/components/rupee/ScoreMeter";
 import { WardBrief, WardBriefLoading } from "@/components/rupee/WardBrief";
 import { getRepository } from "@/lib/repo/context";
 import { formatInr, formatInrShort, getRupee, nextRupee } from "@/lib/rupee";
+import { getScorecards } from "@/lib/rupee/scorecard";
 import { pct, wardFromSlug, wardSlug } from "@/lib/rupee/slug";
 import type { SpendSlice } from "@/lib/rupee/types";
 
@@ -73,6 +75,7 @@ export default async function WardPage({ params }: Params) {
   const { ward, outcome, complaints, context } = ledger;
   const next = nextRupee(rupee.ds, rupee.flags, ward.code, 5);
   const scoreById = new Map(rupee.scores.map((score) => [score.contractor.id, score]));
+  const cardById = new Map(getScorecards().cards.map((card) => [card.id, card]));
   const citizen = await citizenReportCount(ward.code);
   const index = rupee.ledgers.findIndex((row) => row.ward.code === ward.code);
   const prev = rupee.ledgers[index - 1];
@@ -152,6 +155,7 @@ export default async function WardPage({ params }: Params) {
             <thead>
               <tr>
                 <th scope="col">Contractor</th>
+                <th scope="col" className="rb-num">Score</th>
                 <th scope="col" className="rb-num">Spent</th>
                 <th scope="col" className="rb-num">Re-opened</th>
                 <th scope="col" className="rb-num">Fair</th>
@@ -160,9 +164,23 @@ export default async function WardPage({ params }: Params) {
             <tbody>
               {ledger.byContractor.map((row) => {
                 const fair = scoreById.get(row.key)?.expectedReopenRate ?? 0;
+                const card = cardById.get(row.key);
                 return (
                   <tr key={row.key}>
-                    <th scope="row">{row.label.replace(" (synthetic)", "")}</th>
+                    <th scope="row">
+                      <Link href={`/contractors/${row.key}`} className="ux4g-text-link-s">
+                        {row.label.replace(" (synthetic)", "")}
+                      </Link>
+                    </th>
+                    <td className="rb-num">
+                      {card ? (
+                        <>
+                          {card.overall.toFixed(0)} <BandBadge band={card.band} small />
+                        </>
+                      ) : (
+                        "–"
+                      )}
+                    </td>
                     <td className="rb-num">{formatInrShort(row.spentInr)}</td>
                     <td className={row.reopenRate > fair + 0.05 ? "rb-num rb-worse" : "rb-num"}>{pct(row.reopenRate)}</td>
                     <td className="rb-num">{pct(fair)}</td>

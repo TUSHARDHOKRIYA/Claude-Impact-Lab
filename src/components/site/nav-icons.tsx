@@ -65,3 +65,28 @@ export function AskTabIcon(props: Props) {
     </Svg>
   );
 }
+
+export function RoadsTabIcon(props: Props) {
+  return (
+    <Svg {...props}>
+      <path d="M4 19L8 5M20 19L16 5M12 7v3M12 14v3" />
+    </Svg>
+  );
+}
+
+export function OverviewTabIcon(props: Props) {
+  return (
+    <Svg {...props}>
+      <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" />
+    </Svg>
+  );
+}
+
+export function AuditTabIcon(props: Props) {
+  return (
+    <Svg {...props}>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </Svg>
+  );
+}

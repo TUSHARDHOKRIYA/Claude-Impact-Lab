@@ -64,6 +64,10 @@
     min-width: 0;
   }
 
+  .rb-nav li.rb-nav-desktop-only {
+    display: none;
+  }
+
   .rb-nav-link {
     flex-direction: column;
     justify-content: center;

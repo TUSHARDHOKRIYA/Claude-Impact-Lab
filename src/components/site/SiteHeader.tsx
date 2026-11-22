@@ -5,18 +5,27 @@ import { usePathname } from "next/navigation";
 
 import {
   AskTabIcon,
+  AuditTabIcon,
   ContractorsTabIcon,
   MapTabIcon,
+  OverviewTabIcon,
   ReportTabIcon,
+  RoadsTabIcon,
   WardsTabIcon,
 } from "@/components/site/nav-icons";
 
 const NAV = [
-  { href: "/", label: "Report", Icon: ReportTabIcon },
-  { href: "/map", label: "Map", Icon: MapTabIcon },
-  { href: "/wards", label: "Wards", Icon: WardsTabIcon },
-  { href: "/contractors", label: "Contractors", Icon: ContractorsTabIcon },
-  { href: "/assistant", label: "Ask", Icon: AskTabIcon },
+  { href: "/", label: "Report", Icon: ReportTabIcon, mobile: true },
+  { href: "/map", label: "Map", Icon: MapTabIcon, mobile: true },
+  { href: "/roads", label: "Roads", Icon: RoadsTabIcon, mobile: true },
+  { href: "/wards", label: "Wards", Icon: WardsTabIcon, mobile: true },
+  { href: "/assistant", label: "Ask", Icon: AskTabIcon, mobile: true },
+  { href: "/overview", label: "Overview", Icon: OverviewTabIcon, mobile: false },
+  { href: "/contractors", label: "Contractors", Icon: ContractorsTabIcon, mobile: false },
+  { href: "/accountability", label: "Audit", Icon: AuditTabIcon, mobile: false },
+  { href: "/queue", label: "Queue", Icon: AuditTabIcon, mobile: false },
+  { href: "/spend-vs-need", label: "Spend vs Need", Icon: OverviewTabIcon, mobile: false },
+  { href: "/citizen", label: "Citizen Hub", Icon: ReportTabIcon, mobile: false },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
@@ -44,8 +53,8 @@ export function SiteHeader() {
             </span>
           </Link>
           <ul className="ux4g-navbar-links rb-nav">
-            {NAV.map(({ href, label, Icon }) => (
-              <li key={href}>
+            {NAV.map(({ href, label, Icon, mobile }) => (
+              <li key={href} className={mobile ? undefined : "rb-nav-desktop-only"}>
                 <Link
                   href={href}
                   aria-current={isActive(pathname, href) ? "page" : undefined}

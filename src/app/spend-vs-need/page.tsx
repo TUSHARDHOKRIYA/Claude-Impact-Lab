@@ -51,10 +51,10 @@ export default async function SpendVsNeedPage({ searchParams }: PageProps) {
             <Link
               key={sc.id}
               href={`/spend-vs-need?scenario=${sc.id}`}
-              className={`p-4 rounded border transition-all text-left flex flex-col justify-between ${activeScenario.id === sc.id ? "border-[var(--enamel)] bg-[var(--card)] shadow-sm" : "border-[var(--rule)] bg-[var(--sheet)] hover:bg-[var(--card)]"}`}
+              className={`p-4 rounded border transition-colors text-left flex flex-col justify-between ${activeScenario.id === sc.id ? "border-[var(--enamel)] bg-[var(--card)] shadow-sm" : "border-[var(--rule)] bg-[var(--card)] hover:border-[var(--rule-firm)]"}`}
             >
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--enamel)] block mb-1">
+                <span className="text-xs font-semibold text-[var(--enamel)] block mb-1">
                   Envelope: {formatInrShort(sc.budgetEnvelopeInr)}
                 </span>
                 <h3 className="ux4g-body-m-strong text-[var(--ink)]">{sc.title}</h3>
@@ -139,7 +139,7 @@ export default async function SpendVsNeedPage({ searchParams }: PageProps) {
                       href={`/roads/${road.roadId}`}
                       className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target text-xs inline-flex items-center"
                     >
-                      Passport →
+                      View Passport
                     </Link>
                   </td>
                 </tr>

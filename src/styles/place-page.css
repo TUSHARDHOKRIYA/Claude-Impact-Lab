@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Place page and report page: compact report rows, month groups, the photo. */
 
 .rb-place-page,
@@ -30,6 +31,10 @@
 
 a.rb-rrow:hover {
   background: var(--enamel-soft);
+}
+
+a.rb-rrow:active {
+  transform: scale(0.995);
 }
 
 a.rb-rrow:focus-visible {
@@ -81,7 +86,7 @@ a.rb-rrow:hover > svg {
   min-width: 1.5rem;
   padding: 0 0.4375rem;
   border-radius: 999px;
-  background: var(--ux4g-bg-neutral-subtle, rgba(0, 0, 0, 0.06));
+  background: var(--sheet);
   color: var(--ux4g-text-neutral-secondary);
   font-size: 0.75rem;
   line-height: 1.25rem;
@@ -110,8 +115,10 @@ a.rb-rrow:hover > svg {
  * card stays the only tinted block on the page. */
 .rb-report-words {
   margin-top: 1rem;
-  padding: 0.125rem 0 0.125rem 1rem;
-  border-left: 3px solid var(--enamel);
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--ux4g-radius-md, 0.5rem);
+  background: var(--sheet);
   font-size: 1.1875rem;
   line-height: 1.75rem;
   overflow-wrap: anywhere;

@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* The conversation: questions, answers, the wait, and the docked composer. */
 
 .rb-chat-live {
@@ -70,15 +71,15 @@
 }
 
 .rb-chat-facts > li[data-tone="good"] {
-  border-color: transparent;
-  background: #e3f4ec;
-  color: var(--held);
+  border-color: var(--held-border);
+  background: var(--held-bg);
+  color: var(--held-ink);
 }
 
 .rb-chat-facts > li[data-tone="warn"] {
-  border-color: transparent;
-  background: #fdf3d8;
-  color: #7a5600;
+  border-color: var(--flagged-border);
+  background: var(--flagged-bg);
+  color: var(--flagged-ink);
 }
 
 .rb-chat-text {
@@ -90,8 +91,8 @@
 
 .rb-chat-next {
   padding: 0.75rem 1rem;
-  border-left: 3px solid var(--enamel);
-  border-radius: 0 0.75rem 0.75rem 0;
+  border: 1px solid var(--rule);
+  border-radius: 0.75rem;
   background: var(--ux4g-bg-neutral-elevated);
   font-size: 0.9375rem;
   line-height: 1.5rem;
@@ -186,9 +187,9 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border: 1px solid #f1c2bd;
+  border: 1px solid var(--failed-border);
   border-radius: 0.875rem;
-  background: #fbe5e3;
+  background: var(--failed-bg);
   color: var(--failed);
   font-size: 0.9375rem;
 }
@@ -241,4 +242,15 @@
   .rb-composer-compact .rb-composer-id {
     height: 2rem;
   }
+}
+
+.rb-chat-log a:focus-visible,
+.rb-chat-log button:focus-visible {
+  outline: 2px solid var(--enamel);
+  outline-offset: 2px;
+}
+
+.rb-chat-log a:active,
+.rb-chat-log button:active {
+  transform: scale(0.985);
 }

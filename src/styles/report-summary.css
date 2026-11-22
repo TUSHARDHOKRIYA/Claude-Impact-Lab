@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Report flow, last steps: the review cards, the receipt and the sent screen. */
 
 /* Check and the receipt: grouped answers in cards, each group with an Edit link. */
@@ -74,5 +75,5 @@
   margin-bottom: 0.5rem;
   border-radius: 999px;
   background: var(--ux4g-bg-primary-strong);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
 }

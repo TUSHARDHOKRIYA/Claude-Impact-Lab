@@ -5,10 +5,16 @@ import { getRupee } from "@/lib/rupee/index";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Track Your Road Problem Report — Rasta Hisaab 2.0",
+  title: "Track Your Road Problem Report — Rastabaaz",
   description:
     "Track the real-time status of your road complaint across BMC municipal work orders and contractor billing.",
 };
+
+const QUICK_TRACK_SAMPLES = [
+  { id: "BMC25-000013", label: "BMC25-000013 (Completed)" },
+  { id: "BMC25-000042", label: "BMC25-000042 (Reopened)" },
+  { id: "BMC25-000002", label: "BMC25-000002 (Unlinked)" },
+] as const;
 
 type PageProps = {
   searchParams: Promise<{ id?: string }>;
@@ -32,7 +38,7 @@ export default async function TrackPage({ searchParams }: PageProps) {
       <header className="space-y-2">
         <h1 className="ux4g-display-xs-strong text-[var(--ink)]">Track a Road Problem</h1>
         <p className="ux4g-body-m-default text-[var(--mist)]">
-          Enter your Complaint ID (e.g. <code>BMC25-000005</code>) or App submission reference to see downstream work orders and repair status.
+          Enter your Complaint ID (e.g. <code>BMC25-000013</code>) or pick a sample below to trace its work order and rupee receipt.
         </p>
       </header>
 
@@ -41,7 +47,7 @@ export default async function TrackPage({ searchParams }: PageProps) {
           type="text"
           name="id"
           defaultValue={id ?? ""}
-          placeholder="Enter Complaint ID (e.g. BMC25-000005)..."
+          placeholder="Enter Complaint ID (e.g. BMC25-000013)..."
           className="ux4g-input flex-1 min-w-[16rem] py-2.5 px-3.5 text-sm rounded border border-[var(--rule)] bg-[var(--card)] text-[var(--ink)] font-mono"
           required
         />
@@ -49,6 +55,15 @@ export default async function TrackPage({ searchParams }: PageProps) {
           Track Status
         </button>
       </form>
+
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-[var(--mist)] font-medium">Try a real record:</span>
+        {QUICK_TRACK_SAMPLES.map((s) => (
+          <Link key={s.id} href={`/track?id=${s.id}`} className="rb-chip rb-chip-neutral hover:underline">
+            {s.label}
+          </Link>
+        ))}
+      </div>
 
       {queryId && !complaint && (
         <div className="p-4 rounded border border-[#b0281f] bg-[rgb(176_40_31/0.08)] text-xs text-[#b0281f]">

@@ -73,6 +73,7 @@
   .rb-cited-link {
     overflow-wrap: anywhere;
     max-width: 100%;
+    text-wrap: balance;
   }
 
   .rb-cited-link {

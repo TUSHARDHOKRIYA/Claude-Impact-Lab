@@ -32,7 +32,6 @@ export function PassportTimeline({ workOrders }: { workOrders: PassportWorkOrder
                   <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[var(--sheet)] text-[var(--ink)]">
                     {wo.id}
                   </span>
-                  <span className="text-xs text-[var(--mist)]">•</span>
                   <Link
                     href={`/contractors/${wo.contractorId}`}
                     className="text-xs font-medium text-[var(--enamel)] hover:underline touch-target"
@@ -55,9 +54,8 @@ export function PassportTimeline({ workOrders }: { workOrders: PassportWorkOrder
 
             <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-[var(--rule)] text-xs">
               <span className="text-[var(--mist)]">
-                Assigned: {wo.assignedAt} → Completed: {wo.completedAt}
+                Assigned: {wo.assignedAt} — Completed: {wo.completedAt}
               </span>
-              <span className="text-[var(--mist)]">•</span>
               {wo.slaMet ? (
                 <span className="rb-chip rb-chip-held text-[0.6875rem]">SLA Met ({wo.slaHours}h)</span>
               ) : (
@@ -72,13 +70,13 @@ export function PassportTimeline({ workOrders }: { workOrders: PassportWorkOrder
             </div>
 
             {wo.varianceInr > 0 && (
-              <div className="mt-2 text-xs bg-[rgb(224_161_6/0.08)] text-[#9c6c00] p-2 rounded">
+              <div className="mt-2 text-xs bg-[var(--flagged-bg)] text-[var(--flagged-ink)] border border-[var(--flagged-border)] p-2 rounded">
                 Rate variance: +{formatInr(wo.varianceInr)} (+{wo.variancePct}%) above standard rate card expectation ({formatInr(wo.expectedCostInr)}).
               </div>
             )}
 
             {wo.flags.length > 0 && (
-              <div className="mt-2 text-xs text-[#b0281f] font-medium space-y-1">
+              <div className="mt-2 text-xs text-[var(--failed-ink)] font-medium space-y-1">
                 {wo.flags.map((flag, idx) => (
                   <div key={idx} className="flex items-center gap-1.5">
                     <span aria-hidden="true">⚠️</span>

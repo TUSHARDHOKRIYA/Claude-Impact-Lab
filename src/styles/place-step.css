@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Report flow, place step: a full-bleed map with the pin fixed in its centre,
  * search floating on top and the chosen spot in a card at the bottom. */
 
@@ -34,7 +35,7 @@
   padding: 0 0.5rem 0 0.875rem;
   border-radius: 0.75rem;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.14);
+  box-shadow: var(--card-shadow-hover);
   color: var(--ux4g-text-neutral-secondary);
 }
 
@@ -78,7 +79,7 @@
   overflow-y: auto;
   border-radius: 0.75rem;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.14);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .rb-search-results .ux4g-list-item-row {
@@ -118,7 +119,7 @@
   border: 1px solid var(--ux4g-border-color-neutral-subtle);
   border-radius: 999px;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  box-shadow: var(--card-shadow);
   color: var(--ux4g-text-neutral-primary);
   font-size: 0.875rem;
   font-weight: 600;
@@ -146,7 +147,7 @@
   padding: 0.375rem 0.75rem;
   border-radius: 0.5rem;
   background: var(--asphalt);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
   font-size: 0.8125rem;
   line-height: 1.125rem;
   text-align: center;
@@ -180,8 +181,12 @@
   border: 0;
   border-radius: 999px;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.18);
+  box-shadow: var(--card-shadow-hover);
   color: var(--ux4g-bg-primary-strong);
+}
+
+.rb-place-locate:active {
+  transform: scale(0.95);
 }
 
 .rb-place-card {
@@ -193,7 +198,7 @@
   padding: 0.875rem 1rem;
   border-radius: 1rem;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 4px 18px rgb(0 0 0 / 0.18);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .rb-place-card-row {

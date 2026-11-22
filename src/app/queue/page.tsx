@@ -8,7 +8,7 @@ import { getRupee } from "@/lib/rupee/index";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Ward Engineer Daily Action Queue — Rasta Hisaab 2.0",
+  title: "Ward Engineer Daily Action Queue — Rastabaaz",
   description:
     "Operational action queue for ward junior and executive engineers: triage high-defect recurrence, SLA breaches, DLP violations, and cost anomalies.",
 };
@@ -52,11 +52,11 @@ export default async function ActionQueuePage({ searchParams }: PageProps) {
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">Critical Priority</dt>
-          <dd className="rb-stat-val text-[#b0281f]">{summary.criticalCount}</dd>
+          <dd className="rb-stat-val text-[var(--failed-ink)]">{summary.criticalCount}</dd>
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">High Priority</dt>
-          <dd className="rb-stat-val text-[#9c6c00]">{summary.highCount}</dd>
+          <dd className="rb-stat-val text-[var(--flagged-ink)]">{summary.highCount}</dd>
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">Billed Amount at Risk</dt>
@@ -65,24 +65,28 @@ export default async function ActionQueuePage({ searchParams }: PageProps) {
       </dl>
 
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded border border-[var(--rule)] bg-[var(--card)]">
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-semibold text-[var(--mist)] mr-1">Ward Filter:</span>
-          <Link
-            href="/queue"
-            className={`rb-chip touch-target ${!params.ward ? "rb-chip-held" : "rb-chip-neutral"}`}
+        <form method="get" action="/queue" className="flex flex-wrap items-center gap-2 text-xs">
+          {params.priority ? <input type="hidden" name="priority" value={params.priority} /> : null}
+          <label htmlFor="queue-ward-select" className="font-semibold text-[var(--mist)]">
+            Ward ({allWards.length}):
+          </label>
+          <select
+            id="queue-ward-select"
+            name="ward"
+            defaultValue={params.ward ?? ""}
+            className="ux4g-input py-1.5 px-2.5 text-xs rounded border border-[var(--rule)] bg-[var(--card)] text-[var(--ink)]"
           >
-            All Wards
-          </Link>
-          {allWards.slice(0, 10).map((w) => (
-            <Link
-              key={w}
-              href={`/queue?ward=${w}`}
-              className={`rb-chip touch-target ${params.ward === w ? "rb-chip-held" : "rb-chip-neutral"}`}
-            >
-              Ward {w}
-            </Link>
-          ))}
-        </div>
+            <option value="">All 24 Wards</option>
+            {allWards.map((w) => (
+              <option key={w} value={w}>
+                Ward {w}
+              </option>
+            ))}
+          </select>
+          <button type="submit" className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target text-xs">
+            Filter
+          </button>
+        </form>
 
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="font-semibold text-[var(--mist)] mr-1">Priority:</span>
@@ -166,7 +170,7 @@ export default async function ActionQueuePage({ searchParams }: PageProps) {
                       href={`/roads/${item.roadId}`}
                       className="text-[var(--enamel)] font-medium hover:underline touch-target"
                     >
-                      Open Road Passport →
+                      Open Road Passport
                     </Link>
                   )}
                 </div>

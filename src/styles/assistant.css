@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Ask: an empty state with one composer card, then a conversation with
  * questions as bubbles, answers as plain text and the composer docked. */
 
@@ -106,7 +107,7 @@
   border: 1px solid var(--ux4g-border-color-neutral-subtle);
   border-radius: 1.25rem;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 6px 24px rgb(29 39 45 / 0.08);
+  box-shadow: var(--card-shadow);
 }
 
 .rb-composer:focus-within {
@@ -174,7 +175,7 @@
   margin-left: auto;
   padding: 0.1875rem;
   border-radius: 999px;
-  background: var(--ux4g-bg-neutral-subtle, rgb(0 0 0 / 0.05));
+  background: var(--sheet);
 }
 
 .rb-composer-langs button {
@@ -187,9 +188,13 @@
   font-weight: 700;
 }
 
+.rb-composer-langs button:active {
+  transform: scale(0.96);
+}
+
 .rb-composer-langs button[aria-pressed="true"] {
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  box-shadow: var(--card-shadow);
   color: var(--ux4g-text-neutral-primary);
 }
 
@@ -201,12 +206,18 @@
   height: 2.5rem;
   border-radius: 999px;
   background: var(--enamel);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
+}
+
+.rb-composer-send:active {
+  transform: scale(0.95);
 }
 
 .rb-composer-send:disabled {
-  background: var(--ux4g-bg-neutral-subtle, #e5e5e5);
-  color: var(--ux4g-text-neutral-tertiary, #a1a1a1);
+  background: var(--sheet);
+  color: var(--mist);
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .rb-composer :focus-visible {

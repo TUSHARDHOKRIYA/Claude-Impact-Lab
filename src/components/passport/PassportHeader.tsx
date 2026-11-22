@@ -32,7 +32,7 @@ export function PassportHeader({ data }: { data: RoadPassportData }) {
           </div>
           <h1 className="ux4g-display-xs-strong text-[var(--ink)]">{road.name}</h1>
           <p className="ux4g-body-m-default text-[var(--mist)] mt-1">
-            Segment {road.segmentNo} • {road.lengthM.toLocaleString("en-IN")} m • {road.lanes} lane{road.lanes > 1 ? "s" : ""} • Resurfaced {road.lastResurfaced}
+            Segment {road.segmentNo} — {road.lengthM.toLocaleString("en-IN")} m — {road.lanes} lane{road.lanes > 1 ? "s" : ""} — Resurfaced {road.lastResurfaced}
           </p>
         </div>
 
@@ -62,13 +62,13 @@ export function PassportHeader({ data }: { data: RoadPassportData }) {
           <div className="rb-stat-label">Work Orders Executed</div>
         </div>
         <div className="rb-stat-card">
-          <div className={`rb-stat-val ${summary.reopenRate >= 0.25 ? "text-[#b0281f]" : "text-[var(--ink)]"}`}>
+          <div className={`rb-stat-val ${summary.reopenRate >= 0.25 ? "text-[var(--failed-ink)]" : "text-[var(--ink)]"}`}>
             {Math.round(summary.reopenRate * 100)}%
           </div>
           <div className="rb-stat-label">30-Day Reopening Rate</div>
         </div>
         <div className="rb-stat-card">
-          <div className={`rb-stat-val ${summary.auditFlagCount > 0 ? "text-[#9c6c00]" : "text-[#127a52]"}`}>
+          <div className={`rb-stat-val ${summary.auditFlagCount > 0 ? "text-[var(--flagged-ink)]" : "text-[var(--held-ink)]"}`}>
             {summary.auditFlagCount}
           </div>
           <div className="rb-stat-label">Audit Flags Detected</div>

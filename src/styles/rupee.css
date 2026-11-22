@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Ward money trail. UX4G draws the cards, tables, tags, list and accordion;
  * this file adds the outcome bar (UX4G has no stacked bar) and page layout. */
 
@@ -22,8 +23,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--ux4g-margin-2xs);
-  padding-left: 0.875rem;
-  border-left: 3px solid var(--ux4g-border-color-neutral-subtle);
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--ux4g-radius-sm);
+  background: var(--sheet);
 }
 
 .rb-num {
@@ -84,7 +87,7 @@
   width: 1.25rem;
   height: 1.25rem;
   border-radius: 4px;
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
   font-size: 0.75rem;
   font-weight: var(--ux4g-fw-bold);
   line-height: 1;

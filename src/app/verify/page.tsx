@@ -4,17 +4,32 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Citizen Repair Verification — Rasta Hisaab 2.0",
+  title: "Citizen Repair Verification — Rastabaaz",
   description:
     "Verify road repair outcomes in your neighborhood: record whether a reported fix held, returned, or failed.",
 };
 
+const SAMPLE_IDS = [
+  { id: "BMC25-000013", label: "BMC25-000013 (Completed)" },
+  { id: "BMC25-000042", label: "BMC25-000042 (Reopened)" },
+  { id: "BMC25-000005", label: "BMC25-000005 (Sample)" },
+] as const;
+
+const OBS_LABELS: Record<string, string> = {
+  fixed: "Fix is holding well",
+  returned: "Defect has returned / reopened",
+  persists: "Never repaired / defect persists",
+  new_issue: "New hazard observed",
+};
+
 type PageProps = {
-  searchParams: Promise<{ submitted?: string; id?: string }>;
+  searchParams: Promise<{ submitted?: string; id?: string; complaintId?: string; observation?: string }>;
 };
 
 export default async function VerifyPage({ searchParams }: PageProps) {
   const params = await searchParams;
+  const submittedId = (params.complaintId || params.id || "").trim();
+  const obsLabel = params.observation ? (OBS_LABELS[params.observation] ?? params.observation) : null;
 
   return (
     <article className="shell-narrow rb-page py-6 sm:py-10 space-y-6">
@@ -31,23 +46,33 @@ export default async function VerifyPage({ searchParams }: PageProps) {
 
       {params.submitted === "1" ? (
         <div className="p-6 rounded border border-[#127a52] bg-[rgb(18_122_82/0.08)] space-y-3">
-          <h2 className="ux4g-heading-s-strong text-[#127a52]">Observation Recorded Successfully</h2>
-          <p className="text-xs text-[var(--mist)] leading-relaxed">
-            Thank you! Your feedback has been logged as an independent citizen observation edge in the Rasta Hisaab Evidence Graph. Citizen observations remain distinct from official engineer sign-offs to preserve evidentiary integrity.
+          <h2 className="ux4g-heading-s-strong text-[#127a52]">Observation Recorded</h2>
+          <p className="text-xs text-[var(--ink)]">
+            {submittedId ? <>Complaint <strong>{submittedId}</strong></> : "Your report"}
+            {obsLabel ? <> marked as <strong>{obsLabel}</strong>.</> : "."}
           </p>
-          <div className="pt-2">
-            <Link href="/roads" className="ux4g-btn ux4g-btn-s ux4g-btn-primary touch-target">
+          <p className="text-xs text-[var(--mist)] leading-relaxed">
+            Your feedback is logged as an independent citizen observation, kept distinct from official engineer sign-offs to preserve evidentiary integrity.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            {submittedId ? (
+              <Link href={`/receipt/${encodeURIComponent(submittedId)}`} className="ux4g-btn ux4g-btn-s ux4g-btn-primary touch-target">
+                View Rupee Receipt
+              </Link>
+            ) : null}
+            <Link href="/roads" className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target">
               Explore Mumbai Roads
             </Link>
           </div>
         </div>
       ) : (
         <form
-          action="/verify?submitted=1"
-          method="post"
+          action="/verify"
+          method="get"
           className="p-6 rounded border border-[var(--rule)] bg-[var(--card)] space-y-5"
         >
-          <div className="space-y-1.5">
+          <input type="hidden" name="submitted" value="1" />
+          <div className="space-y-2">
             <label htmlFor="complaint-id" className="block text-xs font-semibold text-[var(--ink)]">
               Complaint Reference ID
             </label>
@@ -56,10 +81,18 @@ export default async function VerifyPage({ searchParams }: PageProps) {
               name="complaintId"
               type="text"
               defaultValue={params.id ?? ""}
-              placeholder="e.g. BMC25-000005 or rpt_..."
+              placeholder="e.g. BMC25-000013"
               className="ux4g-input w-full py-2 px-3 text-sm rounded border border-[var(--rule)] bg-[var(--card)] font-mono text-[var(--ink)]"
               required
             />
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-[var(--mist)]">Quick fill:</span>
+              {SAMPLE_IDS.map((s) => (
+                <Link key={s.id} href={`/verify?id=${s.id}`} className="rb-chip rb-chip-neutral hover:underline">
+                  {s.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           <fieldset className="space-y-2">
@@ -67,37 +100,22 @@ export default async function VerifyPage({ searchParams }: PageProps) {
               Observed Field Status of Road Repair
             </legend>
             <div className="space-y-2 text-xs">
-              <label className="flex items-start gap-2.5 p-3 rounded border border-[var(--rule)] bg-[var(--sheet)] cursor-pointer hover:bg-[var(--card)]">
-                <input type="radio" name="observation" value="fixed" defaultChecked className="mt-0.5" />
-                <div>
-                  <strong className="block text-[var(--ink)]">Fix is Holding Well</strong>
-                  <span className="text-[var(--mist)]">Smooth surface, no visible depression or crater.</span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-2.5 p-3 rounded border border-[var(--rule)] bg-[var(--sheet)] cursor-pointer hover:bg-[var(--card)]">
-                <input type="radio" name="observation" value="returned" className="mt-0.5" />
-                <div>
-                  <strong className="block text-[var(--ink)]">Defect Has Returned / Reopened</strong>
-                  <span className="text-[var(--mist)]">Pothole reopened, paver block displaced, or patch eroded.</span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-2.5 p-3 rounded border border-[var(--rule)] bg-[var(--sheet)] cursor-pointer hover:bg-[var(--card)]">
-                <input type="radio" name="observation" value="persists" className="mt-0.5" />
-                <div>
-                  <strong className="block text-[var(--ink)]">Never Repaired / Defect Persists</strong>
-                  <span className="text-[var(--mist)]">No evidence of physical work ever taking place.</span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-2.5 p-3 rounded border border-[var(--rule)] bg-[var(--sheet)] cursor-pointer hover:bg-[var(--card)]">
-                <input type="radio" name="observation" value="new_issue" className="mt-0.5" />
-                <div>
-                  <strong className="block text-[var(--ink)]">New Hazard Observed</strong>
-                  <span className="text-[var(--mist)]">Waterlogging, open manhole, or cave-in near repair site.</span>
-                </div>
-              </label>
+              {(
+                [
+                  ["fixed", "Fix is Holding Well", "Smooth surface, no visible depression or crater."],
+                  ["returned", "Defect Has Returned / Reopened", "Pothole reopened, paver block displaced, or patch eroded."],
+                  ["persists", "Never Repaired / Defect Persists", "No evidence of physical work ever taking place."],
+                  ["new_issue", "New Hazard Observed", "Waterlogging, open manhole, or cave-in near repair site."],
+                ] as const
+              ).map(([val, title, desc], idx) => (
+                <label key={val} className="flex items-start gap-2.5 p-3 rounded border border-[var(--rule)] bg-[var(--sheet)] cursor-pointer hover:bg-[var(--card)]">
+                  <input type="radio" name="observation" value={val} defaultChecked={idx === 0} className="mt-0.5" />
+                  <div>
+                    <strong className="block text-[var(--ink)]">{title}</strong>
+                    <span className="text-[var(--mist)]">{desc}</span>
+                  </div>
+                </label>
+              ))}
             </div>
           </fieldset>
 

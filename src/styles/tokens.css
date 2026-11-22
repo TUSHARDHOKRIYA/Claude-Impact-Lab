@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /*
  * Rastabaaz tokens. UX4G 3.3.3 is the design system: its violet primary,
  * Noto Sans, neutrals, radii and spacing. The only additions are the asphalt
@@ -27,6 +28,22 @@
   --flagged: #e0a106;
   --failed: #b0281f;
 
+  /* Refined civic intelligence status tints */
+  --held-bg: rgb(18 122 82 / 0.1);
+  --held-border: rgb(18 122 82 / 0.25);
+  --held-ink: #0f6846;
+  --flagged-bg: rgb(224 161 6 / 0.1);
+  --flagged-border: rgb(224 161 6 / 0.25);
+  --flagged-ink: #8c6000;
+  --failed-bg: rgb(176 40 31 / 0.1);
+  --failed-border: rgb(176 40 31 / 0.25);
+  --failed-ink: #9c221a;
+
+  /* Tactile surfaces & shadows */
+  --card-shadow: 0 1px 3px rgb(16 24 40 / 0.04), 0 1px 2px rgb(16 24 40 / 0.02);
+  --card-shadow-hover: 0 4px 12px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.04);
+  --card-radius: var(--ux4g-radius-md, 0.5rem);
+
   /* Older component names, kept so map and desk code reads the same tokens. */
   --paper: var(--overcast);
   --marking: var(--lane);
@@ -52,8 +69,17 @@
   --color-lane: var(--lane);
   --color-enamel: var(--enamel);
   --color-held: var(--held);
+  --color-held-bg: var(--held-bg);
+  --color-held-border: var(--held-border);
+  --color-held-ink: var(--held-ink);
   --color-failed: var(--failed);
+  --color-failed-bg: var(--failed-bg);
+  --color-failed-border: var(--failed-border);
+  --color-failed-ink: var(--failed-ink);
   --color-flagged: var(--flagged);
+  --color-flagged-bg: var(--flagged-bg);
+  --color-flagged-border: var(--flagged-border);
+  --color-flagged-ink: var(--flagged-ink);
   --color-mist: var(--mist);
   --color-sheet: var(--sheet);
   --color-rule: var(--rule);

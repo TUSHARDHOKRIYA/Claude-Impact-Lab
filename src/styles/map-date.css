@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Map explorer: the "Date reported" chip and the panel it opens. The panel
  * hangs from the floating filter bar and spans its width. */
 
@@ -31,7 +32,7 @@
   padding: 1rem;
   border-radius: 1.25rem;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.18);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .rb-date-months {
@@ -43,7 +44,7 @@
 .rb-date-months .rb-chip[aria-pressed="true"] {
   border-color: var(--ux4g-bg-primary-strong);
   background: var(--ux4g-bg-primary-strong);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
 }
 
 .rb-date-fields {
@@ -63,7 +64,7 @@
   min-width: 0;
   min-height: 3rem;
   padding: 0 0.75rem;
-  border: 1px solid var(--ux4g-border-color-neutral-default, #b9b9c3);
+  border: 1px solid var(--rule-firm);
   border-radius: 0.75rem;
   background: var(--ux4g-bg-neutral-elevated);
   color: var(--ux4g-text-neutral-primary);

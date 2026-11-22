@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Report flow, phone first. One question per screen, answers as full-width
  * rows with the radio on the right, a thin segmented progress bar on top and
  * a round Back plus a wide pill at the bottom. UX4G supplies type, colour
@@ -196,7 +197,7 @@
   border: 0;
   border-radius: var(--ux4g-radius-md);
   background: var(--ux4g-bg-primary-strong);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -209,8 +210,10 @@
 
 .rb-back:disabled,
 .rb-forward:disabled {
+  background: var(--sheet);
+  color: var(--mist);
   opacity: 0.6;
-  cursor: default;
+  cursor: not-allowed;
 }
 
 .rb-back:focus-visible,

@@ -50,7 +50,7 @@ export function PassportMoneyTrail({ data }: { data: RoadPassportData }) {
                   <td className="text-right text-[var(--mist)]">{m.orders}</td>
                   <td className="text-right font-mono text-[var(--ink)]">{formatInr(m.billedInr)}</td>
                   <td className="text-right">
-                    <span className={m.reopenRate >= 0.25 ? "text-[#b0281f] font-semibold" : "text-[var(--ink)]"}>
+                    <span className={m.reopenRate >= 0.25 ? "text-[var(--failed-ink)] font-semibold" : "text-[var(--ink)]"}>
                       {Math.round(m.reopenRate * 100)}%
                     </span>
                   </td>
@@ -80,7 +80,7 @@ export function PassportMoneyTrail({ data }: { data: RoadPassportData }) {
                   <td className="text-right text-[var(--mist)]">{c.orders}</td>
                   <td className="text-right font-mono text-[var(--ink)]">{formatInr(c.billedInr)}</td>
                   <td className="text-right">
-                    <span className={c.reopenRate >= 0.25 ? "text-[#b0281f] font-semibold" : "text-[var(--ink)]"}>
+                    <span className={c.reopenRate >= 0.25 ? "text-[var(--failed-ink)] font-semibold" : "text-[var(--ink)]"}>
                       {Math.round(c.reopenRate * 100)}%
                     </span>
                   </td>

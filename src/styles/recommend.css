@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* "Where the next rupee should go": the fix-first card (the one place the
  * brand colour fills a card) and the numbered queue behind it. */
 
@@ -6,7 +7,7 @@
   padding: 1rem 1.125rem;
   border-radius: 1rem;
   background: var(--ux4g-bg-primary-strong);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
 }
 
 .rb-fixfirst-kicker {
@@ -33,7 +34,7 @@
   margin-top: 0.625rem;
   padding: 0.25rem 0.625rem;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.16);
+  background: var(--enamel-press);
   font-size: 0.8125rem;
   font-weight: 600;
 }
@@ -95,7 +96,7 @@
 .rb-fixfirst-risk {
   padding: 0.125rem 0.625rem;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.16);
+  background: var(--enamel-press);
   font-size: 0.8125rem;
 }
 
@@ -162,7 +163,11 @@
 .rb-budget-presets .rb-chip[aria-pressed="true"] {
   border-color: var(--enamel);
   background: var(--enamel);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
+}
+
+.rb-budget-presets .rb-chip:active {
+  transform: scale(0.96);
 }
 
 .rb-budget-facts {
@@ -218,12 +223,12 @@
 }
 
 .rb-tranche[data-status="next"] {
-  background: rgb(255 255 255 / 0.92);
+  background: var(--card);
   color: var(--ux4g-text-neutral-primary);
 }
 
 .rb-tranche[data-dark="true"] {
-  background: rgb(255 255 255 / 0.92);
+  background: var(--card);
 }
 
 /* Where the money runs out: the road's own lane marking, the one other place
@@ -233,7 +238,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.625rem 1rem;
-  background: var(--ux4g-bg-neutral-base, #f4f4f4);
+  background: var(--sheet);
 }
 
 .rb-next-queue > li.rb-cutoff {

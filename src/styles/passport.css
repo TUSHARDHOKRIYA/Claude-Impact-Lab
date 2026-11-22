@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Rasta Hisaab 2.0: Passport, Explorer, Queue, Scenarios, and Receipt styling */
 
 .rb-passport-grid {
@@ -15,45 +16,44 @@
 .rb-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.625rem;
+  gap: 0.3125rem;
+  padding: 0.1875rem 0.625rem;
   border-radius: var(--ux4g-radius-full, 9999px);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 500;
   line-height: 1.25;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
 }
 
 .rb-chip-held {
-  background-color: rgb(18 122 82 / 0.12);
-  color: #127a52;
-  border: 1px solid rgb(18 122 82 / 0.25);
+  background-color: var(--held-bg);
+  color: var(--held-ink);
+  border: 1px solid var(--held-border);
 }
 
 .rb-chip-flagged {
-  background-color: rgb(224 161 6 / 0.12);
-  color: #9c6c00;
-  border: 1px solid rgb(224 161 6 / 0.25);
+  background-color: var(--flagged-bg);
+  color: var(--flagged-ink);
+  border: 1px solid var(--flagged-border);
 }
 
 .rb-chip-failed {
-  background-color: rgb(176 40 31 / 0.12);
-  color: #b0281f;
-  border: 1px solid rgb(176 40 31 / 0.25);
+  background-color: var(--failed-bg);
+  color: var(--failed-ink);
+  border: 1px solid var(--failed-border);
 }
 
 .rb-chip-neutral {
-  background-color: var(--ux4g-bg-neutral-subtle);
-  color: var(--ux4g-text-neutral-secondary);
+  background-color: var(--sheet);
+  color: var(--mist);
   border: 1px solid var(--rule);
 }
 
 .rb-stat-card {
   padding: 1rem;
   border-radius: var(--ux4g-radius-md, 0.5rem);
-  background: var(--ux4g-bg-neutral-elevated);
+  background: var(--card);
   border: 1px solid var(--rule);
+  box-shadow: var(--card-shadow);
 }
 
 @media (max-width: 480px) {
@@ -67,6 +67,7 @@
   font-weight: 700;
   line-height: 1.15;
   color: var(--ink);
+  font-variant-numeric: tabular-nums;
   overflow-wrap: break-word;
   word-break: break-word;
 }
@@ -84,6 +85,7 @@
   border-radius: var(--ux4g-radius-md, 0.5rem);
   border: 1px solid var(--rule);
   background: var(--card);
+  box-shadow: var(--card-shadow);
 }
 
 .rb-data-table {
@@ -107,6 +109,7 @@
   border-bottom: 1px solid var(--rule);
   color: var(--ink);
   vertical-align: top;
+  font-variant-numeric: tabular-nums;
 }
 
 .rb-data-table tr:last-child td {
@@ -116,11 +119,11 @@
 .rb-receipt-card {
   max-width: 44rem;
   margin-inline: auto;
-  padding: 1.5rem;
+  padding: 1.75rem;
   border-radius: var(--ux4g-radius-lg, 0.75rem);
   background: var(--card);
   border: 1px solid var(--rule);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.04);
+  box-shadow: var(--card-shadow);
 }
 
 .rb-step-chain {
@@ -172,29 +175,35 @@
 }
 
 .rb-action-item {
-  padding: 1rem;
+  padding: 1.125rem;
   border-radius: var(--ux4g-radius-md, 0.5rem);
   border: 1px solid var(--rule);
   background: var(--card);
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.625rem;
+}
+
+.rb-action-item:hover {
+  border-color: var(--rule-firm);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .rb-action-item[data-priority="critical"] {
-  border-left: 4px solid var(--failed);
+  border-color: var(--failed-border);
 }
 
 .rb-action-item[data-priority="high"] {
-  border-left: 4px solid var(--flagged);
+  border-color: var(--flagged-border);
 }
 
 .rb-action-item[data-priority="medium"] {
-  border-left: 4px solid var(--enamel);
+  border-color: var(--rule-firm);
 }
 
 .rb-action-item[data-priority="low"] {
-  border-left: 4px solid var(--held);
+  border-color: var(--held-border);
 }
 
 @media print {
@@ -205,8 +214,8 @@
     display: none !important;
   }
   body {
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--card) !important;
+    color: var(--ink) !important;
   }
   .shell,
   .shell-narrow {

@@ -60,11 +60,11 @@ export default async function RoadExplorerPage({ searchParams }: PageProps) {
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">Flagged for Review</dt>
-          <dd className="rb-stat-val text-[#9c6c00]">{stats.flaggedRoadsCount}</dd>
+          <dd className="rb-stat-val text-[var(--flagged-ink)]">{stats.flaggedRoadsCount}</dd>
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">Under Active DLP</dt>
-          <dd className="rb-stat-val text-[#127a52]">{stats.dlpRoadsCount}</dd>
+          <dd className="rb-stat-val text-[var(--held-ink)]">{stats.dlpRoadsCount}</dd>
         </div>
       </dl>
 
@@ -138,7 +138,7 @@ export default async function RoadExplorerPage({ searchParams }: PageProps) {
                   </td>
                   <td className="text-right text-xs text-[var(--mist)]">{road.orderCount}</td>
                   <td className="text-right text-xs">
-                    <span className={road.reopenRate >= 0.25 ? "text-[#b0281f] font-bold" : "text-[var(--ink)]"}>
+                    <span className={road.reopenRate >= 0.25 ? "text-[var(--failed-ink)] font-bold" : "text-[var(--ink)]"}>
                       {Math.round(road.reopenRate * 100)}%
                     </span>
                   </td>
@@ -158,7 +158,7 @@ export default async function RoadExplorerPage({ searchParams }: PageProps) {
                       href={`/roads/${road.id}`}
                       className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target text-xs inline-flex items-center"
                     >
-                      Passport →
+                      View Passport
                     </Link>
                   </td>
                 </tr>

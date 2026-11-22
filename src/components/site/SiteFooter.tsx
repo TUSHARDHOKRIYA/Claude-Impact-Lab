@@ -3,9 +3,13 @@ import Link from "next/link";
 const LINKS = [
   { href: "/", label: "Report a road problem" },
   { href: "/map", label: "Map of reports" },
+  { href: "/roads", label: "Road passports" },
   { href: "/wards", label: "Ward money trail" },
-  { href: "/contractors", label: "Contractor scorecards" },
-  { href: "/assistant", label: "Ask AI assistant" },
+  { href: "/contractors", label: "Contractors" },
+  { href: "/overview", label: "City overview" },
+  { href: "/queue", label: "Action queue" },
+  { href: "/track", label: "Track complaint" },
+  { href: "/assistant", label: "Ask AI" },
 ] as const;
 
 const LEGAL = [

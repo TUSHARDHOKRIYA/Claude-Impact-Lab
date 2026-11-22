@@ -9,7 +9,7 @@ import { pct, wardSlug } from "@/lib/rupee/slug";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "City Intelligence Overview — Rasta Hisaab 2.0",
+  title: "City Intelligence Overview — Rastabaaz",
   description:
     "Citywide civic pulse across Mumbai's 24 wards: total billed amounts, SLA compliance, 30-day durability rates, and audit screening.",
 };
@@ -19,9 +19,8 @@ export default function OverviewPage() {
 
   const totalComplaints = ds.complaints.length;
   const gpsComplaints = ds.complaints.filter((c) => c.lat !== null && c.lng !== null).length;
-  const helplineComplaints = ds.complaints.filter((c) => c.channel.includes("1916") || c.channel.toLowerCase().includes("helpline")).length;
-  const walkinComplaints = ds.complaints.filter((c) => c.channel.toLowerCase().includes("walk")).length;
-  const portalComplaints = totalComplaints - gpsComplaints;
+  const nonGpsComplaints = totalComplaints - gpsComplaints;
+  const gpsPct = totalComplaints > 0 ? ((gpsComplaints / totalComplaints) * 100).toFixed(1) : "0.0";
 
   const totalOrders = ds.workOrders.length;
   const slaMetOrders = ds.workOrders.filter((w) => w.slaMet).length;
@@ -97,15 +96,15 @@ export default function OverviewPage() {
         <h2 className="ux4g-heading-s-strong text-[var(--ink)]">Data Completeness & Blindspot Index</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[var(--mist)]">
           <div className="p-3 rounded border border-[var(--rule)] bg-[var(--sheet)]">
-            <div className="font-semibold text-sm text-[var(--ink)]">58.1% GPS Coverage</div>
+            <div className="font-semibold text-sm text-[var(--ink)]">{gpsPct}% GPS Coverage</div>
             <p className="mt-1 leading-relaxed">
-              3,777 reports carry precise GPS coords. 2,724 reports from Helpline 1916 and Walk-ins resolved via locality gazetteer.
+              {gpsComplaints.toLocaleString("en-IN")} reports carry precise GPS coords; {nonGpsComplaints.toLocaleString("en-IN")} Helpline 1916 and walk-in reports are resolved via locality gazetteer.
             </p>
           </div>
           <div className="p-3 rounded border border-[var(--rule)] bg-[var(--sheet)]">
-            <div className="font-semibold text-sm text-[var(--ink)]">100% Work Order Integrity</div>
+            <div className="font-semibold text-sm text-[var(--ink)]">{flags.length} Audit Flags Screened</div>
             <p className="mt-1 leading-relaxed">
-              All 2,499 work orders match valid road IDs, wards, contractors, and rate card items.
+              All {totalOrders.toLocaleString("en-IN")} work orders match valid road IDs, wards, contractors, and rate card items.
             </p>
           </div>
           <div className="p-3 rounded border border-[var(--rule)] bg-[var(--sheet)]">

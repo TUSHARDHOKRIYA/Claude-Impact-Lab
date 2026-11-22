@@ -1,7 +1,7 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Contractor scorecards. UX4G draws the cards, tables, tags and accordion;
  * this file adds the 0 to 100 meter and the scorecard layout. */
 
-/* ---- Score meter: three band zones, a line at 50 ("as expected"), the score as a dot. ---- */
 .rb-meter-track {
   position: relative;
   display: flex;
@@ -245,4 +245,9 @@
 
 .ux4g-card-outline {
   background: var(--ux4g-bg-neutral-elevated);
+}
+
+.rb-score-card:active,
+.ux4g-card-outline:active {
+  transform: scale(0.995);
 }

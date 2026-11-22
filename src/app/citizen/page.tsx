@@ -84,7 +84,7 @@ export default function CitizenHubPage() {
                 href={act.href}
                 className="ux4g-btn ux4g-btn-m ux4g-btn-outline-primary w-full touch-target text-center"
               >
-                {act.cta} →
+                {act.cta}
               </Link>
             </div>
           </div>

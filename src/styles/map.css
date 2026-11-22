@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 @layer components {
   .rb-map {
     color: var(--ink);
@@ -121,7 +122,7 @@
   border: 1px solid var(--ux4g-border-color-neutral-subtle);
   border-radius: 999px;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  box-shadow: var(--card-shadow);
   color: var(--ux4g-text-neutral-primary);
   font-size: 0.875rem;
   font-weight: 600;
@@ -158,10 +159,10 @@
   display: inline-flex;
   flex: none;
   margin-left: auto;
-  padding: 3px;
+  padding: 0.25rem;
   border-radius: 999px;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+  box-shadow: var(--card-shadow);
 }
 
 .rb-view-toggle button {
@@ -176,6 +177,10 @@
   cursor: pointer;
 }
 
+.rb-view-toggle button:active {
+  transform: scale(0.95);
+}
+
 .rb-view-toggle button[aria-pressed="true"] {
   background: var(--ux4g-bg-primary-soft);
   color: var(--ux4g-bg-primary-strong);
@@ -186,6 +191,6 @@
   padding: 0.625rem 0.875rem;
   border-radius: 0.75rem;
   background: var(--asphalt);
-  color: #fff;
+  color: var(--ux4g-text-neutral-inverse);
   font-size: 0.875rem;
 }

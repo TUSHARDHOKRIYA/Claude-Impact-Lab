@@ -1,3 +1,4 @@
+/* Hallmark · theme: civic-intelligence · genre: modern-minimal · floor: verified */
 /* Ward ranking: rows that open in place, the fix-first card, and the score explainer. */
 
 /* ---- Ranked wards. ---- */
@@ -10,13 +11,13 @@
   border: 1px solid var(--ux4g-border-color-neutral-subtle);
   border-radius: 1.25rem;
   background: var(--ux4g-bg-neutral-elevated);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  box-shadow: var(--card-shadow);
   transition: box-shadow 0.15s ease;
 }
 
 .rb-rank-item[open] {
-  border-color: var(--ux4g-border-color-primary-subtle, #cfc3f5);
-  box-shadow: 0 6px 20px rgb(60 30 140 / 0.1);
+  border-color: var(--enamel);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .rb-rank-row {
@@ -31,12 +32,16 @@
   color: var(--ux4g-text-neutral-primary);
 }
 
+.rb-rank-row:active {
+  transform: scale(0.995);
+}
+
 .rb-rank-row::-webkit-details-marker {
   display: none;
 }
 
 .rb-rank-item:not([open]):hover {
-  box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .rb-rank-row:focus-visible {
@@ -112,23 +117,21 @@
 
 .rb-rank-score-w {
   font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .rb-score-good {
-  background: #e3f4ec;
+  background: var(--held-bg);
   color: var(--held);
 }
 
 .rb-score-fair {
-  background: #fdf3d8;
-  color: #7a5600;
+  background: var(--flagged-bg);
+  color: var(--flagged-ink);
 }
 
 .rb-score-poor {
-  background: #fbe5e3;
+  background: var(--failed-bg);
   color: var(--failed);
 }
 

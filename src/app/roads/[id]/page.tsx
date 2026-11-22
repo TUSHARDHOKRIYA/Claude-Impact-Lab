@@ -71,9 +71,9 @@ export default async function RoadPassportPage({ params }: PageProps) {
         </div>
       </div>
 
-      <footer className="p-4 bg-[var(--sheet)] rounded border border-[var(--rule)] text-xs text-[var(--mist)] space-y-2">
+      <footer className="p-4 bg-[var(--card)] rounded border border-[var(--rule)] text-xs text-[var(--mist)] space-y-2">
         <p>
-          <strong>Data Provenance:</strong> {data.provenance.datasetSource} • Engine Version: {data.provenance.algorithmVersion} • Generated: {data.provenance.generatedAt}
+          <strong>Data Provenance:</strong> {data.provenance.datasetSource} — Engine Version: {data.provenance.algorithmVersion} — Generated: {data.provenance.generatedAt}
         </p>
         <p>
           <strong>Notice:</strong> {data.provenance.contractualDisclaimer}

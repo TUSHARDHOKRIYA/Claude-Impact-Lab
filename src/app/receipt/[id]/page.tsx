@@ -52,12 +52,12 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
             Pothole-to-Rupee Public Receipt
           </h1>
           <p className="text-xs text-[var(--mist)]">
-            Channel: {receipt.channel} • Locality: {receipt.locality} • Ward {receipt.ward}
+            Channel: {receipt.channel} — Locality: {receipt.locality} — Ward {receipt.ward}
           </p>
         </header>
 
         <section className="space-y-2">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--mist)]">
+          <h2 className="text-xs font-semibold text-[var(--mist)]">
             Original Citizen Complaint
           </h2>
           <div className="p-3 bg-[var(--sheet)] rounded border border-[var(--rule)] text-xs text-[var(--ink)] leading-relaxed italic">
@@ -66,7 +66,7 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--mist)]">
+          <h2 className="text-xs font-semibold text-[var(--mist)]">
             Downstream Municipal Work Order Trail
           </h2>
 
@@ -88,7 +88,7 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
               <div className="text-xs text-[var(--mist)] space-y-1">
                 <div>Method: <strong className="text-[var(--ink)]">{receipt.workOrder.method}</strong> ({receipt.workOrder.areaSqm} sqm)</div>
                 <div>Completion: {receipt.workOrder.completedAt} (Turnaround SLA: {receipt.workOrder.slaMet ? "Met" : "Missed"})</div>
-                <div>30-Day Durability: {receipt.workOrder.reopened ? <span className="text-[#b0281f] font-semibold">Reopened within 30 days</span> : <span className="text-[#127a52] font-semibold">Held without reopening</span>}</div>
+                <div>30-Day Durability: {receipt.workOrder.reopened ? <span className="text-[var(--failed-ink)] font-semibold">Reopened within 30 days</span> : <span className="text-[var(--held-ink)] font-semibold">Held without reopening</span>}</div>
               </div>
 
               {receipt.workOrder.engineerRemark && (
@@ -106,7 +106,7 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
 
         {receipt.road && (
           <section className="space-y-2">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--mist)]">
+            <h2 className="text-xs font-semibold text-[var(--mist)]">
               Associated Road Segment
             </h2>
             <div className="flex items-center justify-between p-3 rounded border border-[var(--rule)] bg-[var(--card)]">
@@ -118,14 +118,14 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
                 href={`/roads/${receipt.road.id}`}
                 className="text-xs text-[var(--enamel)] font-medium hover:underline touch-target"
               >
-                View Road Passport →
+                View Road Passport
               </Link>
             </div>
           </section>
         )}
 
         <section className="space-y-2">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--mist)]">
+          <h2 className="text-xs font-semibold text-[var(--mist)]">
             Missing or Unavailable Records
           </h2>
           <ul className="text-xs space-y-1 text-[var(--mist)] list-disc pl-4">

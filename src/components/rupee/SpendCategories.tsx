@@ -93,10 +93,9 @@ export function SpendCategories({
               </div>
               <p className="rb-cat-sub">
                 {card ? (
-                  <>Score {card.overall.toFixed(0)} <BandBadge band={card.band} small /> ·{" "}</>
+                  <>Score {card.overall.toFixed(0)} <BandBadge band={card.band} small />, </>
                 ) : null}
-                {row.orders} {row.orders === 1 ? "job" : "jobs"} ·{" "}
-                {pct(row.spentInr / Math.max(totalInr, 1))} of spend ·{" "}
+                {row.orders} {row.orders === 1 ? "job" : "jobs"}, {pct(row.spentInr / Math.max(totalInr, 1))} of spend,{" "}
                 <span className={`rb-cat-word rb-cat-${state}`}>
                   {pct(row.reopenRate)} came back
                   {fair !== undefined ? ` (fair ${pct(fair)})` : ""}

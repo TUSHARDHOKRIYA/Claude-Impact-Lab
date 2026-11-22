@@ -52,7 +52,7 @@ export default async function AccountabilityPage({ searchParams }: PageProps) {
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">Total Amount at Risk</dt>
-          <dd className="rb-stat-val text-[#9c6c00]">{formatInrShort(totalAtRisk)}</dd>
+          <dd className="rb-stat-val text-[var(--flagged-ink)]">{formatInrShort(totalAtRisk)}</dd>
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">Rate Card Overages</dt>
@@ -142,7 +142,7 @@ export default async function AccountabilityPage({ searchParams }: PageProps) {
                   <td className="text-right font-mono text-xs text-[var(--ink)]">
                     {formatInr(flag.costInr)}
                   </td>
-                  <td className="text-right font-mono text-xs font-bold text-[#b0281f]">
+                  <td className="text-right font-mono text-xs font-bold text-[var(--failed-ink)]">
                     {formatInr(flag.amountAtRiskInr)}
                   </td>
                   <td className="text-right">
@@ -150,7 +150,7 @@ export default async function AccountabilityPage({ searchParams }: PageProps) {
                       href={`/roads/${flag.roadId}`}
                       className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target text-xs inline-flex items-center"
                     >
-                      Passport →
+                      Passport
                     </Link>
                   </td>
                 </tr>

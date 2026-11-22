@@ -25,8 +25,10 @@ export function PassportGraph({ edges }: { edges: EvidenceEdge[] }) {
             className="p-3 rounded border border-[var(--rule)] bg-[var(--card)] text-xs flex flex-col gap-1"
           >
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[var(--ink)] font-medium">
-                {edge.sourceType.toUpperCase()} ({edge.sourceId}) → {edge.targetType.toUpperCase()} ({edge.targetId})
+              <span className="text-[var(--ink)] font-medium text-xs flex items-center gap-1.5 font-mono">
+                <span>{edge.sourceType.replace(/_/g, " ")} ({edge.sourceId})</span>
+                <span className="text-[var(--mist)] font-sans" aria-hidden="true">→</span>
+                <span>{edge.targetType.replace(/_/g, " ")} ({edge.targetId})</span>
               </span>
               <span className="rb-chip rb-chip-held text-[0.625rem]">
                 {edge.relationship.replace(/_/g, " ")}

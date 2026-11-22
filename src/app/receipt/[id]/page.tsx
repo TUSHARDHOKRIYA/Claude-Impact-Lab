@@ -32,7 +32,7 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
     <article className="shell rb-page py-6 sm:py-10 space-y-6">
       <div className="flex items-center justify-between no-print">
         <Link href="/citizen" className="ux4g-text-link-m touch-target inline-flex items-center gap-1">
-          ← Citizen Transparency Portal
+          Citizen Transparency Portal
         </Link>
         <PrintButton
           label="Print Receipt"
@@ -112,7 +112,7 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
             <div className="flex items-center justify-between p-3 rounded border border-[var(--rule)] bg-[var(--card)]">
               <div>
                 <div className="text-xs font-bold text-[var(--ink)]">{receipt.road.name}</div>
-                <div className="text-[0.6875rem] text-[var(--mist)] font-mono">{receipt.road.id} • {receipt.road.surface}</div>
+                <div className="text-[0.6875rem] text-[var(--mist)] font-mono">{receipt.road.id}, {receipt.road.surface}</div>
               </div>
               <Link
                 href={`/roads/${receipt.road.id}`}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   AskTabIcon,
@@ -56,6 +56,33 @@ export function SiteHeader() {
   const pathname = usePathname() ?? "/";
   const [moreOpen, setMoreOpen] = useState(false);
   const moreActive = MORE_HREFS.some((href) => isActive(pathname, href));
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+    function handleClickOutside(e: MouseEvent | TouchEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMoreOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [moreOpen]);
 
   return (
     <header className="rb-header">
@@ -85,7 +112,7 @@ export function SiteHeader() {
               ))}
             </ul>
 
-            <div className="rb-nav-more-wrap">
+            <div ref={menuRef} className="rb-nav-more-wrap">
               <button
                 type="button"
                 aria-expanded={moreOpen}
@@ -94,7 +121,18 @@ export function SiteHeader() {
                 className={`ux4g-text-link-neutral-m rb-nav-more-btn touch-target${moreActive ? " is-active" : ""}`}
               >
                 <span>More</span>
-                <span aria-hidden="true">{moreOpen ? "▴" : "▾"}</span>
+                <svg
+                  aria-hidden="true"
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${moreOpen ? "rotate-180" : ""}`}
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="m4 6 4 4 4-4" />
+                </svg>
               </button>
               {moreOpen ? (
                 <div id="rb-more-menu" className="rb-nav-more-panel" role="region" aria-label="More tools">

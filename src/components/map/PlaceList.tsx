@@ -53,7 +53,7 @@ export function PlaceList({
               <span className="rb-row-text">
                 <span className="rb-row-title">{title}</span>
                 <span className="rb-row-sub">
-                  {place.location.ward} ward ·{" "}
+                  {place.location.ward} ward,{" "}
                   {place.reportCount === 1
                     ? "1 report"
                     : `${place.reportCount} reports`}

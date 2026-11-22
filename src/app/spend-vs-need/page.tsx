@@ -129,8 +129,8 @@ export default async function SpendVsNeedPage({ searchParams }: PageProps) {
                     </span>
                   </td>
                   <td className="text-[0.6875rem] text-[var(--mist)]">
-                    <div>Vuln: {road.dimensions.infrastructureVulnerability.score} • Safety: {road.dimensions.publicSafety.score}</div>
-                    <div>Deficit: {road.dimensions.serviceDeficit.score} • Burden: {road.dimensions.maintenanceBurden.score}</div>
+                    <div>Vuln: {road.dimensions.infrastructureVulnerability.score}, Safety: {road.dimensions.publicSafety.score}</div>
+                    <div>Deficit: {road.dimensions.serviceDeficit.score}, Burden: {road.dimensions.maintenanceBurden.score}</div>
                   </td>
                   <td className="text-xs font-medium text-[var(--ink)] max-w-xs">{road.recommendedIntervention}</td>
                   <td className="text-right font-mono text-xs text-[var(--ink)]">{formatInr(road.estCostInr)}</td>

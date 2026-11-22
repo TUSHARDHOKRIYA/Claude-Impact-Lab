@@ -66,7 +66,7 @@ export default async function TrackPage({ searchParams }: PageProps) {
       </div>
 
       {queryId && !complaint && (
-        <div className="p-4 rounded border border-[#b0281f] bg-[rgb(176_40_31/0.08)] text-xs text-[#b0281f]">
+        <div className="p-4 rounded border border-[var(--failed-border)] bg-[var(--failed-bg)] text-xs text-[var(--failed-ink)]">
           No complaint record found matching <strong>{queryId}</strong> in municipal dataset. Please check the ID and try again.
         </div>
       )}
@@ -96,7 +96,7 @@ export default async function TrackPage({ searchParams }: PageProps) {
           <div className="pt-2 border-t border-[var(--rule)] flex flex-wrap items-center justify-between gap-3">
             <div>
               {linkedWorkOrder ? (
-                <span className="text-xs text-[#127a52] font-semibold flex items-center gap-1">
+                <span className="text-xs text-[var(--held-ink)] font-semibold flex items-center gap-1">
                   <span>✓</span> Linked to Work Order {linkedWorkOrder.id} ({linkedWorkOrder.contractorName})
                 </span>
               ) : (
@@ -110,7 +110,7 @@ export default async function TrackPage({ searchParams }: PageProps) {
               href={`/receipt/${complaint.id}`}
               className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target text-xs inline-flex items-center gap-1"
             >
-              View Rupee Receipt →
+              View Rupee Receipt
             </Link>
           </div>
         </div>

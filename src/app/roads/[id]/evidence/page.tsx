@@ -31,7 +31,7 @@ export default async function EvidencePackPage({ params }: PageProps) {
     <article className="shell rb-page py-6 sm:py-10 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4 no-print">
         <Link href={`/roads/${pack.road.id}`} className="ux4g-text-link-m touch-target inline-flex items-center gap-1">
-          ← Back to Road Passport
+          Back to Road Passport
         </Link>
         <div className="flex flex-wrap items-center gap-2">
           <a
@@ -57,8 +57,8 @@ export default async function EvidencePackPage({ params }: PageProps) {
 
       <header className="p-6 rounded border-2 border-[var(--ink)] bg-[var(--card)] space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--rule)] pb-3">
-          <div className="font-mono text-xs uppercase tracking-wider text-[var(--mist)]">
-            BMC Internal Audit & Decision Support • Official Record
+          <div className="font-mono text-xs text-[var(--mist)]">
+            BMC Internal Audit & Decision Support — Official Record
           </div>
           <div className="font-mono text-xs text-[var(--mist)]">{pack.metadata.generatedAt}</div>
         </div>

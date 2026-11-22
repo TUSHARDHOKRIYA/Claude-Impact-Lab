@@ -6,7 +6,7 @@
     "node": ">=20"
   },
   "scripts": {
-    \"ci\": \"npm run lint && npm run test && npm run build\",
+    "ci": "npm run lint && npm run test && npm run build",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",

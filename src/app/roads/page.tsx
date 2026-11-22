@@ -125,7 +125,7 @@ export default async function RoadExplorerPage({ searchParams }: PageProps) {
                 <tr key={road.id} className="hover:bg-[var(--sheet)] transition-colors">
                   <td>
                     <div className="font-semibold text-[var(--ink)]">{road.name}</div>
-                    <div className="text-xs text-[var(--mist)] font-mono">{road.id} • {road.surface}</div>
+                    <div className="text-xs text-[var(--mist)] font-mono">{road.id}, {road.surface}</div>
                   </td>
                   <td>
                     <Link href={`/wards/${wardSlug(road.ward)}`} className="text-xs font-semibold text-[var(--enamel)] hover:underline">

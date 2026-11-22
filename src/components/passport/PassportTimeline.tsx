@@ -79,7 +79,20 @@ export function PassportTimeline({ workOrders }: { workOrders: PassportWorkOrder
               <div className="mt-2 text-xs text-[var(--failed-ink)] font-medium space-y-1">
                 {wo.flags.map((flag, idx) => (
                   <div key={idx} className="flex items-center gap-1.5">
-                    <span aria-hidden="true">⚠️</span>
+                    <svg
+                      aria-hidden="true"
+                      className="w-3.5 h-3.5 shrink-0 text-[var(--failed-ink)]"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M8 2.5 1.5 13.5h13L8 2.5z" />
+                      <path d="M8 6.5v3.5" />
+                      <circle cx="8" cy="11.5" r="0.6" fill="currentColor" stroke="none" />
+                    </svg>
                     <span>{flag}</span>
                   </div>
                 ))}

@@ -53,13 +53,13 @@ export default function OverviewPage() {
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">City SLA Compliance</dt>
-          <dd className={`rb-stat-val ${slaRate < 0.75 ? "text-[#b0281f]" : "text-[#127a52]"}`}>
+          <dd className={`rb-stat-val ${slaRate < 0.75 ? "text-[var(--failed-ink)]" : "text-[var(--held-ink)]"}`}>
             {pct(slaRate)}
           </dd>
         </div>
         <div className="rb-stat-card">
           <dt className="rb-stat-label">30-Day Reopening Rate</dt>
-          <dd className={`rb-stat-val ${reopenRate > 0.2 ? "text-[#b0281f]" : "text-[var(--ink)]"}`}>
+          <dd className={`rb-stat-val ${reopenRate > 0.2 ? "text-[var(--failed-ink)]" : "text-[var(--ink)]"}`}>
             {pct(reopenRate)}
           </dd>
         </div>
@@ -77,16 +77,16 @@ export default function OverviewPage() {
           label="All 24 wards combined spend"
         />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-2">
-          <div className="p-3 rounded bg-[rgb(18_122_82/0.08)] border border-[rgb(18_122_82/0.2)]">
-            <strong className="text-[#127a52] block text-sm">{formatInrShort(overview.outcome.heldInr)} Held</strong>
+          <div className="p-3 rounded bg-[var(--held-bg)] border border-[var(--held-border)]">
+            <strong className="text-[var(--held-ink)] block text-sm">{formatInrShort(overview.outcome.heldInr)} Held</strong>
             <span className="text-[var(--mist)]">Repairs that held for 30+ days without audit flags</span>
           </div>
-          <div className="p-3 rounded bg-[rgb(224_161_6/0.08)] border border-[rgb(224_161_6/0.2)]">
-            <strong className="text-[#9c6c00] block text-sm">{formatInrShort(overview.outcome.flaggedInr)} Flagged</strong>
+          <div className="p-3 rounded bg-[var(--flagged-bg)] border border-[var(--flagged-border)]">
+            <strong className="text-[var(--flagged-ink)] block text-sm">{formatInrShort(overview.outcome.flaggedInr)} Flagged</strong>
             <span className="text-[var(--mist)]">Carries cost variance, repeat-repair, or DLP flag</span>
           </div>
-          <div className="p-3 rounded bg-[rgb(176_40_31/0.08)] border border-[rgb(176_40_31/0.2)]">
-            <strong className="text-[#b0281f] block text-sm">{formatInrShort(overview.outcome.failedInr)} Failed</strong>
+          <div className="p-3 rounded bg-[var(--failed-bg)] border border-[var(--failed-border)]">
+            <strong className="text-[var(--failed-ink)] block text-sm">{formatInrShort(overview.outcome.failedInr)} Failed</strong>
             <span className="text-[var(--mist)]">Potholes and road repairs reopened within 30 days</span>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function OverviewPage() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="ux4g-heading-s-strong text-[var(--ink)]">24 Ward Scoreboard</h2>
           <Link href="/wards" className="text-xs text-[var(--enamel)] hover:underline touch-target">
-            View All Ward Ledgers →
+            View All Ward Ledgers
           </Link>
         </div>
 
@@ -150,12 +150,12 @@ export default function OverviewPage() {
                   <td className="text-right font-mono text-xs font-semibold text-[var(--ink)]">{formatInr(w.spentInr)}</td>
                   <td className="text-right font-mono text-xs text-[var(--mist)]">{formatInr(w.budgetInr)}</td>
                   <td className="text-right text-xs">
-                    <span className={w.reopenRate >= 0.25 ? "text-[#b0281f] font-bold" : "text-[var(--ink)]"}>
+                    <span className={w.reopenRate >= 0.25 ? "text-[var(--failed-ink)] font-bold" : "text-[var(--ink)]"}>
                       {Math.round(w.reopenRate * 100)}%
                     </span>
                   </td>
                   <td className="text-right text-xs font-mono">
-                    <span className={w.flagCount > 0 ? "text-[#9c6c00] font-semibold" : "text-[var(--mist)]"}>
+                    <span className={w.flagCount > 0 ? "text-[var(--flagged-ink)] font-semibold" : "text-[var(--mist)]"}>
                       {w.flagCount}
                     </span>
                   </td>
@@ -164,7 +164,7 @@ export default function OverviewPage() {
                       href={`/wards/${wardSlug(w.code)}`}
                       className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target text-xs inline-flex items-center"
                     >
-                      Ward Ledger →
+                      Ward Ledger
                     </Link>
                   </td>
                 </tr>

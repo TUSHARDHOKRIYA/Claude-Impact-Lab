@@ -137,7 +137,7 @@ export default async function ActionQueuePage({ searchParams }: PageProps) {
                   </div>
 
                   <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--sheet)] text-[var(--ink)]">
-                    Status: {item.status.replace(/_/g, " ").toUpperCase()}
+                    Status: {item.status.charAt(0).toUpperCase() + item.status.slice(1).replace(/_/g, " ")}
                   </span>
                 </div>
 

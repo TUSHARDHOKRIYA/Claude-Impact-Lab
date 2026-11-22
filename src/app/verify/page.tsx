@@ -45,8 +45,8 @@ export default async function VerifyPage({ searchParams }: PageProps) {
       </header>
 
       {params.submitted === "1" ? (
-        <div className="p-6 rounded border border-[#127a52] bg-[rgb(18_122_82/0.08)] space-y-3">
-          <h2 className="ux4g-heading-s-strong text-[#127a52]">Observation Recorded</h2>
+        <div className="p-6 rounded border border-[var(--held-border)] bg-[var(--held-bg)] space-y-3">
+          <h2 className="ux4g-heading-s-strong text-[var(--held-ink)]">Observation Recorded</h2>
           <p className="text-xs text-[var(--ink)]">
             {submittedId ? <>Complaint <strong>{submittedId}</strong></> : "Your report"}
             {obsLabel ? <> marked as <strong>{obsLabel}</strong>.</> : "."}

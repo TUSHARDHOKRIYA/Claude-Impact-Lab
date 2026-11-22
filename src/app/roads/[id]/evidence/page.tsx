@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { PrintButton } from "@/components/passport/PrintButton";
 import { buildEvidencePack } from "@/lib/passport/evidence-pack";
 import { formatInr } from "@/lib/rupee/format";
 
@@ -47,13 +48,10 @@ export default async function EvidencePackPage({ params }: PageProps) {
           >
             Export CSV
           </a>
-          <button
-            type="button"
-            onClick={() => window.print()}
+          <PrintButton
+            label="Print Dossier"
             className="ux4g-btn ux4g-btn-s ux4g-btn-primary touch-target"
-          >
-            Print Dossier
-          </button>
+          />
         </div>
       </div>
 

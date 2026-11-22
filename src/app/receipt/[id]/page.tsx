@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { PrintButton } from "@/components/passport/PrintButton";
 import { getPotholeReceipt } from "@/lib/passport/receipt";
 import { formatInr } from "@/lib/rupee/format";
 import { wardSlug } from "@/lib/rupee/slug";
@@ -33,13 +34,10 @@ export default async function PotholeReceiptPage({ params }: PageProps) {
         <Link href="/citizen" className="ux4g-text-link-m touch-target inline-flex items-center gap-1">
           ← Citizen Transparency Portal
         </Link>
-        <button
-          type="button"
-          onClick={() => window.print()}
+        <PrintButton
+          label="Print Receipt"
           className="ux4g-btn ux4g-btn-s ux4g-btn-outline-primary touch-target"
-        >
-          Print Receipt
-        </button>
+        />
       </div>
 
       <div className="rb-receipt-card space-y-6">

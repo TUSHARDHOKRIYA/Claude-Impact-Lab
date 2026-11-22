@@ -1,3 +1,4 @@
+import { expectedCostInr } from "../rupee/audit";
 import { getRupee } from "../rupee/index";
 import { getRoadPassport } from "./aggregate";
 
@@ -69,9 +70,7 @@ export function getPotholeReceipt(complaintId: string): RupeeReceiptData | null 
     missing.unshift("Road segment geometry unmapped in records");
   }
 
-  const expectedInr = wo
-    ? ds.rateCard.find((rc) => rc.method === wo.method)?.rateInr ?? wo.costInr
-    : 0;
+  const expectedInr = wo ? (expectedCostInr(ds, wo) ?? wo.costInr) : 0;
 
   return {
     complaintId: complaint.id,
@@ -100,7 +99,7 @@ export function getPotholeReceipt(complaintId: string): RupeeReceiptData | null 
           reopened: wo.reopened,
           areaSqm: wo.areaSqm,
           amountBilledInr: wo.costInr,
-          expectedCostInr: expectedInr * (wo.areaSqm || 1),
+          expectedCostInr: expectedInr,
           contractorName: wo.contractorName,
           method: wo.method,
           engineerRemark: wo.remark,
